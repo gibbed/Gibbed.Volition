@@ -115,7 +115,8 @@ namespace Gibbed.Volition.FileFormats
                     }
                     else
                     {
-                        // Saints Row (1) seems to have bugged duplicate entries
+                        // Saints Row 1 seems to have bugged duplicate entries that point to
+                        // different offsets with the same data.
                         this.Entries.Add(packageEntry.Name + "_DUPLICATE_" + packageEntry.Offset.ToString("X8"), entry);
                     }
                 }

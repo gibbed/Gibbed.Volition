@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using Gibbed.Helpers;
 
+// VPP version 4
+// Used by: Saints Row 2
+
 namespace Gibbed.Volition.FileFormats.Packages
 {
     internal class PackageFile4 : IPackageFile
@@ -92,8 +95,6 @@ namespace Gibbed.Volition.FileFormats.Packages
                 entry.UncompressedSize = index.UncompressedSize;
 
                 // package is compressed with zlib, offsets are not correct, fix 'em
-                // compression occurs in the 360 version of Saints Row 2 packages
-                // this should work (I hope)
                 if ((header.Flags & PackageFlags.Compressed) == PackageFlags.Compressed)
                 {
                     entry.Offset = baseOffset;
