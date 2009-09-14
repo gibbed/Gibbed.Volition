@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using Gibbed.Helpers;
 
+// VPP version 3
+// Used by: Red Faction Guerrilla, Saints Row
+
 namespace Gibbed.Volition.FileFormats.Packages
 {
     internal class PackageFile3 : IPackageFile
@@ -90,8 +93,6 @@ namespace Gibbed.Volition.FileFormats.Packages
                 entry.UncompressedSize = index.UncompressedSize;
 
                 // package is compressed with zlib, offsets are not correct, fix 'em
-                // compression occurs in the 360 version of Saints Row 2 packages
-                // this should work (I hope)
                 if ((header.Flags & PackageFlags.Compressed) == PackageFlags.Compressed)
                 {
                     // solid compression (one zlib block)
