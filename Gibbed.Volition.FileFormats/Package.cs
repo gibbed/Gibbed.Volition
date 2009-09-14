@@ -108,7 +108,16 @@ namespace Gibbed.Volition.FileFormats
                     entry.Size = packageEntry.UncompressedSize;
                     entry.CompressedSize = packageEntry.CompressedSize;
                     entry.CompressionType = packageEntry.CompressionType;
-                    this.Entries.Add(packageEntry.Name, entry);
+
+                    if (this.Entries.ContainsKey(packageEntry.Name) == false)
+                    {
+                        this.Entries.Add(packageEntry.Name, entry);
+                    }
+                    else
+                    {
+                        // Saints Row (1) seems to have bugged duplicate entries
+                        this.Entries.Add(packageEntry.Name + "_DUPLICATE_" + packageEntry.Offset.ToString("X8"), entry);
+                    }
                 }
             }
             else
