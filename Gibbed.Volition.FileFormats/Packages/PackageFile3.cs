@@ -21,6 +21,47 @@ namespace Gibbed.Volition.FileFormats.Packages
             this.Entries = new List<PackageEntry>();
         }
 
+        public int EstimateHeaderSize()
+        {
+            int totalSize = 0;
+            
+            totalSize += 2048; // header
+            totalSize += (this.Entries.Count * 28).Align(2048);
+
+            int namesSize = 0;
+            foreach (PackageEntry entry in this.Entries)
+            {
+                namesSize += entry.Name.Length + 1;
+            }
+
+            totalSize += namesSize.Align(2048);
+            return totalSize;
+        }
+
+        public int EstimateTotalSize()
+        {
+            int totalSize = this.EstimateHeaderSize();
+
+            if (this.IsSolid)
+            {
+                throw new InvalidOperationException();
+            }
+
+            foreach (PackageEntry entry in this.Entries)
+            {
+                if (entry.CompressionType == PackageCompressionType.None)
+                {
+                    totalSize += entry.UncompressedSize.Align(16);
+                }
+                else if (entry.CompressionType == PackageCompressionType.Zlib)
+                {
+                    totalSize += entry.CompressedSize.Align(16);
+                }
+            }
+
+            return totalSize;
+        }
+
         public void Deserialize(Stream input, bool littleEndian)
         {
             byte[] buffer = new byte[384];
@@ -119,7 +160,72 @@ namespace Gibbed.Volition.FileFormats.Packages
 
         public void Serialize(Stream output, bool littleEndian)
         {
-            throw new NotImplementedException();
+            MemoryStream namesBuffer = new MemoryStream();
+            MemoryStream indexBuffer = new MemoryStream();
+
+            int totalUncompressedSize = 0;
+            int totalCompressedSize = 0;
+            int totalPackageSize = 0;
+
+            foreach (PackageEntry entry in this.Entries)
+            {
+                totalUncompressedSize += entry.UncompressedSize;
+
+                if (entry.CompressedSize != -1)
+                {
+                    totalCompressedSize += entry.CompressedSize;
+                    totalPackageSize += entry.CompressedSize.Align(16);
+                }
+                else
+                {
+                    totalPackageSize += entry.UncompressedSize.Align(16);
+                }
+
+                Structures.PackageIndex3 index = new Structures.PackageIndex3();
+                index.NameOffset = (int)namesBuffer.Position;
+                index.Unknown04 = 0;
+                index.Offset = (int)entry.Offset;
+                index.Unknown0C = 0; // ??
+                index.UncompressedSize = entry.UncompressedSize;
+                index.CompressedSize = entry.CompressedSize;
+                index.Unknown1C = 0;
+
+                if (littleEndian == false)
+                {
+                    index.Swap();
+                }
+
+                indexBuffer.WriteStructure<Structures.PackageIndex3>(index);
+                namesBuffer.WriteStringASCIIZ(entry.Name);
+            }
+
+            Structures.PackageHeader3 header = new Structures.PackageHeader3();
+            header.Magic = 0x51890ACE;
+            header.Version = 3;
+            header.Flags = PackageFlags.None;
+            header.IndexCount = this.Entries.Count;
+            header.PackageSize =
+                2048 +
+                (int)indexBuffer.Length.Align(2048) +
+                (int)namesBuffer.Length.Align(2048) +
+                totalPackageSize;
+            header.IndexSize = (int)indexBuffer.Length;
+            header.NamesSize = (int)namesBuffer.Length;
+
+            if (littleEndian == false)
+            {
+                header.Swap();
+            }
+
+            indexBuffer.Seek(0, SeekOrigin.Begin);
+            indexBuffer.SetLength(indexBuffer.Length.Align(2048));
+
+            namesBuffer.Seek(0, SeekOrigin.Begin);
+            namesBuffer.SetLength(namesBuffer.Length.Align(2048));
+
+            output.WriteStructure<Structures.PackageHeader3>(header, 2048);
+            output.WriteFromStream(indexBuffer, indexBuffer.Length);
+            output.WriteFromStream(namesBuffer, namesBuffer.Length);
         }
     }
 }

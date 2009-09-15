@@ -202,5 +202,10 @@ namespace Gibbed.Volition.FileFormats.Packages
             output.WriteAligned(extensionsBuffer, 0, header.ExtensionsSize, 2048);
             */
         }
+
+        public int EstimateHeaderSize()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

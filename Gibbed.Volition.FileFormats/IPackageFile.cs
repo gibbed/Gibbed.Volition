@@ -6,6 +6,7 @@ namespace Gibbed.Volition.FileFormats
     internal interface IPackageFile
     {
         List<Packages.PackageEntry> Entries { get; }
+        int EstimateHeaderSize();
         void Deserialize(Stream input, bool littleEndian);
         void Serialize(Stream output, bool littleEndian);
         bool IsSolid { get; }
