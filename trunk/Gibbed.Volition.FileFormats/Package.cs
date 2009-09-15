@@ -15,7 +15,6 @@ namespace Gibbed.Volition.FileFormats
         private bool IsSolid;
 
         private Stream Stream;
-        private long BaseOffset;
 
         #region Entry
         private abstract class Entry
@@ -34,6 +33,12 @@ namespace Gibbed.Volition.FileFormats
         {
             public byte[] Data;
         }
+
+        private class CopyFromFileEntry : Entry
+        {
+            public string Path;
+        }
+
         #endregion
 
         private Dictionary<string, StreamEntry> OriginalEntries = new Dictionary<string, StreamEntry>();
@@ -56,7 +61,6 @@ namespace Gibbed.Volition.FileFormats
             }
 
             this.Stream = stream;
-            this.BaseOffset = this.Stream.Position;
 
             if (readExisting == true)
             {
@@ -231,7 +235,7 @@ namespace Gibbed.Volition.FileFormats
             {
                 StreamEntry entry = (StreamEntry)this.Entries[name];
 
-                this.Stream.Seek(this.BaseOffset + entry.Offset, SeekOrigin.Begin);
+                this.Stream.Seek(entry.Offset, SeekOrigin.Begin);
 
                 byte[] data = new byte[entry.Size];
 
@@ -259,6 +263,15 @@ namespace Gibbed.Volition.FileFormats
             else if (this.Entries[name] is MemoryEntry)
             {
                 return (byte[])(((MemoryEntry)this.Entries[name]).Data.Clone());
+            }
+            else if (this.Entries[name] is CopyFromFileEntry)
+            {
+                CopyFromFileEntry entry = (CopyFromFileEntry)this.Entries[name];
+                byte[] data = new byte[entry.Size];
+                Stream input = File.Open(entry.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                input.Read(data, 0, data.Length);
+                input.Close();
+                return data;
             }
             else
             {
@@ -294,7 +307,7 @@ namespace Gibbed.Volition.FileFormats
             this.Entries[name] = entry;
         }
 
-        public void SetEntryStream(string name, Stream stream)
+        public void SetEntry(string name, Stream stream)
         {
             byte[] data = new byte[stream.Length];
 
@@ -304,6 +317,29 @@ namespace Gibbed.Volition.FileFormats
             stream.Seek(oldPosition, SeekOrigin.Begin);
 
             this.SetEntry(name, data);
+        }
+
+        public void SetEntry(string name, string path)
+        {
+            if (this.IsSolid == true)
+            {
+                throw new NotSupportedException("cannot write to solid packages");
+            }
+            else if (this.Stream.CanWrite == false)
+            {
+                throw new NotSupportedException("stream is not writable");
+            }
+
+            if (this.Entries.ContainsKey(name) && this.Entries[name] is StreamEntry)
+            {
+                this.OriginalEntries[name] = (StreamEntry)this.Entries[name];
+            }
+
+            CopyFromFileEntry entry = new CopyFromFileEntry();
+            entry.Path = path;
+            entry.Size = (int)(new FileInfo(path).Length);
+
+            this.Entries[name] = entry;
         }
 
         public void ExportEntry(string name, Stream output)
@@ -317,7 +353,7 @@ namespace Gibbed.Volition.FileFormats
             {
                 StreamEntry entry = (StreamEntry)this.Entries[name];
 
-                this.Stream.Seek(this.BaseOffset + entry.Offset, SeekOrigin.Begin);
+                this.Stream.Seek(entry.Offset, SeekOrigin.Begin);
 
                 if (entry.CompressionType == Packages.PackageCompressionType.Zlib)
                 {
@@ -366,6 +402,21 @@ namespace Gibbed.Volition.FileFormats
                 MemoryEntry entry = (MemoryEntry)this.Entries[name];
                 output.Write(entry.Data, 0, entry.Data.Length);
             }
+            else if (this.Entries[name] is CopyFromFileEntry)
+            {
+                CopyFromFileEntry entry = (CopyFromFileEntry)this.Entries[name];
+                Stream input = File.Open(entry.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                int left = entry.Size;
+                byte[] data = new byte[4096];
+                while (left > 0)
+                {
+                    int block = (int)(Math.Min(left, 4096));
+                    input.Read(data, 0, block);
+                    output.Write(data, 0, block);
+                    left -= block;
+                }
+                input.Close();
+            }
             else
             {
                 throw new InvalidOperationException();
@@ -379,7 +430,105 @@ namespace Gibbed.Volition.FileFormats
 
         public void Commit(bool cleanCommit)
         {
-            throw new NotImplementedException();
+            IPackageFile packageFile = null;
+
+            if (this.Version == 3)
+            {
+                packageFile = new Packages.PackageFile3();
+            }
+            else if (this.Version == 4)
+            {
+                packageFile = new Packages.PackageFile4();
+            }
+
+            int offset = 0;
+
+            foreach (KeyValuePair<string, Entry> kvp in this.Entries)
+            {
+                Packages.PackageEntry packageEntry = new Packages.PackageEntry();
+                packageEntry.Name = kvp.Key;
+                packageEntry.CompressionType = Packages.PackageCompressionType.None;
+                packageEntry.CompressedSize = -1;
+                packageEntry.UncompressedSize = kvp.Value.Size;
+                packageEntry.Offset = offset;
+                packageFile.Entries.Add(packageEntry);
+
+                offset += kvp.Value.Size.Align(16);
+            }
+
+            if (cleanCommit == false)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                Stream clean;
+                string tempFileName = null;
+
+                // Packages greater than five mb will be cleaned with a file supported stream
+                if (this.Stream.Length >= (1024 * 1024) * 5)
+                {
+                    tempFileName = Path.GetTempFileName();
+                    clean = File.Open(tempFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+                }
+                else
+                {
+                    clean = new MemoryStream();
+                }
+
+                packageFile.Serialize(clean, this.LittleEndian);
+
+                foreach (KeyValuePair<string, Entry> kvp in this.Entries)
+                {
+                    // hehe
+                    this.ExportEntry(kvp.Key, clean);
+
+                    long align = kvp.Value.Size.Align(16) - kvp.Value.Size;
+                    if (align > 0)
+                    {
+                        byte[] block = new byte[align];
+                        clean.Write(block, 0, (int)align);
+                    }
+                }
+
+                // copy clean to real stream
+                {
+                    this.Stream.Seek(0, SeekOrigin.Begin);
+                    clean.Seek(0, SeekOrigin.Begin);
+
+                    byte[] data = new byte[4096];
+                    long left = clean.Length;
+                    while (left > 0)
+                    {
+                        int block = (int)Math.Min(left, data.Length);
+                        clean.Read(data, 0, block);
+                        this.Stream.Write(data, 0, block);
+                        left -= block;
+                    }
+                }
+
+                this.Stream.SetLength(clean.Length);
+                clean.Close();
+
+                if (tempFileName != null)
+                {
+                    File.Delete(tempFileName);
+                }
+
+                this.Entries.Clear();
+                this.OriginalEntries.Clear();
+
+                foreach (Packages.PackageEntry entry in packageFile.Entries)
+                {
+                    this.Entries.Add(entry.Name, new StreamEntry()
+                    {
+                        Offset = entry.Offset,
+                        Size = entry.UncompressedSize,
+                        CompressedSize = entry.CompressedSize,
+                        CompressionType = entry.CompressionType,
+                    });
+                }
+            }
         }
 
         public void Rollback()
