@@ -50,12 +50,6 @@ namespace Gibbed.Volition.Unpack
 
             if (extra.Count != 2 || showHelp == true)
             {
-                Console.WriteLine("---");
-                Console.WriteLine("argument count == {0}", extra.Count);
-                Console.WriteLine("extra = {0}", String.Join(", ", extra.ToArray()));
-                Console.WriteLine("help == {0}", showHelp);
-                Console.WriteLine("---");
-
                 Console.WriteLine("Usage: {0} [OPTIONS]+ input_vpp output_directory", GetExecutableName());
                 Console.WriteLine("Unpack specified Volition package file.");
                 Console.WriteLine();
