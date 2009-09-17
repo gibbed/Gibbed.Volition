@@ -423,13 +423,22 @@ namespace Gibbed.Volition.FileFormats
             }
         }
 
-        public void Commit()
+        public void Commit(Packages.PackageCompressionType compressionType)
         {
-            this.Commit(false);
-        }
+            Stream clean;
+            string tempFileName = null;
 
-        public void Commit(bool cleanCommit)
-        {
+            // Packages greater than five mb will be cleaned with a file supported stream
+            if (this.Stream.Length >= (1024 * 1024) * 5)
+            {
+                tempFileName = Path.GetTempFileName();
+                clean = File.Open(tempFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+            }
+            else
+            {
+                clean = new MemoryStream();
+            }
+
             IPackageFile packageFile = null;
 
             if (this.Version == 3)
@@ -441,93 +450,119 @@ namespace Gibbed.Volition.FileFormats
                 packageFile = new Packages.PackageFile4();
             }
 
-            int offset = 0;
-
             foreach (KeyValuePair<string, Entry> kvp in this.Entries)
             {
                 Packages.PackageEntry packageEntry = new Packages.PackageEntry();
                 packageEntry.Name = kvp.Key;
-                packageEntry.CompressionType = Packages.PackageCompressionType.None;
                 packageEntry.CompressedSize = -1;
                 packageEntry.UncompressedSize = kvp.Value.Size;
-                packageEntry.Offset = offset;
+                packageEntry.Offset = 0;
                 packageFile.Entries.Add(packageEntry);
-
-                offset += kvp.Value.Size.Align(16);
             }
 
-            if (cleanCommit == false)
+            int headerSize = packageFile.EstimateHeaderSize();
+            clean.Seek(headerSize, SeekOrigin.Begin);
+
+            int uncompressedDataSize = 0;
+            int compressedDataSize = 0;
+
+            if (compressionType == Packages.PackageCompressionType.None)
             {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                Stream clean;
-                string tempFileName = null;
-
-                // Packages greater than five mb will be cleaned with a file supported stream
-                if (this.Stream.Length >= (1024 * 1024) * 5)
+                int offset = 0;
+                foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
                 {
-                    tempFileName = Path.GetTempFileName();
-                    clean = File.Open(tempFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
-                }
-                else
-                {
-                    clean = new MemoryStream();
-                }
+                    packageEntry.Offset = offset;
 
-                packageFile.Serialize(clean, this.LittleEndian, Packages.PackageCompressionType.None);
+                    this.ExportEntry(packageEntry.Name, clean);
 
-                foreach (KeyValuePair<string, Entry> kvp in this.Entries)
-                {
-                    // hehe
-                    this.ExportEntry(kvp.Key, clean);
-
-                    long align = kvp.Value.Size.Align(16) - kvp.Value.Size;
+                    int align = packageEntry.UncompressedSize.Align(2048) - packageEntry.UncompressedSize;
                     if (align > 0)
                     {
                         byte[] block = new byte[align];
                         clean.Write(block, 0, (int)align);
                     }
+
+                    offset += packageEntry.UncompressedSize + align;
+                    uncompressedDataSize += packageEntry.UncompressedSize + align;
                 }
-
-                // copy clean to real stream
+            }
+            else if (compressionType == Packages.PackageCompressionType.Zlib)
+            {
+                int offset = 0;
+                foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
                 {
-                    this.Stream.Seek(0, SeekOrigin.Begin);
-                    clean.Seek(0, SeekOrigin.Begin);
+                    packageEntry.Offset = offset;
 
-                    byte[] data = new byte[4096];
-                    long left = clean.Length;
-                    while (left > 0)
+                    byte[] uncompressedData = this.GetEntry(packageEntry.Name);
+                    byte[] compressedData = ZlibStream.CompressBuffer(uncompressedData);
+
+                    clean.Write(compressedData, 0, compressedData.Length);
+                    packageEntry.CompressedSize = compressedData.Length;
+
+                    int align = packageEntry.CompressedSize.Align(2048) - packageEntry.CompressedSize;
+                    if (align > 0)
                     {
-                        int block = (int)Math.Min(left, data.Length);
-                        clean.Read(data, 0, block);
-                        this.Stream.Write(data, 0, block);
-                        left -= block;
+                        byte[] block = new byte[align];
+                        clean.Write(block, 0, (int)align);
                     }
+
+                    offset += packageEntry.CompressedSize + align;
+                    uncompressedDataSize += packageEntry.UncompressedSize;
+                    compressedDataSize += packageEntry.CompressedSize + align;
                 }
+            }
+            else if (compressionType == Packages.PackageCompressionType.SolidZlib)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
 
-                this.Stream.SetLength(clean.Length);
-                clean.Close();
+            packageFile.PackageSize = (int)clean.Length;
+            packageFile.UncompressedDataSize = uncompressedDataSize;
+            packageFile.CompressedDataSize = compressedDataSize;
 
-                if (tempFileName != null)
+            clean.Seek(0, SeekOrigin.Begin);
+            packageFile.Serialize(clean, this.LittleEndian, compressionType);
+
+            // copy clean to real stream
+            {
+                this.Stream.Seek(0, SeekOrigin.Begin);
+                clean.Seek(0, SeekOrigin.Begin);
+
+                byte[] data = new byte[4096];
+                long left = clean.Length;
+                while (left > 0)
                 {
-                    File.Delete(tempFileName);
+                    int block = (int)Math.Min(left, data.Length);
+                    clean.Read(data, 0, block);
+                    this.Stream.Write(data, 0, block);
+                    left -= block;
                 }
+            }
 
-                this.Entries.Clear();
-                this.OriginalEntries.Clear();
+            this.Stream.SetLength(clean.Length);
+            clean.Close();
 
-                foreach (Packages.PackageEntry entry in packageFile.Entries)
+            if (tempFileName != null)
+            {
+                File.Delete(tempFileName);
+            }
+
+            this.Entries.Clear();
+            this.OriginalEntries.Clear();
+
+            foreach (Packages.PackageEntry entry in packageFile.Entries)
+            {
+                this.Entries.Add(entry.Name, new StreamEntry()
                 {
-                    this.Entries.Add(entry.Name, new StreamEntry()
-                    {
-                        Offset = entry.Offset,
-                        Size = entry.UncompressedSize,
-                        CompressedSize = entry.CompressedSize,
-                        CompressionType = entry.CompressionType,
-                    });
-                }
+                    Offset = entry.Offset,
+                    Size = entry.UncompressedSize,
+                    CompressedSize = entry.CompressedSize,
+                    CompressionType = entry.CompressionType,
+                });
             }
         }
 

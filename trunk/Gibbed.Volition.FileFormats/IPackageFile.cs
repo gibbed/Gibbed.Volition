@@ -7,11 +7,17 @@ namespace Gibbed.Volition.FileFormats
     {
         List<Packages.PackageEntry> Entries { get; }
         int EstimateHeaderSize();
+        
         void Deserialize(Stream input, bool littleEndian);
         void Serialize(Stream output, bool littleEndian, Packages.PackageCompressionType compressionType);
+        
         bool IsSolid { get; }
         long SolidOffset { get; }
         int SolidUncompressedSize { get; }
         int SolidCompressedSize { get; }
+
+        int UncompressedDataSize { get; set; }
+        int CompressedDataSize { get; set; }
+        int PackageSize { get; set; }
     }
 }

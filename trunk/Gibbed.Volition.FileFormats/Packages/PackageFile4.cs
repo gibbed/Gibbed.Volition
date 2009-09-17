@@ -207,5 +207,41 @@ namespace Gibbed.Volition.FileFormats.Packages
         {
             throw new NotImplementedException();
         }
+
+        public int UncompressedDataSize
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int CompressedDataSize
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int PackageSize
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

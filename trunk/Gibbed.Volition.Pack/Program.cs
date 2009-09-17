@@ -19,10 +19,8 @@ namespace Gibbed.Volition.Pack
         {
             bool showHelp = false;
             bool bigEndian = false;
-            /*
             bool compressFiles = false;
             bool compressSolid = false;
-            */
             uint packageVersion = 3;
 
             OptionSet options = new OptionSet()
@@ -39,7 +37,6 @@ namespace Gibbed.Volition.Pack
                     "this is only useful for non-Windows platforms (such as XBOX).",
                     v => bigEndian = v != null
                 },
-                /*
                 {
                     "c|compress",
                     "compress files in the package.",
@@ -50,7 +47,6 @@ namespace Gibbed.Volition.Pack
                     "solid compression mode. only used when compression is enabled.",
                     v => compressSolid = v != null
                 },
-                */
                 {
                     "h|help",
                     "show this message and exit", 
@@ -121,7 +117,22 @@ namespace Gibbed.Volition.Pack
                 package.SetEntry(value.Key, value.Value);
             }
 
-            package.Commit(true);
+            Gibbed.Volition.FileFormats.Packages.PackageCompressionType compressionType;
+
+            if (compressFiles == true && compressSolid == true)
+            {
+                compressionType = Gibbed.Volition.FileFormats.Packages.PackageCompressionType.SolidZlib;
+            }
+            else if (compressFiles == true)
+            {
+                compressionType = Gibbed.Volition.FileFormats.Packages.PackageCompressionType.Zlib;
+            }
+            else
+            {
+                compressionType = Gibbed.Volition.FileFormats.Packages.PackageCompressionType.None;
+            }
+
+            package.Commit(compressionType);
 
             output.Close();
         }
