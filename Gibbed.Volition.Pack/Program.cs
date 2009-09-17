@@ -91,12 +91,8 @@ namespace Gibbed.Volition.Pack
                     string fullPath = Path.GetFullPath(path);
 
                     string name = Path.GetFileName(fullPath);
-
-                    if (Path.HasExtension(name) == false)
-                    {
-                        continue;
-                    }
-                    else if (paths.ContainsKey(name))
+                    
+                    if (paths.ContainsKey(name))
                     {
                         continue;
                     }
