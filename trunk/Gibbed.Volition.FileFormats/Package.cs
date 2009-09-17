@@ -476,7 +476,7 @@ namespace Gibbed.Volition.FileFormats
                     clean = new MemoryStream();
                 }
 
-                packageFile.Serialize(clean, this.LittleEndian);
+                packageFile.Serialize(clean, this.LittleEndian, Packages.PackageCompressionType.None);
 
                 foreach (KeyValuePair<string, Entry> kvp in this.Entries)
                 {
