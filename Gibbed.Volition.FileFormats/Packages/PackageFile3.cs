@@ -16,6 +16,10 @@ namespace Gibbed.Volition.FileFormats.Packages
         public int SolidUncompressedSize { get; set; }
         public int SolidCompressedSize { get; set; }
 
+        public int UncompressedDataSize { get; set; }
+        public int CompressedDataSize { get; set; }
+        public int PackageSize { get; set; }
+
         public PackageFile3()
         {
             this.Entries = new List<PackageEntry>();
@@ -103,6 +107,10 @@ namespace Gibbed.Volition.FileFormats.Packages
                 this.SolidCompressedSize = header.CompressedDataSize;
             }
 
+            this.PackageSize = header.PackageSize;
+            this.CompressedDataSize = header.CompressedDataSize;
+            this.UncompressedDataSize = header.UncompressedDataSize;
+
             this.Entries.Clear();
             for (int i = 0; i < header.IndexCount; i++)
             {
@@ -168,24 +176,8 @@ namespace Gibbed.Volition.FileFormats.Packages
             MemoryStream namesBuffer = new MemoryStream();
             MemoryStream indexBuffer = new MemoryStream();
 
-            int totalUncompressedSize = 0;
-            int totalCompressedSize = 0;
-            int totalPackageSize = 0;
-
             foreach (PackageEntry entry in this.Entries)
             {
-                totalUncompressedSize += entry.UncompressedSize.Align(16);
-
-                if (compressionType == PackageCompressionType.Zlib)
-                {
-                    totalCompressedSize += entry.CompressedSize;
-                    totalPackageSize += entry.CompressedSize.Align(16);
-                }
-                else if (compressionType == PackageCompressionType.None)
-                {
-                    totalPackageSize += entry.UncompressedSize.Align(16);
-                }
-
                 Structures.PackageIndex3 index = new Structures.PackageIndex3();
                 index.NameOffset = (int)namesBuffer.Position;
                 index.Unknown04 = 0;
@@ -222,16 +214,10 @@ namespace Gibbed.Volition.FileFormats.Packages
             }
 
             header.IndexCount = this.Entries.Count;
-            header.PackageSize =
-                2048 +
-                (int)indexBuffer.Length.Align(2048) +
-                (int)namesBuffer.Length.Align(2048) +
-                totalPackageSize;
+            header.PackageSize = this.PackageSize;
             header.IndexSize = (int)indexBuffer.Length;
             header.NamesSize = (int)namesBuffer.Length;
-            header.UncompressedDataSize = totalUncompressedSize;
-            header.IndexPointer = 0x05BB0020;
-            header.NamesPointer = 0x05240020;
+            header.UncompressedDataSize = this.UncompressedDataSize;
 
             if (compressionType == PackageCompressionType.None)
             {
@@ -239,7 +225,7 @@ namespace Gibbed.Volition.FileFormats.Packages
             }
             else
             {
-                header.CompressedDataSize = totalCompressedSize;
+                header.CompressedDataSize = this.CompressedDataSize;
             }
 
             if (littleEndian == false)
