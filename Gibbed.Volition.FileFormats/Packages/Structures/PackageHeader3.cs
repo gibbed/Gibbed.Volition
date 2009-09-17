@@ -33,6 +33,16 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
         [FieldOffset(0x168)]
         public int CompressedDataSize;
 
+        // Should set to zero when written to file
+        [FieldOffset(0x16C)]
+        public int IndexPointer;
+
+        [FieldOffset(0x170)]
+        public int NamesPointer;
+
+        [FieldOffset(0x174)]
+        public int DataPointer;
+
         public PackageHeader3 Swap()
         {
             PackageHeader3 swapped = new PackageHeader3();
