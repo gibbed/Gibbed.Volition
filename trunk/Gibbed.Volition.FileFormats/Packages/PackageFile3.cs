@@ -185,7 +185,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 index.NameOffset = (int)namesBuffer.Position;
                 index.Unknown04 = 0;
                 index.Offset = (int)entry.Offset;
-                index.Unknown0C = 0; // ??
+                index.Timestamp = 0; // ??
                 index.UncompressedSize = entry.UncompressedSize;
                 index.CompressedSize = entry.CompressedSize;
                 index.Unknown1C = 0;
@@ -211,6 +211,8 @@ namespace Gibbed.Volition.FileFormats.Packages
                 totalPackageSize;
             header.IndexSize = (int)indexBuffer.Length;
             header.NamesSize = (int)namesBuffer.Length;
+            header.UncompressedDataSize = totalUncompressedSize;
+            header.CompressedDataSize = totalCompressedSize;
 
             if (littleEndian == false)
             {
