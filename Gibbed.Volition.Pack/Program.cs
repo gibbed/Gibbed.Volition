@@ -19,6 +19,10 @@ namespace Gibbed.Volition.Pack
         {
             bool showHelp = false;
             bool bigEndian = false;
+            /*
+            bool compressFiles = false;
+            bool compressSolid = false;
+            */
             uint packageVersion = 3;
 
             OptionSet options = new OptionSet()
@@ -35,6 +39,18 @@ namespace Gibbed.Volition.Pack
                     "this is only useful for non-Windows platforms (such as XBOX).",
                     v => bigEndian = v != null
                 },
+                /*
+                {
+                    "c|compress",
+                    "compress files in the package.",
+                    v => compressFiles = v != null
+                },
+                {
+                    "s|solid",
+                    "solid compression mode. only used when compression is enabled.",
+                    v => compressSolid = v != null
+                },
+                */
                 {
                     "h|help",
                     "show this message and exit", 

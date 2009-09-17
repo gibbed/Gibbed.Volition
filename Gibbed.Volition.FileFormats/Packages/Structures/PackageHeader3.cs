@@ -55,6 +55,9 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
             swapped.NamesSize = this.NamesSize.Swap();
             swapped.UncompressedDataSize = this.UncompressedDataSize.Swap();
             swapped.CompressedDataSize = this.CompressedDataSize.Swap();
+            swapped.IndexPointer = this.IndexPointer.Swap();
+            swapped.NamesPointer = this.NamesPointer.Swap();
+            swapped.DataPointer = this.DataPointer.Swap();
             return swapped;
         }
     }

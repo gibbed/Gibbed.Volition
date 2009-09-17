@@ -111,7 +111,7 @@ namespace Gibbed.Volition.FileFormats.Packages
             }
         }
 
-        public void Serialize(Stream output, bool littleEndian)
+        public void Serialize(Stream output, bool littleEndian, Packages.PackageCompressionType compressionType)
         {
             throw new NotImplementedException();
 
