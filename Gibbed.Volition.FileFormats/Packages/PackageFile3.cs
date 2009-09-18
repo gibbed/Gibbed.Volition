@@ -211,6 +211,8 @@ namespace Gibbed.Volition.FileFormats.Packages
             Structures.PackageHeader3 header = new Structures.PackageHeader3();
             header.Magic = 0x51890ACE;
             header.Version = 3;
+            header.String1 = "         Created using      Gibbed's     Volition Tools ";
+            header.String2 = "           Read the       Foundation     Novels from       Asimov.       I liked them. ";
 
             header.Flags = PackageFlags.None;
 

@@ -513,7 +513,33 @@ namespace Gibbed.Volition.FileFormats
             }
             else if (compressionType == Packages.PackageCompressionType.SolidZlib)
             {
-                throw new NotImplementedException();
+                MemoryStream compressed = new MemoryStream();
+                ZlibStream zlib = new ZlibStream(compressed, CompressionMode.Compress, CompressionLevel.Default, true);
+
+                int offset = 0;
+                foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
+                {
+                    packageEntry.Offset = offset;
+
+                    this.ExportEntry(packageEntry.Name, zlib);
+
+                    int align = packageEntry.UncompressedSize.Align(2048) - packageEntry.UncompressedSize;
+                    if (align > 0)
+                    {
+                        byte[] block = new byte[align];
+                        zlib.Write(block, 0, (int)align);
+                    }
+
+                    offset += packageEntry.UncompressedSize + align;
+                    uncompressedDataSize += packageEntry.UncompressedSize + align;
+                }
+
+                zlib.Close();
+
+                compressed.Seek(0, SeekOrigin.Begin);
+                clean.WriteFromStream(compressed, compressed.Length);
+
+                compressedDataSize = (int)compressed.Length;
             }
             else
             {
