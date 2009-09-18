@@ -19,6 +19,7 @@ namespace Gibbed.Volition.Pack
         {
             bool showHelp = false;
             bool bigEndian = false;
+            bool verbose = false;
             bool compressFiles = false;
             bool compressSolid = false;
             uint packageVersion = 3;
@@ -26,10 +27,15 @@ namespace Gibbed.Volition.Pack
             OptionSet options = new OptionSet()
             {
                 {
-                    "v|version=", 
+                    "p|version=", 
                     "the version of the package to create, default 3. " + 
                     "this must be an integer.",
                     (uint v) => packageVersion = v
+                },
+                {
+                    "v|verbose",
+                    "be verbose (list files)",
+                    v => verbose = v != null
                 },
                 {
                     "b|bigendian",
@@ -82,6 +88,11 @@ namespace Gibbed.Volition.Pack
 
             SortedDictionary<string, string> paths = new SortedDictionary<string, string>();
 
+            if (verbose == true)
+            {
+                Console.WriteLine("Finding files...");
+            }
+
             for (int i = 1; i < extra.Count; i++)
             {
                 string directory = extra[i];
@@ -89,16 +100,14 @@ namespace Gibbed.Volition.Pack
                 foreach (string path in Directory.GetFiles(directory, "*"))
                 {
                     string fullPath = Path.GetFullPath(path);
-
                     string name = Path.GetFileName(fullPath);
                     
-                    if (paths.ContainsKey(name))
+                    if (paths.ContainsKey(name) == true)
                     {
                         continue;
                     }
 
                     paths[name] = fullPath;
-                    Console.WriteLine(fullPath);
                 }
             }
 
@@ -108,8 +117,18 @@ namespace Gibbed.Volition.Pack
             package.Version = packageVersion;
             package.LittleEndian = !bigEndian;
 
+            if (verbose == true)
+            {
+                Console.WriteLine("Adding files...");
+            }
+
             foreach (KeyValuePair<string, string> value in paths)
             {
+                if (verbose == true)
+                {
+                    Console.WriteLine(value.Value);
+                }
+
                 package.SetEntry(value.Key, value.Value);
             }
 
@@ -128,6 +147,10 @@ namespace Gibbed.Volition.Pack
                 compressionType = Gibbed.Volition.FileFormats.Packages.PackageCompressionType.None;
             }
 
+            if (verbose == true)
+            {
+                Console.WriteLine("Writing to disk...");
+            }
             package.Commit(compressionType);
 
             output.Close();
