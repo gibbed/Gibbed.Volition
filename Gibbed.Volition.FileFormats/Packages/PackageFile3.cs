@@ -137,6 +137,18 @@ namespace Gibbed.Volition.FileFormats.Packages
 
                 entry.Name = namesBuffer.ToStringASCIIZ(index.NameOffset);
 
+                /*
+                Console.WriteLine("{0:X8} {1:X8} {2:X8} {3:X8} {4:X8} {5:X8} {6:X8}  {7}",
+                    index.NameOffset,
+                    index.Unknown04,
+                    index.Offset,
+                    index.NameHash,
+                    index.UncompressedSize,
+                    index.CompressedSize,
+                    index.Unknown1C,
+                    entry.Name);
+                */
+
                 if (index.NameHash != entry.Name.HashVolition())
                 {
                     // Console.WriteLine("hash mismatch: {0} != {1} for {2}", index.NameHash, entry.Name.HashVolition(), entry.Name);

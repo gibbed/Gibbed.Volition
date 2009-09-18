@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using Gibbed.Volition.FileFormats;
 using NDesk.Options;
-using System.IO;
 
 namespace Gibbed.Volition.Pack
 {
@@ -87,6 +85,7 @@ namespace Gibbed.Volition.Pack
             string outputPath = extra[0];
 
             SortedDictionary<string, string> paths = new SortedDictionary<string, string>();
+            //Dictionary<string, string> paths = new Dictionary<string, string>();
 
             if (verbose == true)
             {
