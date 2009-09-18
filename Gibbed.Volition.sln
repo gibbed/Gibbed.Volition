@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.Unpack", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.Pack", "Gibbed.Volition.Pack\Gibbed.Volition.Pack.csproj", "{D83AA226-E42D-45CB-8C82-963511B4635D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.ConvertVintDoc", "Gibbed.Volition.ConvertVintDoc\Gibbed.Volition.ConvertVintDoc.csproj", "{73237414-4FED-481A-95C0-6F9F0B8B6764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{D83AA226-E42D-45CB-8C82-963511B4635D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D83AA226-E42D-45CB-8C82-963511B4635D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D83AA226-E42D-45CB-8C82-963511B4635D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73237414-4FED-481A-95C0-6F9F0B8B6764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73237414-4FED-481A-95C0-6F9F0B8B6764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73237414-4FED-481A-95C0-6F9F0B8B6764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73237414-4FED-481A-95C0-6F9F0B8B6764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
