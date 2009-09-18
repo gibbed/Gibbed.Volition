@@ -43,7 +43,7 @@ namespace Gibbed.Volition.FileFormats
             }
         }
 
-        public void Read(Stream stream)
+        public void Deserialize(Stream stream)
         {
             if (stream.ReadValueU32() != 0x3027)
             {
