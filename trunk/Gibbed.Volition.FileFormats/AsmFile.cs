@@ -5,49 +5,55 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Volition.FileFormats
 {
-    public class AsmSubEntry
+    public class AsmFileEntry
     {
-        public string Unk0;
-        public byte Unk1;
-        public byte Unk2;
-        public byte Unk3;
-        public byte Unk4;
-        public int Unk5;
-        public int Unk6;
+        public string Name { get; set; }
+        public byte Unk1 { get; set; }
+        public byte Unk2 { get; set; }
+        public byte Unk3 { get; set; }
+        public byte Unk4 { get; set; }
+        public int HeaderFileSize { get; set; }
+        public int DataFileSize { get; set; }
 
         public void Deserialize(Stream input)
         {
-            this.Unk0 = input.ReadStringASCII(input.ReadValueU16());
+            this.Name = input.ReadStringASCII(input.ReadValueU16());
             this.Unk1 = input.ReadValueU8();
             this.Unk2 = input.ReadValueU8();
             this.Unk3 = input.ReadValueU8();
             this.Unk4 = input.ReadValueU8();
-            this.Unk5 = input.ReadValueS32();
-            this.Unk6 = input.ReadValueS32();
+            this.HeaderFileSize = input.ReadValueS32();
+            this.DataFileSize = input.ReadValueS32();
         }
 
         public void Serialize(Stream output)
         {
-            output.WriteValueU16((ushort)this.Unk0.Length);
-            output.WriteStringASCII(this.Unk0.Substring(0, (ushort)this.Unk0.Length));
+            output.WriteValueU16((ushort)this.Name.Length);
+            output.WriteStringASCII(this.Name.Substring(0, (ushort)this.Name.Length));
             output.WriteValueU8(this.Unk1);
             output.WriteValueU8(this.Unk2);
             output.WriteValueU8(this.Unk3);
             output.WriteValueU8(this.Unk4);
-            output.WriteValueS32(this.Unk5);
-            output.WriteValueS32(this.Unk6);
+            output.WriteValueS32(this.HeaderFileSize);
+            output.WriteValueS32(this.DataFileSize);
         }
     }
 
     public class AsmEntry
     {
-        public string Unk0;
-        public byte Unk1;
-        public short Unk2;
-        public int Unk4;
-        public int Unk6;
-        public List<int> Unk7 = new List<int>();
-        public List<AsmSubEntry> SubEntries = new List<AsmSubEntry>();
+        public string Unk0 { get; set; }
+        public byte Unk1 { get; set; }
+        public short Unk2 { get; set; }
+        public int Unk4 { get; set; }
+        public int Unk6 { get; set; }
+        public List<int> FileSizes  { get; set; }
+        public List<AsmFileEntry> Files { get; set; }
+        
+        public AsmEntry()
+        {
+            this.FileSizes = new List<int>();
+            this.Files = new List<AsmFileEntry>();
+        }
 
         public void Deserialize(Stream input)
         {
@@ -59,18 +65,18 @@ namespace Gibbed.Volition.FileFormats
             int unk7count = input.ReadValueS32();
             this.Unk6 = input.ReadValueS32();
             
-            this.Unk7.Clear();
+            this.FileSizes.Clear();
             for (int i = 0; i < unk7count; i++)
             {
-                this.Unk7.Add(input.ReadValueS32());
+                this.FileSizes.Add(input.ReadValueS32());
             }
 
-            this.SubEntries.Clear();
+            this.Files.Clear();
             for (short i = 0; i < subEntryCount; i++)
             {
-                AsmSubEntry subEntry = new AsmSubEntry();
+                AsmFileEntry subEntry = new AsmFileEntry();
                 subEntry.Deserialize(input);
-                this.SubEntries.Add(subEntry);
+                this.Files.Add(subEntry);
             }
         }
 
@@ -80,19 +86,19 @@ namespace Gibbed.Volition.FileFormats
             output.WriteStringASCII(this.Unk0.Substring(0, (ushort)this.Unk0.Length));
             output.WriteValueU8(this.Unk1);
             output.WriteValueS16(this.Unk2);
-            output.WriteValueS16((short)this.SubEntries.Count);
+            output.WriteValueS16((short)this.Files.Count);
             output.WriteValueS32(this.Unk4);
-            output.WriteValueS32(this.Unk7.Count);
+            output.WriteValueS32(this.FileSizes.Count);
             output.WriteValueS32(this.Unk6);
 
-            for (int i = 0; i < this.Unk7.Count; i++)
+            for (int i = 0; i < this.FileSizes.Count; i++)
             {
-                output.WriteValueS32(this.Unk7[i]);
+                output.WriteValueS32(this.FileSizes[i]);
             }
 
-            for (short i = 0; i < (short)this.SubEntries.Count; i++)
+            for (short i = 0; i < (short)this.Files.Count; i++)
             {
-                this.SubEntries[i].Serialize(output);
+                this.Files[i].Serialize(output);
             }
         }
     }

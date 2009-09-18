@@ -193,7 +193,7 @@ namespace Gibbed.Volition.ConvertVintDoc
                     VintFile vint = new VintFile();
                     vint.Deserialize(input);
 
-                    Stream output = File.OpenWrite(outputPath);
+                    Stream output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 
                     WriteDocument(vint, output);
 
