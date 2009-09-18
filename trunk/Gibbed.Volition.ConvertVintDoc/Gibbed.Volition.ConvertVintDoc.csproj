@@ -49,6 +49,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gibbed.Helpers\Gibbed.Helpers.csproj">
+      <Project>{5162A9FB-4DE1-4BBF-B7A2-5E8116AB0D26}</Project>
+      <Name>Gibbed.Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gibbed.Volition.FileFormats\Gibbed.Volition.FileFormats.csproj">
       <Project>{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}</Project>
       <Name>Gibbed.Volition.FileFormats</Name>

@@ -68,7 +68,7 @@ namespace Gibbed.Volition.FileFormats
             // not absolutely sure this is the name index... so...
             if (nameIndex != 0)
             {
-                throw new Exception();
+                throw new FormatException("name index is not 0");
             }
 
             this.Name = this.Strings[nameIndex];
@@ -94,14 +94,14 @@ namespace Gibbed.Volition.FileFormats
             for (int i = 0; i < elementCount; i++)
             {
                 Vint.Object element = new Vint.Object();
-                element.Read(stream, this);
+                element.Deserialize(stream, this);
                 this.Elements.Add(element);
             }
 
             for (int i = 0; i < animationCount; i++)
             {
                 Vint.Object animation = new Vint.Object();
-                animation.Read(stream, this);
+                animation.Deserialize(stream, this);
                 this.Animations.Add(animation);
             }
         }

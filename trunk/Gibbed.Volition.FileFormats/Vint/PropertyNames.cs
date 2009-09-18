@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gibbed.Helpers;
 
 namespace Gibbed.Volition.FileFormats.Vint
 {
@@ -12,7 +13,10 @@ namespace Gibbed.Volition.FileFormats.Vint
             Dictionary<UInt32, string> hashes = new Dictionary<uint, string>();
             string[] table = new string[]
 			{
-				// element
+                // don't know what this one is from
+                "app_visible",
+
+				// element, in RFG, SR2
 				"render_mode",
 				"visible",
 				"mask",
@@ -27,22 +31,23 @@ namespace Gibbed.Volition.FileFormats.Vint
 				"rotation",
 				"scale",
 				"auto_offset",
-				"unscaled_size",
+                "unscaled_size", // Only in SR2?
 
-				// group
+				// group, in RFG, SR2
 				"screen_size",
 				"screen_se",
 				"screen_nw",
 				"offset",
 
-				// animation
+				// animation, in RFG, SR2
 				"start_time",
 				"is_paused",
 				"target_handle",
 
-				// tween
+				// tween, in RFG, SR2
 				"target_handle",
 				"target_name",
+                "target_name_crc", // Only in RFG?
 				"target_property",
 				"state",
 				"start_time",
@@ -58,14 +63,16 @@ namespace Gibbed.Volition.FileFormats.Vint
 				"start_value_type",
 				"end_value_type",
 
-				// bitmap
+				// bitmap, in RFG, SR2
 				"custom_source_coords",
 				"image",
 				"image_crc",
+                "image_raw", // Only in RFG?
+                "image_badge", // Only in RFG?
 				"source_nw",
 				"source_se",
 
-				// gradient
+				// gradient, in SR2
 				"gradient_nw",
 				"gradient_ne",
 				"gradient_sw",
@@ -75,7 +82,7 @@ namespace Gibbed.Volition.FileFormats.Vint
 				"alpha_sw",
 				"alpha_se",
 
-				// text
+				// text, in RFG, SR2
 				"font",
 				"text_tag",
 				"text_tag_crc",
@@ -93,14 +100,14 @@ namespace Gibbed.Volition.FileFormats.Vint
 				"line_frame_m",
 				"line_frame_e",
 
-				// point
+				// point, in RFG, SR2
 				"screen_size",
 
-				// clip
+				// clip, in RFG, SR2
 				"clip_size",
 				"clip_enabled",
 
-				// bitmap_circle
+				// bitmap_circle, in RFG, SR2
 				"image",
 				"screen_size",
 				"source_nw",
@@ -109,18 +116,23 @@ namespace Gibbed.Volition.FileFormats.Vint
 				"end_angle",
 				"num_wedges",
 
-				// sr2_map
+                // map, in RFG
+                "map_bogus",
+
+				// sr2_map, in SR2
 				"zoom",
 				"map_mode",
 
-				// video
+				// video, in RFG, SR2
 				"vid_id_handle",
-			};
 
+                // framebuffer, in RFG
+                "texture_handle",
+			};
 
             foreach (string item in table)
             {
-                //hashes[item.KeyCRC32()] = item;
+                hashes[BitConverter.ToUInt32(new BrokenCRC32().ComputeHash(Encoding.ASCII.GetBytes(item.ToLower())), 0)] = item;
             }
 
             return hashes;
@@ -131,11 +143,6 @@ namespace Gibbed.Volition.FileFormats.Vint
             if (Table.ContainsKey(hash))
             {
                 return Table[hash];
-            }
-
-            if (hash != 4234861048)
-            {
-                throw new Exception();
             }
 
             return "(unknown property : 0x" + hash.ToString("X8") + ")";

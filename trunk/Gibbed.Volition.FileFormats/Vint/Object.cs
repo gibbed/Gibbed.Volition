@@ -56,6 +56,13 @@ namespace Gibbed.Volition.FileFormats.Vint
                     break;
                 }
 
+                // 8 = callback
+                // 9 = bitmap
+                // 10 = font
+                // 11 = sound
+                // 12 = enum
+                // 13 = variable
+
                 default:
                 {
                     throw new FormatException("unknown property type");
@@ -82,46 +89,55 @@ namespace Gibbed.Volition.FileFormats.Vint
             return this.Name;
         }
 
-        public void Read(Stream stream, VintFile vint)
+        public void Deserialize(Stream stream, VintFile vint)
         {
             this.Name = vint.Strings[stream.ReadValueS32()];
             this.Type = vint.Strings[stream.ReadValueS32()];
             UInt16 childCount = stream.ReadValueU16();
+            
+            this.Overrides.Clear();
 
             byte unk4 = stream.ReadValueU8();
-
             UInt32 unk5 = stream.ReadValueU32();
 
-            this.Overrides.Clear();
-            if (stream.ReadValueU8() > 0)
+            byte overrideCount = stream.ReadValueU8();
+            if (overrideCount > 0)
             {
-                string overrideName = vint.Strings[stream.ReadValueS32()];
-                /*UInt32 overrideSize =*/
-                stream.ReadValueU32();
+                string[] overrideNames = new string[overrideCount];
 
-                if (this.Overrides.ContainsKey(overrideName))
+                for (byte i = 0; i < overrideCount; i++)
                 {
-                    throw new Exception("duplicate override name");
+                    overrideNames[i] = vint.Strings[stream.ReadValueS32()];
+                    /*UInt32 overrideOffset = */stream.ReadValueU32();
                 }
 
-                this.Overrides[overrideName] = new Dictionary<string, Property>();
-
-                while (true)
+                for (byte i = 0; i < overrideCount; i++)
                 {
-                    byte propertyType = stream.ReadValueU8();
-                    if (propertyType == 0)
+                    string overrideName = overrideNames[i];
+
+                    if (this.Overrides.ContainsKey(overrideName))
                     {
-                        break;
+                        throw new Exception("duplicate override name");
                     }
 
-                    UInt32 hash = stream.ReadValueU32();
-                    string propertyName = PropertyNames.Lookup(hash);
-                    if (this.Overrides[overrideName].ContainsKey(propertyName))
+                    this.Overrides[overrideName] = new Dictionary<string, Property>();
+                    while (true)
                     {
-                        throw new Exception("duplicate override property name");
+                        byte propertyType = stream.ReadValueU8();
+                        if (propertyType == 0)
+                        {
+                            break;
+                        }
+
+                        UInt32 hash = stream.ReadValueU32();
+                        string propertyName = PropertyNames.Lookup(hash);
+                        if (this.Overrides[overrideName].ContainsKey(propertyName))
+                        {
+                            throw new Exception("duplicate override property name");
+                        }
+                        this.Overrides[overrideName][propertyName] = this.GetProperty(stream, propertyType);
+                        this.Overrides[overrideName][propertyName].Deserialize(stream, vint);
                     }
-                    this.Overrides[overrideName][propertyName] = this.GetProperty(stream, propertyType);
-                    this.Overrides[overrideName][propertyName].Read(stream, vint);
                 }
             }
 
@@ -141,13 +157,13 @@ namespace Gibbed.Volition.FileFormats.Vint
                     throw new Exception("duplicate baseline property name");
                 }
                 this.Baseline[propertyName] = this.GetProperty(stream, propertyType);
-                this.Baseline[propertyName].Read(stream, vint);
+                this.Baseline[propertyName].Deserialize(stream, vint);
             }
 
             for (int i = 0; i < childCount; i++)
             {
                 Object child = new Object();
-                child.Read(stream, vint);
+                child.Deserialize(stream, vint);
                 this.Children.Add(child);
             }
         }
