@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml;
-using NDesk.Options;
+using Gibbed.Helpers;
 using Gibbed.Volition.FileFormats;
+using NDesk.Options;
 
 namespace Gibbed.Volition.ConvertVintDoc
 {
@@ -58,13 +58,14 @@ namespace Gibbed.Volition.ConvertVintDoc
             writer.WriteEndElement(); // children
         }
 
-        private static void WriteDocument(Stream input, Stream output)
+        private static void WriteDocument(VintFile vint, Stream output)
         {
-            VintFile vint = new VintFile();
-            vint.Deserialize(input);
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "\t";
+            settings.OmitXmlDeclaration = true;
 
-            XmlTextWriter writer = new XmlTextWriter(output, Encoding.UTF8);
-            writer.Formatting = Formatting.Indented;
+            XmlWriter writer = XmlWriter.Create(output, settings);
 
             writer.WriteStartDocument();
             writer.WriteStartElement("root");
@@ -112,6 +113,7 @@ namespace Gibbed.Volition.ConvertVintDoc
             writer.WriteEndElement(); // animations
 
             writer.WriteEndElement(); // root
+
             writer.WriteEndDocument();
 
             writer.Flush();
@@ -179,9 +181,21 @@ namespace Gibbed.Volition.ConvertVintDoc
                     Console.WriteLine(Path.GetFullPath(inputPath));
 
                     Stream input = File.OpenRead(inputPath);
+
+                    if (input.ReadValueU32() != 0x3027)
+                    {
+                        input.Close();
+                        continue;
+                    }
+
+                    input.Seek(-4, SeekOrigin.Current);
+
+                    VintFile vint = new VintFile();
+                    vint.Deserialize(input);
+
                     Stream output = File.OpenWrite(outputPath);
 
-                    WriteDocument(input, output);
+                    WriteDocument(vint, output);
 
                     output.Close();
                     input.Close();

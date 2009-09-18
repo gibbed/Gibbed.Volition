@@ -17,7 +17,7 @@ namespace Gibbed.Volition.FileFormats.Vint
             get { return "vector2f"; }
         }
 
-        public override void Read(Stream stream, VintFile vint)
+        public override void Deserialize(Stream stream, VintFile vint)
         {
             this.X = stream.ReadValueF32();
             this.Y = stream.ReadValueF32();

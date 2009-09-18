@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsmFile.cs" />
+    <Compile Include="CRC32.cs" />
     <Compile Include="IPackageFile.cs" />
     <Compile Include="Package.cs" />
     <Compile Include="Packages\PackageCompressionType.cs" />

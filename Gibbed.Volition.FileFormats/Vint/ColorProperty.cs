@@ -18,7 +18,7 @@ namespace Gibbed.Volition.FileFormats.Vint
             get { return "color"; }
         }
 
-        public override void Read(Stream stream, VintFile vint)
+        public override void Deserialize(Stream stream, VintFile vint)
         {
             this.R = stream.ReadValueF32();
             this.G = stream.ReadValueF32();
