@@ -139,7 +139,7 @@ namespace Gibbed.Volition.FileFormats.Packages
 
                 if (index.NameHash != entry.Name.HashVolition())
                 {
-                    Console.WriteLine("hash mismatch: {0} != {1} for {2}", index.NameHash, entry.Name.HashVolition(), entry.Name);
+                    // Console.WriteLine("hash mismatch: {0} != {1} for {2}", index.NameHash, entry.Name.HashVolition(), entry.Name);
                 }
 
                 entry.Offset = index.Offset;
