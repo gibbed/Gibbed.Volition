@@ -13,10 +13,87 @@ namespace Gibbed.Volition.Unpack
             return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
         }
 
+        private enum Game
+        {
+            None,
+            RedFactionGuerrilla,
+            SaintsRow2,
+        }
+
+        private static string LookupRFG(string inputPath)
+        {
+            string basePath = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 20500", "InstallLocation", null);
+            
+            if (basePath == null)
+            {
+                basePath = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games\\{13E51682-ADC7-4E51-9EBA-1C030781E4A2}", "ConfigApplicationPath", null);
+                if (basePath == null)
+                {
+                    return null;
+                }
+            }
+
+            string tryPath;
+
+            tryPath = Path.Combine(basePath, inputPath);
+            if (File.Exists(tryPath) == true)
+            {
+                return tryPath;
+            }
+
+            string[] subPaths = new string[]
+            {
+                "build",
+                "build\\pc",
+                "build\\pc\\cache",
+                "build\\dlc01",
+                "build\\dlc01\\pc",
+                "build\\dlc01\\pc\\cache",
+                "build\\dlc02",
+                "build\\dlc02\\pc",
+                "build\\dlc02\\pc\\cache",
+                "build\\dlc03",
+                "build\\dlc03\\pc",
+                "build\\dlc03\\pc\\cache",
+            };
+
+            foreach (string subPath in subPaths)
+            {
+                tryPath = Path.Combine(Path.Combine(basePath, subPath), inputPath);
+                if (File.Exists(tryPath) == true)
+                {
+                    return tryPath;
+                }
+            }
+
+            return null;
+        }
+
+        private static string LookupSR2(string inputPath)
+        {
+            string basePath = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9480", "InstallLocation", null);
+
+            if (basePath == null)
+            {
+                return null;
+            }
+
+            string tryPath;
+
+            tryPath = Path.Combine(basePath, inputPath);
+            if (File.Exists(tryPath) == true)
+            {
+                return tryPath;
+            }
+
+            return null;
+        }
+
         public static void Main(string[] args)
         {
             bool showHelp = false;
             bool overwriteFiles = false;
+            Game game = Game.None;
 
             OptionSet options = new OptionSet()
             {
@@ -24,6 +101,16 @@ namespace Gibbed.Volition.Unpack
                     "o|overwrite",
                     "overwrite files if they already exist", 
                     v => overwriteFiles = v != null
+                },
+                {
+                    "rfg",
+                    "automatically find RF:G packages",
+                    v => game = v != null ? Game.RedFactionGuerrilla : Game.None
+                },
+                {
+                    "sr2",
+                    "automatically find SR2 packages",
+                    v => game = v != null ? Game.SaintsRow2 : Game.None
                 },
                 {
                     "h|help",
@@ -57,6 +144,26 @@ namespace Gibbed.Volition.Unpack
             }
 
             string inputPath = extra[0];
+
+            if (game != Game.None && File.Exists(inputPath) == false)
+            {
+                string newPath = null;
+
+                if (game == Game.RedFactionGuerrilla)
+                {
+                    newPath = LookupRFG(inputPath);
+                }
+                else if (game == Game.SaintsRow2)
+                {
+                    newPath = LookupSR2(inputPath);
+                }
+
+                if (newPath != null)
+                {
+                    inputPath = newPath;
+                }
+            }
+            
             string outputPath = extra[1];
 
             Stream input = File.OpenRead(inputPath);
