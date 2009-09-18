@@ -170,10 +170,13 @@ namespace Gibbed.Volition.ConvertVintDoc
                 foreach (string inputPath in Directory.GetFiles(Path.GetFullPath(directory), "*.vint_doc"))
                 {
                     string outputPath = Path.ChangeExtension(inputPath, ".vint_xdoc");
-                    if (File.Exists(outputPath))
+                    
+                    if (File.Exists(outputPath) && overwriteFiles == false)
                     {
-                        //continue;
+                        continue;
                     }
+
+                    Console.WriteLine(Path.GetFullPath(inputPath));
 
                     Stream input = File.OpenRead(inputPath);
                     Stream output = File.OpenWrite(outputPath);
