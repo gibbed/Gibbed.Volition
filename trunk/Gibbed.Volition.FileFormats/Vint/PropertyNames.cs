@@ -132,7 +132,7 @@ namespace Gibbed.Volition.FileFormats.Vint
 
             foreach (string item in table)
             {
-                hashes[BitConverter.ToUInt32(new BrokenCRC32().ComputeHash(Encoding.ASCII.GetBytes(item.ToLower())), 0)] = item;
+                hashes[item.CrcVolition()] = item;
             }
 
             return hashes;
