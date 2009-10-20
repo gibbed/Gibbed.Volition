@@ -426,18 +426,10 @@ namespace Gibbed.Volition.FileFormats
         public void Commit(Packages.PackageCompressionType compressionType)
         {
             Stream clean;
-            string tempFileName = null;
+            string tempFileName = Path.GetTempFileName();
 
-            // Packages greater than five mb will be cleaned with a file supported stream
-            if (this.Stream.Length >= (1024 * 1024) * 5)
-            {
-                tempFileName = Path.GetTempFileName();
-                clean = File.Open(tempFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
-            }
-            else
-            {
-                clean = new MemoryStream();
-            }
+            tempFileName = Path.GetTempFileName();
+            clean = File.Open(tempFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
 
             IPackageFile packageFile = null;
 
