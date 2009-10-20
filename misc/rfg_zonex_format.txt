@@ -1,0 +1,1910 @@
+<root>
+
+<struct>edit_obj
+	<str>name
+		<default></default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<obj_handle>game_parent
+		<default>-1</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<int>game_parent_obj_num
+		<default>-1</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<vec>pos
+		<default>0.000000 0.000000 0.000000</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</vec>
+	<mat>orient
+		<default>
+			1.000000 0.000000 0.000000
+			0.000000 1.000000 0.000000
+			0.000000 0.000000 1.000000
+		</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</mat>
+	<bool>persistent
+		<default>false</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>auto_restore
+		<default>false</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<flags>mp_modes
+		<f>deathmatch</f>
+		<f>team_deathmatch</f>
+		<f>capture_the_flag</f>
+		<f>siege</f>
+		<f>king_of_the_hill</f>
+		<f>bagman</f>
+		<f>team_bagman</f>
+		<f>demolition</f>
+		<default>deathmatch team_deathmatch capture_the_flag siege king_of_the_hill bagman team_bagman demolition</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flags>
+	<bool>stick_to_terrain
+		<default>false</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<enum>terrain_morphing
+		<e>None</e>
+		<e>Circle</e>
+		<e>Rect</e>
+		<e>Poly</e>
+		<e>Basement</e>
+		<default>None</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</enum>
+	<flt>terrain_falloff
+		<default>3</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>terrain_radius
+		<default>4.5</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+</struct>
+
+<struct>obj_chunk_ref
+	<old_type>e_ref</old_type>
+	<enum>display_name
+		<e>None</e>
+		<populate>dlc01_buildings.xtbl;table;dlc01_identifier;name</populate>
+		<default>None</default>
+	</enum>
+	<str>chunk
+		<default></default>
+		<READ_ONLY>true</READ_ONLY>
+	</str>
+	<enum>properties
+		<populate>level_objects.xtbl;table;level_object;name</populate>
+		<default>Default</default>
+	</enum>
+	<enum>gameplay_properties
+		<populate>gameplay_properties.xtbl;table;gameplay;name</populate>
+		<default>Default</default>
+	</enum>
+	<flt>game_destroyed_pct
+		<default>-1.0</default>
+		<old_param_name>collapse_pct</old_param_name>
+	</flt>
+	<flags>building_type
+		<default></default>
+		<f>Communications</f>
+		<f>Bridge</f>
+		<f>Force_Field</f>
+		<f>Dynamic</f>
+	</flags>
+	<enum>display_radius
+		<e>None</e>
+		<e>PA</e>
+		<e>Kiosk</e>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</enum>
+	<flt>min_pa_radius
+		<default>80</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<HIDDEN>true</HIDDEN>
+		<READ_ONLY>true</READ_ONLY>
+	</flt>
+	<int>revision
+		<default>0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+	</int>
+	<bool>touch_terrain
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+</struct>
+
+<struct>stitch_piece
+	<BASE_LAYER_ONLY>true</BASE_LAYER_ONLY>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<str>chunk
+		<default></default>
+		<READ_ONLY>true</READ_ONLY>
+	</str>
+	<flags>piece_flags
+		<default></default>
+		<f>casts_shadows</f>
+		<f>skirt_mopp</f>
+	</flags>
+	<bool>unwalkable
+		<default>true</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+</struct>
+
+<struct>decal
+	<description>Decal</description>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<box>bb
+		<default>
+			-0.150000 -0.150000 -0.100000
+			0.150000 0.150000 0.100000
+		</default>
+	</box>
+	<enum>decal_entry
+		<default>Test_decal</default>
+		<populate>decal_info.xtbl;Table;Decal_Info;Name</populate>
+	</enum>
+</struct>
+
+<struct>terrain_decal
+	<description>Terrain Decal</description>
+	<BASE_LAYER_ONLY>true</BASE_LAYER_ONLY>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<box>bb
+		<default>
+			-2.0000 -0.5000 -2.0000
+			2.0000 0.5000  2.0000
+		</default>
+	</box>
+	<bool>use_diffuse
+		<default>true</default>
+		<READ_ONLY>true</READ_ONLY>
+	</bool>
+	<str>diffuse
+		<default>vfx_civwalk_01.tga</default>
+		<READ_ONLY>true</READ_ONLY>
+	</str>
+	<str>normal
+		<default>vfx_civwalk_n_01.tga</default>
+		<READ_ONLY>true</READ_ONLY>
+	</str>
+	<str>specular
+		<default></default>
+		<READ_ONLY>true</READ_ONLY>
+	</str>
+	<int>spec_power
+		<default>50</default>
+	</int>
+	<int>spec_alpha
+		<default>0</default>
+	</int>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<str>scale_restriction
+		<default>xz</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+</struct>
+
+<struct>obj_zone
+	<old_type>e_zone</old_type>
+	<enum>district
+		<e>Default</e>
+		<populate>dlc01_territories.xtbl;Table;Territory;Districts;District;Name</populate>
+		<READ_ONLY>true</READ_ONLY>
+	</enum>
+	<enum>spawn_resource_data
+		<e>Default</e>
+		<populate>spawn_resource.xtbl;Table;spawn_resource_entry;Name</populate>
+	</enum>
+	<enum>ambient_spawn
+		<e>None</e>
+		<populate>ambient_spawn_info.xtbl;Table;ambient_spawn_info;Name</populate>
+	</enum>
+	<flags>zone_flags
+		<f>border_zone</f>
+		<default></default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flags>
+	<str>terrain_file_name
+		<READ_ONLY>true</READ_ONLY>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<flt>wind_min_speed
+		<default>50.0</default>
+	</flt>
+	<flt>wind_max_speed
+		<default>80.0></default>
+	</flt>
+</struct>
+
+<struct>layer
+</struct>
+
+<struct>navpoint
+	<description>Navpoint</description>
+	<enum>navpoint_type
+		<e>GROUND</e>
+		<e>PATROL</e>
+		<e>PEDESTRIAN</e>
+		<e>FLOATING</e>
+		<e>SUPPLY DROPOFF</e>
+		<e>ROAD</e>
+		<e>ROAD JUMP</e>
+		<e>ROAD JUMP DEST</e>
+		<e>ROAD JUMP START</e>
+		<e>ROAD CHECKPOINT</e>
+		<e>PATH</e>
+		<e>TRANSITION</e>
+		<e>LADDER TRANSITION</e>
+		<e>LADDER</e>
+		<e>STAIRS</e>
+		<e>TRANSITION JUMP</e>
+		<e>TRANSITION LEAP OVER</e>
+		<e>ROAD BRIDGE</e>
+		<e>PATH DOOR</e>
+		<e>TRANSITION DOOR</e>
+		<default>PATH</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</enum>
+	<bool>dont_follow_road
+		<default>false</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</bool>
+	<bool>ignore_lanes
+		<default>false</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</bool>
+	<flt>outer_radius
+		<default>0.5</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</flt>
+	<flt>speed_limit
+		<default>10.0</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</flt>
+	<enum>branch_type
+		<e>NONE</e>
+		<e>START BRANCH</e>
+		<e>START BRANCH BRIDGE</e>
+		<e>END BRANCH</e>
+		<default>NONE</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</enum>
+	<struct,10>links
+		<obj_handle>ref
+			<default>-1</default>
+			<READ_ONLY>true</READ_ONLY>
+		</obj_handle>
+		<old_param_name>navlinks</old_param_name>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</struct,10>
+</struct>
+
+<struct>constraint_point
+	<description>Constraint - Point</description>
+	<obj_handle>child_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<obj_handle>host_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<int>child_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<int>host_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<flt>outer_radius
+		<default>0.25</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<enum>point_constraint_type
+		<e>Standard</e>
+		<e>Limited</e>
+		<e>Stiff_Spring</e>
+		<default>Standard</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</enum>
+	<flt>spring_length
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>min_x
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>max_x
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>min_y
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>max_y
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>min_z
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>max_z
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>threshhold
+		<default>-1.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+</struct>
+
+<struct>constraint_hinge
+	<description>Constraint - Hinge</description>
+	<old_type>constraint_hindge</old_type>
+	<obj_handle>child_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<obj_handle>host_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<int>child_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<int>host_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<flt>outer_radius
+		<default>0.25</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<bool>limited
+		<default>false</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<flt>max_ang
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>min_ang
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>friction
+		<default>10.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>threshhold
+		<default>-1.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+</struct>
+
+<struct>constraint_prism
+	<description>Constraint - Prism</description>
+	<obj_handle>child_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<obj_handle>host_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<int>child_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<int>host_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<flt>outer_radius
+		<default>0.25</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<bool>limited
+		<default>false</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<flt>max
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>min
+		<default>0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>friction
+		<default>10.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>threshhold
+		<default>-1.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+</struct>
+
+<struct>constraint_motor
+	<description>Constraint - Motor</description>
+	<obj_handle>child_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<obj_handle>host_handle
+		<default>-1</default>
+		<READ_ONLY>true</READ_ONLY>
+	</obj_handle>
+	<int>child_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<int>host_index
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<flt>outer_radius
+		<default>0.25</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>angular_speed
+		<default>25.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>gain
+		<default>1000.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>threshhold
+		<default>-1.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+</struct>
+
+<struct>object_guard_node
+	<description>Guard Node</description>
+	<rendermesh>rendermesh
+		<default>cloe_model_guard_node.csmesh_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<bool>no_defensive_combat
+		<default>false</default>
+	</bool>
+	<flt>angle_left
+		<default>45</default>
+	</flt>
+	<flt>angle_right
+		<default>45</default>
+	</flt>
+	<int>group_id
+		<default>0</default>
+	</int>
+</struct>
+
+<struct>object_action_node
+	<description>Action Node</description>
+	<enum>animation_type
+		<populate>action_node_types.xtbl;table;Ambient_Behaviors;name</populate>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.5 1.0 0.5</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+	<flt>outer_radius
+		<default>1.0000</default>
+	</flt>
+	<bool>high_priority
+		<default>false</default>
+	</bool>
+	<bool>infinite_duration
+		<default>false</default>
+	</bool>
+	<bool>run_to
+		<default>false</default>
+	</bool>
+	<struct,8>links
+		<obj_handle>ref
+			<default>-1</default>
+			<READ_ONLY>true</READ_ONLY>
+		</obj_handle>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</struct,8>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+</struct>
+
+<struct>object_dummy
+	<description>Dummy Object</description>
+	<enum>dummy_type
+		<e>None</e>
+		<e>Demolition</e>
+		<e>Smoke Plume</e>
+		<e>Reinforced_Fence</e>
+		<e>Barricade</e>
+		<e>Rally</e>
+		<e>Air Bomb</e>
+		<e>Cutscene</e>
+		<e>Demo Master</e>
+		<e>VRail Spawn</e>
+		<e>Tech Reponse Pos</e>
+		<default>None</default>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+</struct>
+
+<struct>object_raid_node
+	<description>Raid Node</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<enum>raid_type
+		<populate>raid_data.xtbl;table;RaidData;Name</populate>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>1.0 0.0 0.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_house_arrest_node
+	<description>House Arrest Node</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<enum>house_arrest_type
+		<populate>activity_house_arrest.xtbl;table;house_arrest;Name</populate>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.0 0.0 1.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+	<bool>disabled
+		<default>false</default>
+	</bool>
+</struct>
+
+<struct>object_demolitions_master_node
+	<description>Demolitions Master Node</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<enum>demolitions_master_type
+		<populate>activity_demolitions_master.xtbl;table;demolitions_master;Name</populate>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.0 1.0 0.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_riding_shotgun_node
+	<description>Riding Shotgun Node</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<enum>riding_shotgun_type
+		<populate>activity_riding_shotgun.xtbl;table;Activity_riding_shotgun;Name</populate>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.0 0.5 0.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_area_defense_node
+	<description>Area Defense Node</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<enum>area_defense_type
+		<populate>activity_area_defense.xtbl;table;Activity_area_defense;Name</populate>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.0 0.5 0.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_npc_spawn_node
+	<description>NPC Spawn Node</description>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<rendermesh>rendermesh
+		<default>cloe_model_npc_spawn_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<flt>spawn_prob
+		<default>1</default>
+	</flt>
+	<flt>night_spawn_prob
+		<default>1</default>
+	</flt>
+	<enum>spawn_set
+		<populate>spawn_group_human.xtbl;table;spawn_group_human;Name</populate>
+	</enum>
+	<bool>special_npc
+		<default>false</default>
+	</bool>
+	<bool>dead_body
+		<default>false</default>
+	</bool>
+</struct>
+
+<struct>object_squad_spawn_node
+	<old_type>object_squad</old_type>
+	<description>Squad Spawn Object</description>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<rendermesh>rendermesh
+		<default>cloe_model_squad_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<enum>squad_def
+		<populate>squads.xtbl;table;Squads;Name</populate>
+	</enum>
+	<enum>respawn_speed
+		<e>None</e>
+		<e>Slow</e>
+		<e>Medium</e>
+		<e>Fast</e>
+		<default>None</default>
+	</enum>
+	<enum>default_orders
+		<e>Default</e>
+		<e>Defend</e>
+		<e>Attack</e>
+		<e>Fodder</e>
+		<e>Wait</e>
+		<e>Roadblock</e>
+		<e>Terrorize</e>
+		<e>Trapped</e>
+		<e>Trapped Jail</e>
+		<e>Tied Up</e>
+		<default>Default</default>
+	</enum>
+	<bool>no_reassignment
+		<default>false</default>
+	</bool>
+	<bool>squad_vehicle
+		<default>false</default>
+	</bool>
+	<enum>vehicle_type
+		<populate>spawn_group_vehicle.xtbl;table;spawn_group_vehicle;Name</populate>
+	</enum>
+	<flt>spawn_prob
+		<default>1</default>
+	</flt>
+	<flt>night_spawn_prob
+		<default>1</default>
+	</flt>
+	<bool>safehouse_vip
+		<default>false</default>
+	</bool>
+	<bool>special_npc
+		<default>false</default>
+	</bool>
+	<bool>special_vehicle
+		<default>false</default>
+	</bool>
+	<bool>raid_spawn
+		<default>false</default>
+	</bool>	
+	<bool>hands_off_raid_squad
+		<default>false</default>
+	</bool>
+	<bool>miner_persona
+		<default>false</default>
+	</bool>
+	<bool>radio_operator
+		<default>false</default>
+	</bool>
+</struct>
+
+<struct>object_activity_spawn
+	<description>Activity Spawn Node</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<enum>activity_type
+		<populate>activity.xtbl;table;base_activity;Name</populate>
+		<default>None</default>
+	</enum>
+</struct>
+
+
+<struct>object_vehicle_spawn_node
+	<description>Vehicle Spawn Node</description>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<rendermesh>rendermesh
+		<default>cloe_vehicle.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<flt>spawn_prob
+		<default>1</default>
+	</flt>
+	<flt>night_spawn_prob
+		<default>1</default>
+	</flt>
+	<enum>spawn_set
+		<populate>spawn_group_vehicle.xtbl;table;spawn_group_vehicle;Name</populate>
+	</enum>
+	<bool>special_vehicle
+		<default>false</default>
+	</bool>
+	<bool>disable_ambient_parking
+		<default>false</default>
+	</bool>
+	<bool>player_vehicle_respawn
+		<default>false</default>
+	</bool>
+</struct>
+
+<struct>object_turret_spawn_node
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<old_type>turret</old_type>
+	<description>Turret Spawn Node</description>
+	<flt>spawn_prob
+		<default>1</default>
+	</flt>
+	<flt>night_spawn_prob
+		<default>1</default>
+	</flt>
+	<rendermesh>rendermesh_weapon
+		<default>edfrt_weapon.cmeshx;mesh;</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<rendermesh>rendermesh
+		<default>EDF_Base.cmeshx;mesh;</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>gun_pos
+		<default>0.0 0.0 0.0</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<HIDDEN>true</HIDDEN>
+	</vec>
+	<mat>gun_orient
+		<default>
+			1.000000 0.000000 0.000000
+			0.000000 1.000000 0.000000
+			0.000000 0.000000 1.000000
+		</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<HIDDEN>true</HIDDEN>
+	</mat>
+	<enum>turret_type
+		<populate>turrets.xtbl;table;turret;name</populate> 
+		<default>turret_machinegun</default>     
+	</enum>
+	<flt>rotation_limit
+		<default>0.0</default>
+	</flt>
+</struct>
+
+<struct>object_roadblock_node
+	<description>Roadblock Node</description>
+	<enum>roadblock_type
+		<populate>roadblock_types.xtbl;table;roadblock_data;Name</populate>
+	</enum>
+	<bool>use_object_orient
+		<default>false</default>
+	</bool>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.3 0.3 0.3</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_convoy_end_point
+	<description>Convoy End Point</description>
+	<enum>convoy_type
+		<populate>convoys.xtbl;table;Convoy;Name</populate>
+	</enum>
+	<enum>home_district
+		<populate>territories.xtbl;table;Territory;Districts;District;Name</populate>
+		<default>Parker</default>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.75 0.0 0.75</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_courier_end_point
+	<description>Courier End Point</description>
+	<enum>courier_type
+		<populate>activity_courier_chase.xtbl;table;courier_chase;Name</populate>
+	</enum>
+	<bool>end_game_only
+		<default>false</default>
+	</bool>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.75 0.0 0.75</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_patrol
+	<description>Patrol Object</description>
+	<rendermesh>rendermesh
+		<default>cloe_model_patrol_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<obj_handle>patrol_start
+		<default>-1</default>
+	</obj_handle>
+	<bool>looping_patrol
+		<default>true</default>
+	</bool>
+	<bool>courier_patrol
+		<default>false</default>
+	</bool>
+	<bool>ASD_truck_partol
+		<default>false</default>
+	</bool>
+	<bool>override_patrol
+		<default>false</default>
+	</bool>
+	<bool>marauder_raid
+		<default>false</default>
+	</bool>
+	<bool>combat_ready
+		<default>false</default>
+	</bool>
+	<bool>no_check_in
+		<default>false</default>
+	</bool>
+</struct>
+
+<struct>object_delivery_node
+	<description>Delivery Node</description>
+	<enum>delivery_type
+		<populate>activity_timed_delivery.xtbl;table;timed_delivery;Name</populate>
+	</enum>
+	<int>pair_number
+		<default>0</default>
+	</int>
+	<bool>start_node</bool>	
+</struct>
+
+<struct>object_bftp_node
+	<description>Blast from the Past</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<bool>tag_node</bool>
+	<int>pair_number
+		<default>0</default>
+	</int>
+</struct>
+
+<struct>item
+	<description>Item</description>
+	<rendermesh>rendermesh
+		<default>power_item.cmesh_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</rendermesh>
+	<enum>item_type
+		<populate>items_3d.xtbl;table;item;name</populate>
+		<default>power_item</default>
+	</enum>
+	<bool>respawn
+		<default>false</default>
+	</bool>
+</struct>
+
+<struct>weapon
+	<description>Weapon</description>
+	<rendermesh>rendermesh
+		<default>assault_rifle.cmesh_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</rendermesh>
+	<enum>weapon_type
+		<populate>weapons.xtbl;table;Weapon;Name</populate>
+		<default>m16</default>
+		<old_param_name>item_type</old_param_name>
+	</enum>
+	<bool>respawns
+		<default>false</default>
+	</bool>
+	<bool>preplaced
+		<default>true</default>
+	</bool>
+</struct>
+
+<struct>cover_node
+	<description>Cover node</description>
+	<flt>angle_left
+		<default>45.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>angle_right
+		<default>45.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</flt>
+	<flt>def_angle_left
+		<default>45.0</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</flt>
+	<flt>def_angle_right
+		<default>45.0</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</flt>
+	<flt>off_angle_left
+		<default>45.0</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</flt>
+	<flt>off_angle_right
+		<default>45.0</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</flt>
+	<enum>stance
+		<e>standing</e>
+		<e>crouching</e>
+		<e>both</e>
+		<default>both</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</enum>
+	<flags>firing_flags
+		<f>far_left</f>
+		<f>near_left</f>
+		<f>near_right</f>
+		<f>far_right</f>
+		<f>kneeling</f>
+		<f>standing</f>
+		<default>near_left</default>
+		<COMBINED_EXPORT>true</COMBINED_EXPORT>
+	</flags>
+</struct>
+
+<struct>obj_light
+	<description>Light</description>
+	<str>parent_name</str>
+	<str>clip_mesh
+		<default>NONE</default>
+		<READ_ONLY>true</READ_ONLY>
+	</str>
+	<bool>show_attenuation_spheres
+		<default>false</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>show_clip_box
+		<default>false</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<flags>light_flags
+		<f>nighttime</f>
+		<f>daytime</f>
+		<f>use_clipping</f>
+		<default>nighttime daytime</default>
+	</flags>
+	<enum>type_enum
+		<e>omni</e>
+		<e>spot</e>
+		<default>omni</default>
+	</enum>
+	<box>bb
+		<default>
+			-0.500000 -0.500000 -0.500000
+			0.500000 0.500000 0.500000
+		</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+	</box>
+	<vec>clr_orig
+		<default>1.0 1.0 1.0</default>
+	</vec>
+	<flt>hotspot_size
+		<default>10</default>
+	</flt>
+	<flt>hotspot_falloff_size
+		<default>3</default>
+	</flt>
+	<flt>aspect</flt>
+	<flt>atten_start
+		<default>10.0</default>
+	</flt>
+	<flt>atten_range
+		<default>10.0</default>
+	</flt>
+	<vec>min_clip
+		<default>
+			-20.0 -20.0 -20.0
+		</default>
+	</vec>
+	<vec>max_clip
+		<default>
+			20.0 20.0 20.0
+		</default>
+	</vec>
+</struct>
+
+<struct>player_start
+	<description>Player start</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<bool>indoor
+		<default>false</default>
+	</bool>
+	<bool>initial_spawn
+		<default>false</default>
+	</bool>
+	<bool>respawn
+		<default>false</default>
+	</bool>
+	<enum>mission_info
+		<e>none</e>
+		<populate>missions.xtbl;table;mission;Name</populate>
+		<default>none</default>
+	</enum>
+	<bool>checkpoint_respawn
+		<default>false</default>
+	</bool>	
+	<bool>activity_respawn
+		<default>false</default>
+	</bool>
+	<enum>mp_team
+		<e>EDF</e>
+		<e>Guerilla</e>
+		<e>Neutral</e>
+		<default>Neutral</default>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_player_start.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+</struct>
+
+<struct>obj_occluder
+	<description>Occluder</description>
+	<enum>oc_shape
+		<e>box</e>
+		<e>wedge</e>
+		<default>box</default>
+	</enum>
+	<box>bb
+		<default>
+			-10.000000 0.000000 -10.000000
+			10.000000 20.000000 10.000000
+		</default>
+	</box>
+	<int>flags</int>
+</struct>
+
+<struct>object_effect
+	<description>Effect</description>
+	<enum>effect_type
+		<e>none</e>
+		<populate>effects.xtbl;table;effect;name</populate>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</enum>
+	<enum>visual
+		<e>none</e>
+		<populate>vfx.xtbl;Table;Effect;Name</populate>
+	</enum>
+	<bool>looping
+		<default>true</default>
+	</bool>
+	<enum>sound
+		<e>none</e>
+		<populate>foley.xtbl;Table;Foley;Name</populate>
+	</enum>
+	<enum>sound_alr
+		<e>none</e>
+		<populate>foley_alr.xtbl;Table;Attack_Loop_Release;Name</populate>
+	</enum>
+	<flt>inner_radius
+		<READ_ONLY>READ_ONLY</READ_ONLY>
+		<CLOE_ONLY>CLOE_ONLY</CLOE_ONLY>
+	</flt>
+	<flt>outer_radius
+		<READ_ONLY>READ_ONLY</READ_ONLY>
+		<CLOE_ONLY>CLOE_ONLY</CLOE_ONLY>
+	</flt>
+</struct>
+
+<struct>trigger_region
+	<description>Trigger Region</description>
+	<box>bb
+		<default>
+			-10.000000 -2.500000 -10.000000
+			10.000000 10.000000 10.000000
+		</default>
+	</box>
+	<flt>outer_radius
+		<default>10</default>
+	</flt>
+	<enum>trigger_shape
+		<e>box</e>
+		<e>sphere</e>
+		<default>box</default>
+	</enum>
+	<bool>enabled
+		<default>true</default>
+	</bool>
+	<enum>region_type
+		<e>default</e>
+		<e>kill human</e>
+	</enum>
+	<enum>region_kill_type
+		<e>cliff</e>
+		<e>mine</e>
+	</enum>	
+	<flags>trigger_flags
+		<f>not_in_mission</f>
+		<f>not_in_activity</f>
+		<default></default>
+	</flags>
+</struct>
+
+<struct>marauder_ambush_region
+	<description>Marauder Ambush Region</description>
+	<box>bb
+		<default>
+			-10.000000 -2.500000 -10.000000
+			10.000000 10.000000 10.000000
+		</default>
+	</box>
+	<bool>enabled
+		<default>true</default>
+	</bool>
+	<flt>day_trigger_prob
+		<default>0.1</default>
+	</flt>
+	<flt>night_trigger_prob
+		<default>0.5</default>
+	</flt>
+	<int>min_ambush_squads
+		<default>1</default>
+	</int>
+	<int>max_ambush_squads
+		<default>5</default>
+	</int>
+</struct>
+
+<struct>object_bounding_box
+	<description>Bounding Box</description>
+	<box>bb
+		<default>
+			-10.000000 0.000000 -10.000000
+			10.000000 10.000000 10.000000
+		</default>
+	</box>
+	<enum>bounding_box_type
+		<e>None</e>
+		<e>GPS Target</e>
+		<default>None</default>
+	</enum>
+</struct>
+
+<struct>object_spawn_region
+	<description>Spawn Region</description>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<str>scale_restriction
+		<default>xz</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<bool>npc_only
+		<default>false</default>
+	</bool>
+	<bool>vehicle_only
+		<default>false</default>
+	</bool>
+	<enum>team
+		<e>EDF</e>
+		<e>Guerilla</e>
+		<e>Neutral</e>
+		<e>Marauder</e>
+		<default>Neutral</default>
+	</enum>
+	<box>bb
+		<default>
+			-10.000000 -10.000000 -10.000000
+			10.000000 10.000000 10.000000
+		</default>
+	</box>
+</struct>
+
+<struct>object_ambient_behavior_region
+	<description>Ambient Behavior Region</description>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<flt>outer_radius
+		<default>10.0000</default>
+	</flt>
+	<enum>behavior
+		<populate>ambient_spawn_behavior.xtbl;table;Behaviors;Name</populate>
+		<default>none</default>
+	</enum>
+</struct>
+
+<struct>multi_object_marker
+	<description>MP Marker</description>
+	<str>rotation_restriction
+		<default></default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<box>bb
+		<default>
+			-5.00000 0.00000 -5.00000
+			5.00000 5.00000 5.00000
+		</default>
+	</box>
+	<enum>mp_team
+		<e>EDF</e>
+		<e>Guerilla</e>
+		<e>Neutral</e>
+		<default>Neutral</default>
+	</enum>
+	<enum>marker_type
+		<e>Siege target</e>
+		<e>Spawn node</e>
+		<e>Backpack rack</e>
+		<e>Flag capture zone</e>
+		<e>King of the Hill target</e>
+		<e>Spectator camera</e>
+		<default>Siege target</default>
+	</enum>
+	<int>priority
+		<default>-1</default>
+	</int>
+	<enum>backpack_type
+		<e>Commando</e>
+		<e>Fleetfoot</e>
+		<e>Heal</e>
+		<e>Jetpack</e>
+		<e>Kaboom</e>
+		<e>Rhino</e>
+		<e>Shockwave</e>		
+		<e>Stealth</e>
+		<e>Thrust</e>
+		<e>Tremor</e>
+		<e>Vision</e>
+		<default>Jetpack</default>
+	</enum>
+	<int>num_backpacks
+		<default>3</default>
+	</int>
+	<bool>random_backpacks
+		<default>true</default>
+	</bool>
+	<int>group
+		<default>0</default>
+	</int>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>1.0 1.0 0.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_restricted_area
+	<description>Restricted Area</description>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<str>scale_restriction
+		<default>xz</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<bool>disabled
+		<default>false</default>
+	</bool>
+	<bool>allow_ambient_peds
+		<default>false</default>
+	</bool>
+	<enum>area_type
+		<e>yellow</e>
+		<e>warning</e>
+		<default>yellow</default>
+	</enum>
+</struct>
+
+<struct>shape_cutter
+	<description>Shape Cutter</description>
+	<flt>outer_radius
+		<default>1.0</default>
+	</flt>
+</struct>
+
+<struct>ladder
+	<description>Ladder</description>
+	<int>ladder_rungs
+		<default>10</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<str>scale_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<str>rotation_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<box>bb
+		<default>
+			-0.25 0.0 -0.25
+			0.25 2.5 0.25
+		</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</box>
+</struct>
+
+<struct>magnet
+	<description>Magnet</description>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<flt>outer_radius
+		<default>0.025</default>
+		<HIDDEN>true</HIDDEN>
+	</flt>
+</struct>
+
+<struct>navmesh_cutout
+	<description>Navmesh Cut-Out</description>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<bool>light
+		<default>false</default>
+	</bool>
+	<bool>remove_cells
+		<default>false</default>
+	</bool>
+	<enum>pf_type
+		<e>Both</e>
+		<e>Pedestrian</e>
+		<e>Vehicle</e>
+		<default>Both</default>
+	</enum>
+	<box>bb
+		<default>
+			0.0 0.0 0.0
+			0.0 2.0 0.0
+		</default>
+		<HIDDEN>true</HIDDEN>
+	</box>
+	<str>scale_restriction
+		<default>y</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+</struct>
+
+<struct>object_path_road
+</struct>
+
+<struct>object_road_path
+	<description>Road</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<obj_handle>next
+		<default>-1</default>
+	</obj_handle>
+	<obj_handle>prev
+		<default>-1</default>
+	</obj_handle>
+	<flt>outer_radius
+		<default>5.0</default>
+	</flt>
+	<int>speed_limit
+		<default>60</default>
+	</int>
+	<bool>ambient
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>edf_only
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>marauder
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>guerrilla
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>one_way
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>other_way
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>special
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>reinforcements
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+	<bool>GPS
+		<default>false</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</bool>
+</struct>
+
+<struct>invisible_wall
+	<description>Invisible Wall</description>
+	<BASE_LAYER_ONLY>true</BASE_LAYER_ONLY>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<obj_handle>next
+		<default>-1</default>
+	</obj_handle>
+	<obj_handle>prev
+		<default>-1</default>
+	</obj_handle>
+	<enum>extrude_dir
+		<e>Left</e>
+		<e>Right</e>
+		<default>Left</default>
+	</enum>
+	<bool>extend_downward
+		<default>true</default>
+	</bool>
+	<bool>play_effect
+		<default>false</default>
+	</bool>
+	<flt>marker_distance
+		<default>5.0</default>
+	</flt>
+	<flt>marker_density
+		<default>100.0</default>
+	</flt>
+	<str>marker_model
+		<default>world_boundary_marker.rfgdoptx</default>
+		<HIDDEN>true</HIDDEN>
+		<NO_LOAD>true</NO_LOAD>
+	</str>
+</struct>
+
+<struct>collision_box
+	<description>Invisible Collision</description>
+	<BASE_LAYER_ONLY>true</BASE_LAYER_ONLY>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<box>bb
+		<default>
+			-10.000000 -10.000000 -10.000000
+			10.000000 10.000000 10.000000
+		</default>
+	</box>
+	<enum>material
+		<populate>rfg_effect_materials.xtbl;table;material;Name</populate>
+		<default>Terrain</default>
+	</enum>
+</struct>
+
+<struct>note
+	<description>Note</description>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<str>note_text
+		<default></default>
+	</str>
+	<box>bb
+		<default>
+			-0.25 0.0 -0.25
+			0.25 10.0 0.25
+		</default>
+		<HIDDEN>true</HIDDEN>
+	</box>
+	<str>scale_restriction
+		<default></default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+
+</struct>
+
+
+<struct>multi_object_flag
+	<description>MP Flag</description>
+	<rendermesh>rendermesh
+		<default>cloe_model_missing.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<enum>mp_team
+		<e>EDF</e>
+		<e>Guerilla</e>
+		<default>EDF</default>
+	</enum>
+</struct>
+
+<struct>object_mission_start_node
+	<description>Mission Start Node</description>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<enum>mission_info
+		<populate>missions.xtbl;table;mission;Name</populate>
+	</enum>
+	<bool>enabled
+		<default>true</default>
+	</bool>
+	<bool>autostart
+		<default>false</default>
+	</bool>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.5 0.5 0.0</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>object_safehouse
+	<old_type>safehouse</old_type>
+	<bool>persistent
+		<default>true</default>
+		<OVERRIDE>true</OVERRIDE>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<READ_ONLY>true</READ_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</bool>
+	<description>Safehouse Object</description>
+	<bool>enabled
+		<default>true</default>
+	</bool>
+	<bool>visible
+		<default>true</default>
+	</bool>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.8 0.8 0.8</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+	<str>display_name_tag
+		<default></default>
+	</str>
+</struct>
+
+<struct>object_foliage
+	<description>Single Foliage</description>
+	<BASE_LAYER_ONLY>true</BASE_LAYER_ONLY>
+	<flt>scale
+		<default>1.0</default>
+	</flt>
+	<flt>color_lerp
+		<default>0.0</default>
+	</flt>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+</struct>
+
+<struct>force_field_door
+	<description>Force Field Door</description>
+	<box>bb
+		<default>
+			-0.25 0.0 -0.01
+			0.25 0.50 0.01
+		</default>
+		<HIDDEN>true</HIDDEN>
+	</box>
+	<str>scale_restriction
+		<default>xy</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<str>CLOE_ONLY
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+	</str>
+	<str>SCALE_Y_BOTTOM
+		<default>SCALE_Y_BOTTOM</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+</struct>
+
+<struct>object_upgrade_node
+	<description>Upgrade Interface Node</description>
+	<enum>upgrade_type
+		<e>Weapons</e>
+		<e>Vehicles</e>
+	</enum>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.1 0.1 0.5</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<struct>effect_streaming_node
+	<description>Effect Streaming Node</description>
+	<enum>streamed_effect
+		<populate>effects.xtbl;table;effect;Name</populate>
+	</enum>
+	<bool>no_stub
+		<default>true</default>
+		<HIDDEN>true</HIDDEN>
+		<READ_ONLY>true</READ_ONLY>
+	</bool>
+	<rendermesh>rendermesh
+		<default>cloe_model_object.cchk_pc</default>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</rendermesh>
+	<vec>tint
+		<default>0.7 0.7 0.5</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+		<NO_LOAD>true</NO_LOAD>
+	</vec>
+</struct>
+
+<!-- <struct>sound_spline
+	<description>Sound Emitting Spline</description>
+	<enum>effect_type
+		<populate>effects.xtbl;table;effect;name</populate>
+		<default>CarDamage-Fire</default>
+	</enum>
+	<int>selected
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<int>hilighted
+		<default>-1</default>
+		<HIDDEN>true</HIDDEN>
+	</int>
+	<str>scale_restriction
+		<default>x</default>
+		<HIDDEN>true</HIDDEN>
+		<CLOE_ONLY>true</CLOE_ONLY>
+	</str>
+	<flt,10>inner_widths</flt,10>
+	<flt,10>outer_widths</flt,10>
+	<vec,10>points</vec,10>
+</struct> -->
+
+</root>
+
+
+
+
+
+
