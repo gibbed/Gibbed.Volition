@@ -26,7 +26,7 @@ using Gibbed.Helpers;
 namespace Gibbed.Volition.FileFormats.Packages.Structures
 {
     [StructLayout(LayoutKind.Explicit, Size = 384)]
-    internal struct PackageHeader4
+    internal struct PackageHeader6
     {
         [FieldOffset(0)]
         public uint Magic;
@@ -50,17 +50,17 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
         public int NamesSize;
 
         [FieldOffset(0x164)]
-        public int ExtensionsSize;
-
-        [FieldOffset(0x168)]
         public int UncompressedDataSize;
 
-        [FieldOffset(0x16C)]
+        [FieldOffset(0x168)]
         public int CompressedDataSize;
 
-        public PackageHeader4 Swap()
+        [FieldOffset(0x16C)]
+        public int Unknown16C;
+
+        public PackageHeader6 Swap()
         {
-            var swapped = new PackageHeader4();
+            var swapped = new PackageHeader6();
             swapped.Magic = this.Magic.Swap();
             swapped.Version = this.Version.Swap();
             swapped.Flags = (PackageFlags)(((uint)(this.Flags)).Swap());
@@ -68,9 +68,9 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
             swapped.PackageSize = this.PackageSize.Swap();
             swapped.IndexSize = this.IndexSize.Swap();
             swapped.NamesSize = this.NamesSize.Swap();
-            swapped.ExtensionsSize = this.ExtensionsSize.Swap();
             swapped.UncompressedDataSize = this.UncompressedDataSize.Swap();
             swapped.CompressedDataSize = this.CompressedDataSize.Swap();
+            swapped.Unknown16C = this.Unknown16C.Swap();
             return swapped;
         }
     }

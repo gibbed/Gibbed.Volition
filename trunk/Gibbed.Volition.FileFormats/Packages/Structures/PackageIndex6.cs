@@ -25,27 +25,25 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Volition.FileFormats.Packages.Structures
 {
-    [StructLayout(LayoutKind.Sequential, Size = 28)]
-    internal struct PackageIndex4
+    [StructLayout(LayoutKind.Sequential, Size = 24)]
+    internal struct PackageIndex6
     {
         public int NameOffset;
-        public int ExtensionOffset;
-        public uint Unknown08;
+        public uint Unknown04;
         public int Offset;
         public int UncompressedSize;
         public int CompressedSize;
-        public uint Unknown1C;
+        public uint Unknown18;
 
-        public PackageIndex4 Swap()
+        public PackageIndex6 Swap()
         {
-            var swapped = new PackageIndex4();
+            var swapped = new PackageIndex6();
             swapped.NameOffset = this.NameOffset.Swap();
-            swapped.ExtensionOffset = this.ExtensionOffset.Swap();
-            swapped.Unknown08 = this.Unknown08.Swap();
+            swapped.Unknown04 = this.Unknown04.Swap();
             swapped.Offset = this.Offset.Swap();
             swapped.UncompressedSize = this.UncompressedSize.Swap();
             swapped.CompressedSize = this.CompressedSize.Swap();
-            swapped.Unknown1C = this.Unknown1C.Swap();
+            swapped.Unknown18 = this.Unknown18.Swap();
             return swapped;
         }
     }
