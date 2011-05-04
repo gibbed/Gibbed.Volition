@@ -1,6 +1,29 @@
-﻿using System;
+﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ * 
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Gibbed.Helpers;
 
 // VPP version 3
@@ -51,7 +74,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 throw new InvalidOperationException();
             }
 
-            foreach (PackageEntry entry in this.Entries)
+            foreach (var entry in this.Entries)
             {
                 if (entry.CompressionType == PackageCompressionType.None)
                 {
@@ -74,7 +97,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 throw new FormatException("failed to read header version 3");
             }
 
-            Structures.PackageHeader3 header = buffer.ToStructure<Structures.PackageHeader3>();
+            var header = buffer.ToStructure<Structures.PackageHeader3>();
 
             if (littleEndian == false)
             {
@@ -90,9 +113,8 @@ namespace Gibbed.Volition.FileFormats.Packages
             }
 
             // Names
-            byte[] namesBuffer;
-            namesBuffer = new byte[header.NamesSize];
-            if (input.ReadAligned(namesBuffer, 0, header.NamesSize, 2048) != header.NamesSize)
+            var namesData = input.ReadToMemoryStream(header.NamesSize.Align(2048));
+            if (namesData.Length != header.NamesSize.Align(2048))
             {
                 throw new FormatException("failed to read name index");
             }
@@ -114,11 +136,12 @@ namespace Gibbed.Volition.FileFormats.Packages
             this.Entries.Clear();
             for (int i = 0; i < header.IndexCount; i++)
             {
-                PackageEntry entry = new PackageEntry();
+                var entry = new PackageEntry();
 
                 int offset = i * 28; // Each index entry is 28 bytes long
 
-                Structures.PackageIndex3 index = indexBuffer.ToStructure<Structures.PackageIndex3>(offset);
+                var index = indexBuffer
+                    .ToStructure<Structures.PackageIndex3>(offset);
 
                 if (littleEndian == false)
                 {
@@ -135,7 +158,8 @@ namespace Gibbed.Volition.FileFormats.Packages
                     throw new FormatException("index entry with a compressed size when not compressed");
                 }
 
-                entry.Name = namesBuffer.ToStringASCIIZ(index.NameOffset);
+                namesData.Seek(index.NameOffset, SeekOrigin.Begin);
+                entry.Name = namesData.ReadStringZ(Encoding.ASCII);
 
                 /*
                 Console.WriteLine("{0:X8} {1:X8} {2:X8} {3:X8} {4:X8} {5:X8} {6:X8}  {7}",
@@ -185,12 +209,12 @@ namespace Gibbed.Volition.FileFormats.Packages
 
         public void Serialize(Stream output, bool littleEndian, PackageCompressionType compressionType)
         {
-            MemoryStream namesBuffer = new MemoryStream();
-            MemoryStream indexBuffer = new MemoryStream();
+            var namesBuffer = new MemoryStream();
+            var indexBuffer = new MemoryStream();
 
-            foreach (PackageEntry entry in this.Entries)
+            foreach (var entry in this.Entries)
             {
-                Structures.PackageIndex3 index = new Structures.PackageIndex3();
+                var index = new Structures.PackageIndex3();
                 index.NameOffset = (int)namesBuffer.Position;
                 index.Unknown04 = 0;
                 index.Offset = (int)entry.Offset;
@@ -205,10 +229,10 @@ namespace Gibbed.Volition.FileFormats.Packages
                 }
 
                 indexBuffer.WriteStructure<Structures.PackageIndex3>(index);
-                namesBuffer.WriteStringASCIIZ(entry.Name);
+                namesBuffer.WriteString(entry.Name, Encoding.ASCII);
             }
 
-            Structures.PackageHeader3 header = new Structures.PackageHeader3();
+            var header = new Structures.PackageHeader3();
             header.Magic = 0x51890ACE;
             header.Version = 3;
             header.String1 = "         Created using      Gibbed's     Volition Tools ";

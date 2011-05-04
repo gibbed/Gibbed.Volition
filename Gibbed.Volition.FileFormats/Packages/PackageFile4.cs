@@ -1,6 +1,29 @@
-﻿using System;
+﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ * 
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Gibbed.Helpers;
 
 // VPP version 4
@@ -29,7 +52,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 throw new FormatException("failed to read header version 4");
             }
 
-            Structures.PackageHeader4 header = buffer.ToStructure<Structures.PackageHeader4>();
+            var header = buffer.ToStructure<Structures.PackageHeader4>();
 
             if (littleEndian == false)
             {
@@ -45,19 +68,17 @@ namespace Gibbed.Volition.FileFormats.Packages
             }
 
             // Names
-            byte[] namesBuffer;
-            namesBuffer = new byte[header.NamesSize];
-            if (input.ReadAligned(namesBuffer, 0, header.NamesSize, 2048) != header.NamesSize)
+            var namesData = input.ReadToMemoryStream(header.NamesSize.Align(2048));
+            if (namesData.Length != header.NamesSize.Align(2048))
             {
                 throw new FormatException("failed to read name index");
             }
 
             // Extensions
-            byte[] extensionsBuffer;
-            extensionsBuffer = new byte[header.ExtensionsSize];
-            if (input.ReadAligned(extensionsBuffer, 0, header.ExtensionsSize, 2048) != header.ExtensionsSize)
+            var extensionsData = input.ReadToMemoryStream(header.ExtensionsSize.Align(2048));
+            if (extensionsData.Length != header.ExtensionsSize.Align(2048))
             {
-                throw new FormatException("failed to read extension index");
+                throw new FormatException("failed to read extensions index");
             }
 
             long baseOffset = input.Position;
@@ -65,11 +86,11 @@ namespace Gibbed.Volition.FileFormats.Packages
             this.Entries.Clear();
             for (int i = 0; i < header.IndexCount; i++)
             {
-                PackageEntry entry = new PackageEntry();
+                var entry = new PackageEntry();
 
                 int offset = i * 28; // Each index entry is 28 bytes long
 
-                Structures.PackageIndex4 index = indexBuffer.ToStructure<Structures.PackageIndex4>(offset);
+                var index = indexBuffer.ToStructure<Structures.PackageIndex4>(offset);
 
                 if (littleEndian == false)
                 {
@@ -86,9 +107,10 @@ namespace Gibbed.Volition.FileFormats.Packages
                     throw new FormatException("index entry with a compressed size when not compressed");
                 }
 
-                entry.Name =
-                    namesBuffer.ToStringASCIIZ(index.NameOffset) + "." +
-                    extensionsBuffer.ToStringASCIIZ(index.ExtensionOffset);
+                namesData.Seek(index.NameOffset, SeekOrigin.Begin);
+                entry.Name = namesData.ReadStringZ(Encoding.ASCII);
+                extensionsData.Seek(index.ExtensionOffset, SeekOrigin.Begin);
+                entry.Name += extensionsData.ReadStringZ(Encoding.ASCII);
 
                 entry.Offset = index.Offset;
                 entry.CompressedSize = index.CompressedSize;
