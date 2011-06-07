@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Gibbed.Volition.FileFormats;
+using Packages = Gibbed.Volition.FileFormats.Packages;
 using NDesk.Options;
 
 namespace Gibbed.Volition.Pack
@@ -106,8 +107,7 @@ namespace Gibbed.Volition.Pack
 
             string outputPath = extra[0];
 
-            SortedDictionary<string, string> paths = new SortedDictionary<string, string>();
-            //Dictionary<string, string> paths = new Dictionary<string, string>();
+            var paths = new SortedDictionary<string, string>();
 
             if (verbose == true)
             {
@@ -116,12 +116,12 @@ namespace Gibbed.Volition.Pack
 
             for (int i = 1; i < extra.Count; i++)
             {
-                string directory = extra[i];
+                var directory = extra[i];
 
-                foreach (string path in Directory.GetFiles(directory, "*"))
+                foreach (var path in Directory.GetFiles(directory, "*"))
                 {
-                    string fullPath = Path.GetFullPath(path);
-                    string name = Path.GetFileName(fullPath);
+                    var fullPath = Path.GetFullPath(path);
+                    var name = Path.GetFileName(fullPath);
                     
                     if (paths.ContainsKey(name) == true)
                     {
@@ -132,49 +132,49 @@ namespace Gibbed.Volition.Pack
                 }
             }
 
-            Stream output = File.Open(outputPath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-            
-            Package package = new Package(output, false);
-            package.Version = packageVersion;
-            package.LittleEndian = !bigEndian;
-
-            if (verbose == true)
+            using (var output = File.Open(outputPath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
-                Console.WriteLine("Adding files...");
-            }
+                var package = new Package(output, false);
+                package.Version = packageVersion;
+                package.LittleEndian = !bigEndian;
 
-            foreach (KeyValuePair<string, string> value in paths)
-            {
                 if (verbose == true)
                 {
-                    Console.WriteLine(value.Value);
+                    Console.WriteLine("Adding files...");
                 }
 
-                package.SetEntry(value.Key, value.Value);
-            }
+                foreach (var value in paths)
+                {
+                    if (verbose == true)
+                    {
+                        Console.WriteLine(value.Value);
+                    }
 
-            Gibbed.Volition.FileFormats.Packages.PackageCompressionType compressionType;
+                    package.SetEntry(value.Key, value.Value);
+                }
 
-            if (compressFiles == true && compressSolid == true)
-            {
-                compressionType = Gibbed.Volition.FileFormats.Packages.PackageCompressionType.SolidZlib;
-            }
-            else if (compressFiles == true)
-            {
-                compressionType = Gibbed.Volition.FileFormats.Packages.PackageCompressionType.Zlib;
-            }
-            else
-            {
-                compressionType = Gibbed.Volition.FileFormats.Packages.PackageCompressionType.None;
-            }
+                Packages.PackageCompressionType compressionType;
 
-            if (verbose == true)
-            {
-                Console.WriteLine("Writing to disk...");
-            }
-            package.Commit(compressionType);
+                if (compressFiles == true && compressSolid == true)
+                {
+                    compressionType = Packages.PackageCompressionType.SolidZlib;
+                }
+                else if (compressFiles == true)
+                {
+                    compressionType = Packages.PackageCompressionType.Zlib;
+                }
+                else
+                {
+                    compressionType = Packages.PackageCompressionType.None;
+                }
 
-            output.Close();
+                if (verbose == true)
+                {
+                    Console.WriteLine("Writing to disk...");
+                }
+
+                package.Commit(compressionType);
+            }
         }
     }
 }

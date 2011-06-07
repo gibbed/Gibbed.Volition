@@ -46,7 +46,7 @@ namespace Gibbed.Volition.FileFormats.Packages
 
         public void Deserialize(Stream input, bool littleEndian)
         {
-            byte[] buffer = new byte[384];
+            var buffer = new byte[384];
             if (input.ReadAligned(buffer, 0, 384, 2048) != 384)
             {
                 throw new FormatException("failed to read header");
@@ -59,8 +59,7 @@ namespace Gibbed.Volition.FileFormats.Packages
             }
 
             // File Index
-            byte[] indexBuffer;
-            indexBuffer = new byte[header.IndexSize];
+            var indexBuffer = new byte[header.IndexSize];
             if (input.ReadAligned(indexBuffer, 0, header.IndexSize, 2048) != header.IndexSize)
             {
                 throw new FormatException("failed to read file index");
