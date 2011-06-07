@@ -110,7 +110,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 namesData.Seek(index.NameOffset, SeekOrigin.Begin);
                 entry.Name = namesData.ReadStringZ(Encoding.ASCII);
                 extensionsData.Seek(index.ExtensionOffset, SeekOrigin.Begin);
-                entry.Name += extensionsData.ReadStringZ(Encoding.ASCII);
+                entry.Name += "." + extensionsData.ReadStringZ(Encoding.ASCII);
 
                 entry.Offset = index.Offset;
                 entry.CompressedSize = index.CompressedSize;

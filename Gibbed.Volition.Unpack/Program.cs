@@ -39,13 +39,33 @@ namespace Gibbed.Volition.Unpack
         {
             None,
             RedFactionGuerrilla,
+            RedFactionArmageddon,
             SaintsRow2,
         }
 
-        private static string LookupRFG(string inputPath)
+        private static string LookupSteamId(long id)
         {
-            string basePath = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 20500", "InstallLocation", null);
-            
+            var keys = new string[]
+            {
+                @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {0}",
+                @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {0}",
+            };
+
+            foreach (var key in keys)
+            {
+                var path = (string)Microsoft.Win32.Registry.GetValue(string.Format(key, id), "InstallLocation", null);
+                if (path != null)
+                {
+                    return path;
+                }
+            }
+
+            return null;
+        }
+
+        private static string LookupRedFactionGuerrilla(string inputPath)
+        {
+            string basePath = LookupSteamId(20500);
             if (basePath == null)
             {
                 basePath = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games\\{13E51682-ADC7-4E51-9EBA-1C030781E4A2}", "ConfigApplicationPath", null);
@@ -63,20 +83,20 @@ namespace Gibbed.Volition.Unpack
                 return tryPath;
             }
 
-            string[] subPaths = new string[]
+            var subPaths = new string[]
             {
-                "build",
-                "build\\pc",
-                "build\\pc\\cache",
-                "build\\dlc01",
-                "build\\dlc01\\pc",
-                "build\\dlc01\\pc\\cache",
-                "build\\dlc02",
-                "build\\dlc02\\pc",
-                "build\\dlc02\\pc\\cache",
-                "build\\dlc03",
-                "build\\dlc03\\pc",
-                "build\\dlc03\\pc\\cache",
+                @"build",
+                @"build\pc",
+                @"build\pc\cache",
+                @"build\dlc01",
+                @"build\dlc01\pc",
+                @"build\dlc01\pc\cache",
+                @"build\dlc02",
+                @"build\dlc02\pc",
+                @"build\dlc02\pc\cache",
+                @"build\dlc03",
+                @"build\dlc03\pc",
+                @"build\dlc03\pc\cache",
             };
 
             foreach (string subPath in subPaths)
@@ -91,10 +111,53 @@ namespace Gibbed.Volition.Unpack
             return null;
         }
 
-        private static string LookupSR2(string inputPath)
+        private static string LookupRedFactionArmageddon(string inputPath)
         {
-            string basePath = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9480", "InstallLocation", null);
+            string basePath = LookupSteamId(55110);
+            if (basePath == null)
+            {
+                return null;
+            }
 
+            string tryPath;
+
+            tryPath = Path.Combine(basePath, inputPath);
+            if (File.Exists(tryPath) == true)
+            {
+                return tryPath;
+            }
+
+            var subPaths = new string[]
+            {
+                @"build",
+                @"build\pc",
+                @"build\pc\cache",
+                @"build\dlc01",
+                @"build\dlc01\pc",
+                @"build\dlc01\pc\cache",
+                @"build\dlc02",
+                @"build\dlc02\pc",
+                @"build\dlc02\pc\cache",
+                @"build\dlc03",
+                @"build\dlc03\pc",
+                @"build\dlc03\pc\cache",
+            };
+
+            foreach (string subPath in subPaths)
+            {
+                tryPath = Path.Combine(Path.Combine(basePath, subPath), inputPath);
+                if (File.Exists(tryPath) == true)
+                {
+                    return tryPath;
+                }
+            }
+
+            return null;
+        }
+
+        private static string LookupSaintsRow2(string inputPath)
+        {
+            string basePath = LookupSteamId(9480);
             if (basePath == null)
             {
                 return null;
@@ -130,6 +193,11 @@ namespace Gibbed.Volition.Unpack
                     v => game = v != null ? Game.RedFactionGuerrilla : Game.None
                 },
                 {
+                    "rfa",
+                    "automatically find RF:A packages",
+                    v => game = v != null ? Game.RedFactionArmageddon : Game.None
+                },
+                {
                     "sr2",
                     "automatically find SR2 packages",
                     v => game = v != null ? Game.SaintsRow2 : Game.None
@@ -155,9 +223,9 @@ namespace Gibbed.Volition.Unpack
                 return;
             }
 
-            if (extra.Count != 2 || showHelp == true)
+            if (extra.Count < 0 || extra.Count > 2 || showHelp == true)
             {
-                Console.WriteLine("Usage: {0} [OPTIONS]+ input_vpp output_directory", GetExecutableName());
+                Console.WriteLine("Usage: {0} [OPTIONS]+ input_vpp [output_dir]", GetExecutableName());
                 Console.WriteLine("Unpack specified Volition package file.");
                 Console.WriteLine();
                 Console.WriteLine("Options:");
@@ -173,11 +241,15 @@ namespace Gibbed.Volition.Unpack
 
                 if (game == Game.RedFactionGuerrilla)
                 {
-                    newPath = LookupRFG(inputPath);
+                    newPath = LookupRedFactionGuerrilla(inputPath);
+                }
+                if (game == Game.RedFactionArmageddon)
+                {
+                    newPath = LookupRedFactionArmageddon(inputPath);
                 }
                 else if (game == Game.SaintsRow2)
                 {
-                    newPath = LookupSR2(inputPath);
+                    newPath = LookupSaintsRow2(inputPath);
                 }
 
                 if (newPath != null)
@@ -185,48 +257,51 @@ namespace Gibbed.Volition.Unpack
                     inputPath = newPath;
                 }
             }
-            
-            string outputPath = extra[1];
 
-            Stream input = File.OpenRead(inputPath);
-            Directory.CreateDirectory(outputPath);
+            string outputPath = extra.Count > 1 ?
+                extra[1] :
+                Path.ChangeExtension(extra[0], null);
 
-            Package package = new Package(input);
-
-            long counter = 0;
-            long skipped = 0;
-            long totalCount = package.Keys.Count;
-
-            Console.WriteLine("{0} files in package.", totalCount);
-
-            foreach (string name in package.Keys)
+            using (var input = File.OpenRead(inputPath))
             {
-                counter++;
+                Directory.CreateDirectory(outputPath);
 
-                string entryPath = Path.Combine(outputPath, name);
+                var package = new Package(input);
 
-                if (overwriteFiles == false && File.Exists(entryPath) == true)
+                long counter = 0;
+                long skipped = 0;
+                long totalCount = package.Keys.Count;
+
+                Console.WriteLine("{0} files in package.", totalCount);
+
+                foreach (string name in package.Keys)
                 {
-                    Console.WriteLine("{1:D4}/{2:D4} !! {0}", name, counter, totalCount);
-                    skipped++;
-                    continue;
+                    counter++;
+
+                    var entryPath = Path.Combine(outputPath, name);
+
+                    if (overwriteFiles == false && File.Exists(entryPath) == true)
+                    {
+                        Console.WriteLine("{1:D4}/{2:D4} !! {0}", name, counter, totalCount);
+                        skipped++;
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("{1:D4}/{2:D4} => {0}", name, counter, totalCount);
+                    }
+
+                    using (var output = File.Open(entryPath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                    {
+                        package.ExportEntry(name, output);
+                        output.Flush();
+                    }
                 }
-                else
+
+                if (skipped > 0)
                 {
-                    Console.WriteLine("{1:D4}/{2:D4} => {0}", name, counter, totalCount);
+                    Console.WriteLine("{0} files not overwritten.", skipped);
                 }
-
-                Stream output = File.Open(entryPath, FileMode.Create, FileAccess.Write, FileShare.Read);
-                package.ExportEntry(name, output);
-                output.Flush();
-                output.Close();
-            }
-
-            input.Close();
-
-            if (skipped > 0)
-            {
-                Console.WriteLine("{0} files not overwritten.", skipped);
             }
         }
     }
