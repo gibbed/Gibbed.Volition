@@ -27,9 +27,9 @@ namespace Gibbed.Volition.FileFormats.Packages
     [Flags]
     internal enum PackageFlags : uint
     {
-        None = 0,
-        Compressed = 1 << 0,
-        Solid = 1 << 1,
+        None = 0, // 0
+        Compressed = 1 << 0, // 1
+        Solid = 1 << 1, // 2
         Unknown11 = 1 << 11,
         Unknown12 = 1 << 12,
         Unknown14 = 1 << 14,

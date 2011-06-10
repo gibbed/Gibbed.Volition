@@ -39,15 +39,60 @@ namespace Gibbed.Volition.FileFormats.Packages
         public int SolidUncompressedSize { get; set; }
         public int SolidCompressedSize { get; set; }
 
+        public int UncompressedDataSize { get; set; }
+        public int CompressedDataSize { get; set; }
+        public int PackageSize { get; set; }
+
         public PackageFile6()
         {
             this.Entries = new List<PackageEntry>();
         }
 
+        public int EstimateHeaderSize()
+        {
+            int totalSize = 0;
+
+            totalSize += 2048; // header
+            totalSize += (this.Entries.Count * 24).Align(2048);
+
+            int namesSize = 0;
+            foreach (PackageEntry entry in this.Entries)
+            {
+                namesSize += entry.Name.Length + 1;
+            }
+
+            totalSize += namesSize.Align(2048);
+            return totalSize;
+        }
+
+        public int EstimateTotalSize()
+        {
+            int totalSize = this.EstimateHeaderSize();
+
+            if (this.IsSolid == true)
+            {
+                throw new InvalidOperationException();
+            }
+
+            foreach (var entry in this.Entries)
+            {
+                if (entry.CompressionType == PackageCompressionType.None)
+                {
+                    totalSize += entry.UncompressedSize.Align(16);
+                }
+                else if (entry.CompressionType == PackageCompressionType.Zlib)
+                {
+                    totalSize += entry.CompressedSize.Align(16);
+                }
+            }
+
+            return totalSize;
+        }
+
         public void Deserialize(Stream input, bool littleEndian)
         {
-            var buffer = new byte[384];
-            if (input.ReadAligned(buffer, 0, 384, 2048) != 384)
+            var buffer = new byte[376];
+            if (input.ReadAligned(buffer, 0, 376, 2048) != 376)
             {
                 throw new FormatException("failed to read header");
             }
@@ -142,48 +187,76 @@ namespace Gibbed.Volition.FileFormats.Packages
 
         public void Serialize(Stream output, bool littleEndian, Packages.PackageCompressionType compressionType)
         {
-            throw new NotImplementedException();
-        }
+            var namesBuffer = new MemoryStream();
+            var indexBuffer = new MemoryStream();
 
-        public int EstimateHeaderSize()
-        {
-            throw new NotImplementedException();
-        }
+            foreach (var entry in this.Entries)
+            {
+                var index = new Structures.PackageIndex6();
+                index.NameOffset = (int)namesBuffer.Position;
+                index.Unknown04 = 0;
+                index.Offset = (int)entry.Offset;
+                index.UncompressedSize = entry.UncompressedSize;
+                index.CompressedSize = entry.CompressedSize;
+                index.Unknown18 = 0;
 
-        public int UncompressedDataSize
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+                if (littleEndian == false)
+                {
+                    index.Swap();
+                }
 
-        public int CompressedDataSize
-        {
-            get
-            {
-                throw new NotImplementedException();
+                indexBuffer.WriteStructure<Structures.PackageIndex6>(index);
+                namesBuffer.WriteStringZ(entry.Name, Encoding.ASCII);
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
 
-        public int PackageSize
-        {
-            get
+            var header = new Structures.PackageHeader6();
+            header.Magic = 0x51890ACE;
+            header.Version = 6;
+            header.String1 = "         Created using      Gibbed's     Volition Tools ";
+            header.String2 = "           Read the       Foundation     Novels from       Asimov.       I liked them. ";
+
+            header.Flags = PackageFlags.None;
+
+            if (compressionType == PackageCompressionType.Zlib ||
+                compressionType == PackageCompressionType.SolidZlib)
             {
-                throw new NotImplementedException();
+                header.Flags |= PackageFlags.Compressed;
             }
-            set
+
+            if (compressionType == PackageCompressionType.SolidZlib)
             {
-                throw new NotImplementedException();
+                header.Flags |= PackageFlags.Solid;
             }
+
+            header.IndexCount = this.Entries.Count;
+            header.PackageSize = this.PackageSize;
+            header.IndexSize = (int)indexBuffer.Length;
+            header.NamesSize = (int)namesBuffer.Length;
+            header.UncompressedDataSize = this.UncompressedDataSize;
+
+            if (compressionType == PackageCompressionType.None)
+            {
+                header.CompressedDataSize = -1;
+            }
+            else
+            {
+                header.CompressedDataSize = this.CompressedDataSize;
+            }
+
+            if (littleEndian == false)
+            {
+                header.Swap();
+            }
+
+            indexBuffer.Seek(0, SeekOrigin.Begin);
+            indexBuffer.SetLength(indexBuffer.Length.Align(2048));
+
+            namesBuffer.Seek(0, SeekOrigin.Begin);
+            namesBuffer.SetLength(namesBuffer.Length.Align(2048));
+
+            output.WriteStructure<Structures.PackageHeader6>(header, 2048);
+            output.WriteFromStream(indexBuffer, indexBuffer.Length);
+            output.WriteFromStream(namesBuffer, namesBuffer.Length);
         }
     }
 }

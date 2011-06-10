@@ -20,43 +20,38 @@
  *    distribution.
  */
 
+using System;
 using System.Runtime.InteropServices;
 using Gibbed.Helpers;
 
 namespace Gibbed.Volition.FileFormats.Packages.Structures
 {
-    [StructLayout(LayoutKind.Explicit, Size = 384)]
+    [StructLayout(
+        LayoutKind.Sequential, Size = 376,
+        CharSet = CharSet.Ansi,
+        Pack = 1)]
     internal struct PackageHeader6
     {
-        [FieldOffset(0)]
-        public uint Magic;
-
-        [FieldOffset(4)]
-        public uint Version;
-
-        [FieldOffset(0x14C)]
-        public PackageFlags Flags;
-
-        [FieldOffset(0x154)]
-        public int IndexCount;
-
-        [FieldOffset(0x158)]
-        public int PackageSize;
-
-        [FieldOffset(0x15C)]
-        public int IndexSize;
-
-        [FieldOffset(0x160)]
-        public int NamesSize;
-
-        [FieldOffset(0x164)]
-        public int UncompressedDataSize;
-
-        [FieldOffset(0x168)]
-        public int CompressedDataSize;
-
-        [FieldOffset(0x16C)]
-        public int Unknown16C;
+        public uint Magic;                  // 000
+        public uint Version;                // 004
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x41)]
+        public string String1;              // 008
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x100)]
+        public string String2;              // 049
+        public byte Pad1;
+        public byte Pad2;
+        public byte Pad3;
+        public PackageFlags Flags;          // 14C
+        public UInt32 Unknown150;           // 150
+        public int IndexCount;              // 154
+        public int PackageSize;             // 158
+        public int IndexSize;               // 15C
+        public int NamesSize;               // 160
+        public int UncompressedDataSize;    // 164
+        public int CompressedDataSize;      // 168
+        public int IndexPointer;            // 16C
+        public int NamesPointer;            // 170
+        public int DataPointer;             // 174
 
         public PackageHeader6 Swap()
         {
@@ -70,7 +65,6 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
             swapped.NamesSize = this.NamesSize.Swap();
             swapped.UncompressedDataSize = this.UncompressedDataSize.Swap();
             swapped.CompressedDataSize = this.CompressedDataSize.Swap();
-            swapped.Unknown16C = this.Unknown16C.Swap();
             return swapped;
         }
     }

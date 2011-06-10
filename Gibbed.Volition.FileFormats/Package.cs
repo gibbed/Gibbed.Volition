@@ -125,6 +125,10 @@ namespace Gibbed.Volition.FileFormats
             {
                 packageFile = new Packages.PackageFile6();
             }
+            else
+            {
+                throw new NotSupportedException();
+            }
 
             packageFile.Deserialize(input, this.LittleEndian);
 
@@ -261,7 +265,7 @@ namespace Gibbed.Volition.FileFormats
 
             if (this.Entries[name] is StreamEntry)
             {
-                StreamEntry entry = (StreamEntry)this.Entries[name];
+                var entry = (StreamEntry)this.Entries[name];
 
                 this.Stream.Seek(entry.Offset, SeekOrigin.Begin);
 
@@ -269,7 +273,7 @@ namespace Gibbed.Volition.FileFormats
 
                 if (entry.CompressionType == Packages.PackageCompressionType.Zlib)
                 {
-                    ZlibStream zlib = new ZlibStream(this.Stream, CompressionMode.Decompress, true);
+                    var zlib = new ZlibStream(this.Stream, CompressionMode.Decompress, true);
                     
                     int read = zlib.Read(data, 0, data.Length);
                     if (read < 0 || read != data.Length)
@@ -294,7 +298,7 @@ namespace Gibbed.Volition.FileFormats
             }
             else if (this.Entries[name] is CopyFromFileEntry)
             {
-                CopyFromFileEntry entry = (CopyFromFileEntry)this.Entries[name];
+                var entry = (CopyFromFileEntry)this.Entries[name];
                 byte[] data = new byte[entry.Size];
                 Stream input = File.Open(entry.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 input.Read(data, 0, data.Length);
@@ -379,46 +383,22 @@ namespace Gibbed.Volition.FileFormats
 
             if (this.Entries[name] is StreamEntry)
             {
-                StreamEntry entry = (StreamEntry)this.Entries[name];
+                var entry = (StreamEntry)this.Entries[name];
 
                 this.Stream.Seek(entry.Offset, SeekOrigin.Begin);
 
                 if (entry.CompressionType == Packages.PackageCompressionType.Zlib)
                 {
                     // this is a hack until I fix zlib handling
-                    MemoryStream memory = this.Stream.ReadToMemoryStream(entry.CompressedSize);
-                    
-                    ZlibStream zlib = new ZlibStream(memory, CompressionMode.Decompress, true);
-                    
-                    int left = entry.Size;
-                    byte[] block = new byte[4096];
-                    while (left > 0)
+                    using (var memory = this.Stream.ReadToMemoryStream(entry.CompressedSize))
                     {
-                        int read = zlib.Read(block, 0, Math.Min(block.Length, left));
-                        if (read == 0)
-                        {
-                            break;
-                        }
-                        else if (read < 0)
-                        {
-                            throw new InvalidOperationException("zlib error");
-                        }
-
-                        output.Write(block, 0, read);
-                        left -= read;
+                        var zlib = new ZlibStream(memory, CompressionMode.Decompress, true);
+                        output.WriteFromStream(zlib, entry.Size);
                     }
                 }
                 else if (entry.CompressionType == Packages.PackageCompressionType.None)
                 {
-                    int left = entry.Size;
-                    byte[] data = new byte[4096];
-                    while (left > 0)
-                    {
-                        int block = (int)(Math.Min(left, 4096));
-                        this.Stream.Read(data, 0, block);
-                        output.Write(data, 0, block);
-                        left -= block;
-                    }
+                    output.WriteFromStream(this.Stream, entry.Size);
                 }
                 else
                 {
@@ -433,17 +413,10 @@ namespace Gibbed.Volition.FileFormats
             else if (this.Entries[name] is CopyFromFileEntry)
             {
                 CopyFromFileEntry entry = (CopyFromFileEntry)this.Entries[name];
-                Stream input = File.Open(entry.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                int left = entry.Size;
-                byte[] data = new byte[4096];
-                while (left > 0)
+                using (var input = File.Open(entry.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    int block = (int)(Math.Min(left, 4096));
-                    input.Read(data, 0, block);
-                    output.Write(data, 0, block);
-                    left -= block;
+                    output.WriteFromStream(input, entry.Size);
                 }
-                input.Close();
             }
             else
             {
@@ -469,10 +442,18 @@ namespace Gibbed.Volition.FileFormats
             {
                 packageFile = new Packages.PackageFile4();
             }
+            else if (this.Version == 6)
+            {
+                packageFile = new Packages.PackageFile6();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
 
             foreach (KeyValuePair<string, Entry> kvp in this.Entries)
             {
-                Packages.PackageEntry packageEntry = new Packages.PackageEntry();
+                var packageEntry = new Packages.PackageEntry();
                 packageEntry.Name = kvp.Key;
                 packageEntry.CompressedSize = -1;
                 packageEntry.UncompressedSize = kvp.Value.Size;
@@ -533,33 +514,35 @@ namespace Gibbed.Volition.FileFormats
             }
             else if (compressionType == Packages.PackageCompressionType.SolidZlib)
             {
-                MemoryStream compressed = new MemoryStream();
-                ZlibStream zlib = new ZlibStream(compressed, CompressionMode.Compress, CompressionLevel.Default, true);
-
-                int offset = 0;
-                foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
+                using (var compressed = new MemoryStream())
                 {
-                    packageEntry.Offset = offset;
+                    var zlib = new ZlibStream(compressed, CompressionMode.Compress, CompressionLevel.Default, true);
 
-                    this.ExportEntry(packageEntry.Name, zlib);
-
-                    int align = packageEntry.UncompressedSize.Align(2048) - packageEntry.UncompressedSize;
-                    if (align > 0)
+                    int offset = 0;
+                    foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
                     {
-                        byte[] block = new byte[align];
-                        zlib.Write(block, 0, (int)align);
+                        packageEntry.Offset = offset;
+
+                        this.ExportEntry(packageEntry.Name, zlib);
+
+                        int align = packageEntry.UncompressedSize.Align(2048) - packageEntry.UncompressedSize;
+                        if (align > 0)
+                        {
+                            byte[] block = new byte[align];
+                            zlib.Write(block, 0, (int)align);
+                        }
+
+                        offset += packageEntry.UncompressedSize + align;
+                        uncompressedDataSize += packageEntry.UncompressedSize + align;
                     }
 
-                    offset += packageEntry.UncompressedSize + align;
-                    uncompressedDataSize += packageEntry.UncompressedSize + align;
+                    zlib.Close();
+
+                    compressed.Seek(0, SeekOrigin.Begin);
+                    clean.WriteFromStream(compressed, compressed.Length);
+
+                    compressedDataSize = (int)compressed.Length;
                 }
-
-                zlib.Close();
-
-                compressed.Seek(0, SeekOrigin.Begin);
-                clean.WriteFromStream(compressed, compressed.Length);
-
-                compressedDataSize = (int)compressed.Length;
             }
             else
             {
@@ -577,16 +560,7 @@ namespace Gibbed.Volition.FileFormats
             {
                 this.Stream.Seek(0, SeekOrigin.Begin);
                 clean.Seek(0, SeekOrigin.Begin);
-
-                byte[] data = new byte[4096];
-                long left = clean.Length;
-                while (left > 0)
-                {
-                    int block = (int)Math.Min(left, data.Length);
-                    clean.Read(data, 0, block);
-                    this.Stream.Write(data, 0, block);
-                    left -= block;
-                }
+                this.Stream.WriteFromStream(clean, clean.Length);
             }
 
             this.Stream.SetLength(clean.Length);
