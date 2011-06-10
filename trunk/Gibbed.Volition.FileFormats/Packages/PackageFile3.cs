@@ -69,7 +69,7 @@ namespace Gibbed.Volition.FileFormats.Packages
         {
             int totalSize = this.EstimateHeaderSize();
 
-            if (this.IsSolid)
+            if (this.IsSolid == true)
             {
                 throw new InvalidOperationException();
             }
@@ -229,7 +229,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 }
 
                 indexBuffer.WriteStructure<Structures.PackageIndex3>(index);
-                namesBuffer.WriteString(entry.Name, Encoding.ASCII);
+                namesBuffer.WriteStringZ(entry.Name, Encoding.ASCII);
             }
 
             var header = new Structures.PackageHeader3();
