@@ -91,8 +91,8 @@ namespace Gibbed.Volition.FileFormats.Packages
 
         public void Deserialize(Stream input, bool littleEndian)
         {
-            byte[] buffer = new byte[384];
-            if (input.ReadAligned(buffer, 0, 384, 2048) != 384)
+            var buffer = new byte[376];
+            if (input.ReadAligned(buffer, 0, 376, 2048) != 376)
             {
                 throw new FormatException("failed to read header version 3");
             }
@@ -104,9 +104,18 @@ namespace Gibbed.Volition.FileFormats.Packages
                 header = header.Swap();
             }
 
+            if (header.Magic != 0x51890ACE)
+            {
+                throw new FormatException("not a package file");
+            }
+
+            if (header.Version != 3)
+            {
+                throw new FormatException("unsupported package version");
+            }
+
             // File Index
-            byte[] indexBuffer;
-            indexBuffer = new byte[header.IndexSize];
+            var indexBuffer = new byte[header.IndexSize];
             if (input.ReadAligned(indexBuffer, 0, header.IndexSize, 2048) != header.IndexSize)
             {
                 throw new FormatException("failed to read file index");
@@ -161,23 +170,6 @@ namespace Gibbed.Volition.FileFormats.Packages
                 namesData.Seek(index.NameOffset, SeekOrigin.Begin);
                 entry.Name = namesData.ReadStringZ(Encoding.ASCII);
 
-                /*
-                Console.WriteLine("{0:X8} {1:X8} {2:X8} {3:X8} {4:X8} {5:X8} {6:X8}  {7}",
-                    index.NameOffset,
-                    index.Unknown04,
-                    index.Offset,
-                    index.NameHash,
-                    index.UncompressedSize,
-                    index.CompressedSize,
-                    index.Unknown1C,
-                    entry.Name);
-                */
-
-                if (index.NameHash != entry.Name.HashVolition())
-                {
-                    // Console.WriteLine("hash mismatch: {0} != {1} for {2}", index.NameHash, entry.Name.HashVolition(), entry.Name);
-                }
-
                 entry.Offset = index.Offset;
                 entry.CompressedSize = index.CompressedSize;
                 entry.UncompressedSize = index.UncompressedSize;
@@ -218,7 +210,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 index.NameOffset = (int)namesBuffer.Position;
                 index.Unknown04 = 0;
                 index.Offset = (int)entry.Offset;
-                index.NameHash = entry.Name.HashVolition(); // ??
+                index.NameHash = entry.Name.HashVolition();
                 index.UncompressedSize = entry.UncompressedSize;
                 index.CompressedSize = entry.CompressedSize;
                 index.Unknown1C = 0;
