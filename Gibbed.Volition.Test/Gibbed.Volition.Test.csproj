@@ -46,6 +46,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gibbed.Volition.FileFormats\Gibbed.Volition.FileFormats.csproj">
+      <Project>{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}</Project>
+      <Name>Gibbed.Volition.FileFormats</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
