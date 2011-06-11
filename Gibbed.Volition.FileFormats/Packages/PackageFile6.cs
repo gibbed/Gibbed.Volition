@@ -205,7 +205,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                 var index = new Structures.PackageIndex6();
                 index.NameOffset = (int)namesBuffer.Position;
                 index.Unknown04 = 0;
-                index.Offset = (int)entry.Offset;
+                index.Offset = (uint)entry.Offset;
                 index.UncompressedSize = entry.UncompressedSize;
                 index.CompressedSize = entry.CompressedSize;
                 index.Unknown18 = 0;

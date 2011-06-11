@@ -31,7 +31,7 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
         public int NameOffset;
         public int ExtensionOffset;
         public uint Unknown08;
-        public int Offset;
+        public uint Offset;
         public int UncompressedSize;
         public int CompressedSize;
         public uint Unknown1C;
