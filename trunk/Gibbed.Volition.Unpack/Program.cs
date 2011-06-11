@@ -223,7 +223,7 @@ namespace Gibbed.Volition.Unpack
                 return;
             }
 
-            if (extra.Count < 0 || extra.Count > 2 || showHelp == true)
+            if (extra.Count < 1 || extra.Count > 2 || showHelp == true)
             {
                 Console.WriteLine("Usage: {0} [OPTIONS]+ input_vpp [output_dir]", GetExecutableName());
                 Console.WriteLine("Unpack specified Volition package file.");
@@ -272,6 +272,8 @@ namespace Gibbed.Volition.Unpack
                 long skipped = 0;
                 long totalCount = package.Keys.Count;
 
+                var totalLength = totalCount.ToString().Length;
+
                 Console.WriteLine("{0} files in package.", totalCount);
 
                 foreach (string name in package.Keys)
@@ -282,13 +284,13 @@ namespace Gibbed.Volition.Unpack
 
                     if (overwriteFiles == false && File.Exists(entryPath) == true)
                     {
-                        Console.WriteLine("{1:D4}/{2:D4} !! {0}", name, counter, totalCount);
+                        Console.WriteLine("{1}/{2} !! {0}", name, counter.ToString().PadLeft(totalLength), totalCount);
                         skipped++;
                         continue;
                     }
                     else
                     {
-                        Console.WriteLine("{1:D4}/{2:D4} => {0}", name, counter, totalCount);
+                        Console.WriteLine("{1}/{2} => {0}", name, counter.ToString().PadLeft(totalLength), totalCount);
                     }
 
                     using (var output = File.Open(entryPath, FileMode.Create, FileAccess.Write, FileShare.Read))

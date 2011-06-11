@@ -84,6 +84,11 @@
     <Compile Include="Packages\Structures\PackageHeader6.cs" />
     <Compile Include="Packages\Structures\PackageIndex6.cs" />
     <Compile Include="PegFile.cs" />
+    <Compile Include="Peg\TextureFlags.cs" />
+    <Compile Include="Peg\PixelFormat.cs" />
+    <Compile Include="Peg\Frame.cs" />
+    <Compile Include="Peg\Texture.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Packages\Structures\PackageIndex3.cs" />
     <Compile Include="Packages\Structures\PackageIndex4.cs" />
