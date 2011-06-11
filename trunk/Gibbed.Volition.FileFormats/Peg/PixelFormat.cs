@@ -72,5 +72,8 @@ namespace Gibbed.Volition.FileFormats.Peg
         // Supported by: SR2
         //    DX9: D3DFMT_A8
         A8 = 410,
+
+        // XBox2 format?
+        Unknown_603 = 603,
     }
 }

@@ -37,7 +37,7 @@ namespace Gibbed.Volition.FileFormats.Peg
         public ushort FrameCount;
         public TextureFlags Flags;
         public ushort Unknown18;
-        public byte Unknown1A;
+        public byte Delay;
         public byte Levels;
         public uint DataSize;
 
@@ -63,13 +63,13 @@ namespace Gibbed.Volition.FileFormats.Peg
             //var namePointer = input.ReadValueU32(littleEndian);
 
             this.Unknown18 = input.ReadValueU16();
-            this.Unknown1A = input.ReadValueU8(); // seems to be related to FrameCount - timing related?
+            this.Delay = input.ReadValueU8(); // seems to be related to FrameCount - timing related?
             this.Levels = input.ReadValueU8(); // refer to MSDN on IDirect3DDevice9::CreateTexture
             this.DataSize = input.ReadValueU32(littleEndian);
 
             if (this.Unknown18 != 0)
             {
-                throw new InvalidOperationException();
+                //throw new InvalidOperationException();
             }
 
             var nextFramePointer = input.ReadValueU32(littleEndian);
@@ -97,9 +97,8 @@ namespace Gibbed.Volition.FileFormats.Peg
             output.WriteValueU16(this.FrameCount, littleEndian);
             output.WriteValueU16((ushort)this.Flags, littleEndian);
             output.WriteValueU32(0, littleEndian);
-            output.WriteValueU8(this.Unknown18);
-            output.WriteValueU8(this.Unknown19);
-            output.WriteValueU8(this.Unknown1A);
+            output.WriteValueU16(this.Unknown18);
+            output.WriteValueU8(this.Delay);
             output.WriteValueU8(this.Levels);
             output.WriteValueU32(this.DataSize, littleEndian);
             output.WriteValueU32(0, littleEndian);
