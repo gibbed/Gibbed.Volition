@@ -73,9 +73,9 @@ namespace Gibbed.Volition.FileFormats
 
             this.DataSize = input.ReadValueU32(littleEndian);
 
-            var textureCount = input.ReadValueU16();
-            var unknown12 = input.ReadValueU16();
-            var frameCount = input.ReadValueU16();
+            var textureCount = input.ReadValueU16(littleEndian);
+            var unknown12 = input.ReadValueU16(littleEndian);
+            var frameCount = input.ReadValueU16(littleEndian);
             var unknown16 = input.ReadValueU8();
             var unknown17 = input.ReadValueU8();
 
