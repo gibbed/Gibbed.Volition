@@ -25,38 +25,34 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Volition.FileFormats.Packages.Structures
 {
-    [StructLayout(LayoutKind.Explicit, Size = 384)]
+    [StructLayout(
+        LayoutKind.Sequential, Size = 384,
+        CharSet = CharSet.Ansi,
+        Pack = 1)]
     internal struct PackageHeader4
     {
-        [FieldOffset(0)]
-        public uint Magic;
-
-        [FieldOffset(4)]
-        public uint Version;
-
-        [FieldOffset(0x14C)]
-        public PackageFlags Flags;
-
-        [FieldOffset(0x154)]
-        public int IndexCount;
-
-        [FieldOffset(0x158)]
-        public int PackageSize;
-
-        [FieldOffset(0x15C)]
-        public int IndexSize;
-
-        [FieldOffset(0x160)]
-        public int NamesSize;
-
-        [FieldOffset(0x164)]
-        public int ExtensionsSize;
-
-        [FieldOffset(0x168)]
-        public int UncompressedDataSize;
-
-        [FieldOffset(0x16C)]
-        public int CompressedDataSize;
+        public uint Magic;                  // 000
+        public uint Version;                // 004
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x41)]
+        public string String1;              // 008
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x100)]
+        public string String2;              // 049
+        public byte Pad1;
+        public byte Pad2;
+        public byte Pad3;
+        public PackageFlags Flags;          // 14C
+        public uint Unknown150;             // 150
+        public int IndexCount;              // 154
+        public int PackageSize;             // 158
+        public int IndexSize;               // 15C
+        public int NamesSize;               // 160
+        public int ExtensionsSize;          // 164
+        public int UncompressedDataSize;    // 168
+        public int CompressedDataSize;      // 16C
+        public uint IndexPointer;           // 170
+        public uint NamesPointer;           // 174
+        public uint ExtensionsPointer;      // 178
+        public uint DataPointer;            // 17C
 
         public PackageHeader4 Swap()
         {

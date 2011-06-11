@@ -103,6 +103,16 @@ namespace Gibbed.Volition.FileFormats.Packages
                 header = header.Swap();
             }
 
+            if (header.Magic != 0x51890ACE)
+            {
+                throw new FormatException("not a package file");
+            }
+
+            if (header.Version != 6)
+            {
+                throw new FormatException("unsupported package version");
+            }
+
             // File Index
             var indexBuffer = new byte[header.IndexSize];
             if (input.ReadAligned(indexBuffer, 0, header.IndexSize, 2048) != header.IndexSize)

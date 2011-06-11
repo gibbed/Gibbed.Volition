@@ -50,7 +50,7 @@ namespace Gibbed.Volition.FileFormats
             var count = stream.ReadValueU32();
             var bufferSize = stream.ReadValueU32();
 
-            byte[] indexBuffer = new byte[count * 4];
+            var indexBuffer = new byte[count * 4];
 
             stream.Read(indexBuffer, 0, indexBuffer.Length);
             var stringData = stream.ReadToMemoryStream(bufferSize);
@@ -82,11 +82,11 @@ namespace Gibbed.Volition.FileFormats
             }
 
             this.AnimationTime = stream.ReadValueF32();
-            UInt32 metadataCount = stream.ReadValueU32();
-            UInt32 criticalResourceCount = stream.ReadValueU32();
+            var metadataCount = stream.ReadValueU32();
+            var criticalResourceCount = stream.ReadValueU32();
             this.ReadStrings(stream, stream.ReadValueU32());
-            UInt16 elementCount = stream.ReadValueU16();
-            UInt16 animationCount = stream.ReadValueU16();
+            var elementCount = stream.ReadValueU16();
+            var animationCount = stream.ReadValueU16();
 
             // not absolutely sure this is the name index... so...
             if (nameIndex != 0)

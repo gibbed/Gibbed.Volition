@@ -24,8 +24,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Gibbed.Volition.FileFormats;
-using Packages = Gibbed.Volition.FileFormats.Packages;
 using NDesk.Options;
+using Packages = Gibbed.Volition.FileFormats.Packages;
 
 namespace Gibbed.Volition.Pack
 {

@@ -83,10 +83,13 @@
     <Compile Include="Packages\Structures\PackageHeader4.cs" />
     <Compile Include="Packages\Structures\PackageHeader6.cs" />
     <Compile Include="Packages\Structures\PackageIndex6.cs" />
+    <Compile Include="PegFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Packages\Structures\PackageIndex3.cs" />
     <Compile Include="Packages\Structures\PackageIndex4.cs" />
     <Compile Include="StringHelpers.cs" />
+    <Compile Include="TableDescription.cs" />
+    <Compile Include="TableFile.cs" />
     <Compile Include="VintFile.cs" />
     <Compile Include="Vint\BoolProperty.cs" />
     <Compile Include="Vint\ColorProperty.cs" />
