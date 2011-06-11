@@ -186,31 +186,31 @@ namespace Gibbed.Volition.ConvertAsm
             
             if (asm2xml == true)
             {
-                Stream input = File.OpenRead(inputPath);
-                
-                AsmFile asm = new AsmFile();
-                asm.Deserialize(input);
-                
-                Stream output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                using (var input = File.OpenRead(inputPath))
+                {
+                    AsmFile asm = new AsmFile();
+                    asm.Deserialize(input);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(AsmFile));
-                serializer.Serialize(output, asm);
+                    using (var output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    {
 
-                output.Close();
-                input.Close();
+                        XmlSerializer serializer = new XmlSerializer(typeof(AsmFile));
+                        serializer.Serialize(output, asm);
+                    }
+                }
             }
             else if (xml2asm == true)
             {
-                Stream input = File.OpenRead(inputPath);
+                using (var input = File.OpenRead(inputPath))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(AsmFile));
+                    AsmFile asm = (AsmFile)serializer.Deserialize(input);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(AsmFile));
-                AsmFile asm = (AsmFile)serializer.Deserialize(input);
-
-                Stream output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                asm.Serialize(output);
-
-                output.Close();
-                input.Close();
+                    using (var output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        asm.Serialize(output);
+                    }
+                }
             }
         }
     }
