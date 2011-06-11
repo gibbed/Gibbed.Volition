@@ -469,7 +469,7 @@ namespace Gibbed.Volition.FileFormats
 
             if (compressionType == Packages.PackageCompressionType.None)
             {
-                int offset = 0;
+                long offset = 0;
                 foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
                 {
                     packageEntry.Offset = offset;
@@ -489,7 +489,7 @@ namespace Gibbed.Volition.FileFormats
             }
             else if (compressionType == Packages.PackageCompressionType.Zlib)
             {
-                int offset = 0;
+                long offset = 0;
                 foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
                 {
                     packageEntry.Offset = offset;
@@ -518,7 +518,7 @@ namespace Gibbed.Volition.FileFormats
                 {
                     var zlib = new ZlibStream(compressed, CompressionMode.Compress, CompressionLevel.Default, true);
 
-                    int offset = 0;
+                    long offset = 0;
                     foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
                     {
                         packageEntry.Offset = offset;
