@@ -202,25 +202,24 @@ namespace Gibbed.Volition.ConvertVintDoc
 
                     Console.WriteLine(Path.GetFullPath(inputPath));
 
-                    Stream input = File.OpenRead(inputPath);
-
-                    if (input.ReadValueU32() != 0x3027)
+                    using (var input = File.OpenRead(inputPath))
                     {
-                        input.Close();
-                        continue;
+                        if (input.ReadValueU32() != 0x3027)
+                        {
+                            input.Close();
+                            continue;
+                        }
+
+                        input.Seek(-4, SeekOrigin.Current);
+
+                        VintFile vint = new VintFile();
+                        vint.Deserialize(input);
+
+                        using (var output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            WriteDocument(vint, output);
+                        }
                     }
-
-                    input.Seek(-4, SeekOrigin.Current);
-
-                    VintFile vint = new VintFile();
-                    vint.Deserialize(input);
-
-                    Stream output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-
-                    WriteDocument(vint, output);
-
-                    output.Close();
-                    input.Close();
                 }
             }
         }
