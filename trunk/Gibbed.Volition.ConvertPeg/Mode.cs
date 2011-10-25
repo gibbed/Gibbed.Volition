@@ -20,28 +20,12 @@
  *    distribution.
  */
 
-using System.IO;
-using Gibbed.IO;
-
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.Volition.ConvertPeg
 {
-    public class FloatProperty : Property
+    internal enum Mode
     {
-        public float Value;
-
-        public override string Tag
-        {
-            get { return "float"; }
-        }
-
-        public override void Deserialize(Stream stream, VintFile vint)
-        {
-            this.Value = stream.ReadValueF32();
-        }
-
-        public override string ToString()
-        {
-            return this.Value.ToString();
-        }
+        Unknown,
+        Disassemble,
+        Assemble,
     }
 }

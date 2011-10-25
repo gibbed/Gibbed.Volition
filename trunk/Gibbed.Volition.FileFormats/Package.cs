@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Gibbed.Helpers;
+using Gibbed.IO;
 using Ionic.Zlib;
 
 namespace Gibbed.Volition.FileFormats

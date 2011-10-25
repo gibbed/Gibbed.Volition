@@ -22,7 +22,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats.Packages.Structures
 {

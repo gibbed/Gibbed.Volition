@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:simpleType name="boolean">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="True"/>
+      <xs:enumeration value="true"/>
+      <xs:enumeration value="False"/>
+      <xs:enumeration value="false"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Table"/>
+        <xs:element ref="TableTemplates"/>
+        <xs:element ref="TableDescription"/>
+        <xs:element ref="EntryCategories"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Table">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:any minOccurs="0"/>
+    	</xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="TableTemplates">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:any minOccurs="0"/>
+    	</xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="TableDescription">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Name" type="xs:NCName" />
+        <xs:element name="Type" type="xs:NCName" />
+        <xs:element ref="Element" maxOccurs="unbounded" />
+        <xs:element name="Single_Line_XML" type="boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Element">
+    <xs:complexType>
+      <xs:sequence>
+				<xs:element name="Name" type="xs:NCName" />
+        <xs:element name="Type" type="xs:NCName" />
+        <xs:element name="Description" type="xs:string" />
+        <xs:element name="Display_Name" type="xs:string" />
+        <xs:element name="Unique" type="boolean" />
+        <xs:element name="Required" type="boolean" />
+        <xs:choice>
+        	<xs:group ref="Element_Element" />
+        	<xs:group ref="Element_Reference" />
+        	<xs:group ref="Element_Selection" />
+        	<xs:group ref="Element_Color" />
+        	<xs:group ref="Element_Value" />
+        </xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:group name="Element_Element">
+		<xs:sequence>
+			<xs:element ref="Element" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:group>
+	
+	<xs:group name="Element_Reference">
+		<xs:sequence>
+			<xs:element ref="Reference" />
+		</xs:sequence>
+	</xs:group>
+	
+	<xs:element name="Reference">
+		<xs:complexType>
+      <xs:sequence>
+        <xs:element name="File" type="xs:string" />
+        <xs:element name="Type" type="xs:string" />
+        <xs:element name="OpenSeparate" type="boolean" />
+      </xs:sequence>
+    </xs:complexType>
+	</xs:element>
+	
+	<xs:group name="Element_Selection">
+		<xs:sequence>
+			<xs:element ref="Default" />
+			<xs:element name="Choice" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:group>
+	
+	<xs:group name="Element_Color">
+		<xs:sequence>
+			<xs:element name="R" type="Color" />
+			<xs:element name="G" type="Color" />
+			<xs:element name="B" type="Color" />
+		</xs:sequence>
+	</xs:group>
+	
+	<xs:complexType name="Color">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string" />
+     	<xs:element name="Type" type="xs:string" />
+     	<xs:element ref="Default" />
+		</xs:sequence>
+  </xs:complexType>
+	
+	<!-- String, Int, Float -->
+	<xs:group name="Element_Value">
+		<xs:sequence>
+			<xs:element ref="Default" />
+		</xs:sequence>
+	</xs:group>
+	
+	<xs:element name="Default" type="xs:string" />
+</xs:schema>
