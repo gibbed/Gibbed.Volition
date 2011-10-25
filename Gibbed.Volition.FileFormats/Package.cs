@@ -25,7 +25,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Gibbed.IO;
-using Ionic.Zlib;
+using ICSharpCode.SharpZipLib.Zip.Compression;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 namespace Gibbed.Volition.FileFormats
 {
@@ -164,7 +165,8 @@ namespace Gibbed.Volition.FileFormats
                 byte[] solid = new byte[packageFile.SolidUncompressedSize];
 
                 input.Seek(packageFile.SolidOffset, SeekOrigin.Begin);
-                ZlibStream zlib = new ZlibStream(input, CompressionMode.Decompress, true);
+
+                var zlib = new InflaterInputStream(input);
 
                 // Decompress solid data
                 {
@@ -273,7 +275,7 @@ namespace Gibbed.Volition.FileFormats
 
                 if (entry.CompressionType == Packages.PackageCompressionType.Zlib)
                 {
-                    var zlib = new ZlibStream(this.Stream, CompressionMode.Decompress, true);
+                    var zlib = new InflaterInputStream(this.Stream);
                     
                     int read = zlib.Read(data, 0, data.Length);
                     if (read < 0 || read != data.Length)
@@ -392,7 +394,7 @@ namespace Gibbed.Volition.FileFormats
                     // this is a hack until I fix zlib handling
                     using (var memory = this.Stream.ReadToMemoryStream(entry.CompressedSize))
                     {
-                        var zlib = new ZlibStream(memory, CompressionMode.Decompress, true);
+                        var zlib = new InflaterInputStream(memory);
                         output.WriteFromStream(zlib, entry.Size);
                     }
                 }
@@ -495,28 +497,34 @@ namespace Gibbed.Volition.FileFormats
                     packageEntry.Offset = offset;
 
                     byte[] uncompressedData = this.GetEntry(packageEntry.Name);
-                    byte[] compressedData = ZlibStream.CompressBuffer(uncompressedData);
-
-                    clean.Write(compressedData, 0, compressedData.Length);
-                    packageEntry.CompressedSize = compressedData.Length;
-
-                    int align = packageEntry.CompressedSize.Align(2048) - packageEntry.CompressedSize;
-                    if (align > 0)
+                    using (var temp = new MemoryStream())
                     {
-                        byte[] block = new byte[align];
-                        clean.Write(block, 0, (int)align);
-                    }
+                        var zlib = new DeflaterOutputStream(temp, new Deflater(Deflater.DEFAULT_COMPRESSION));
+                        zlib.Write(uncompressedData, 0, uncompressedData.Length);
+                        zlib.Flush();
 
-                    offset += packageEntry.CompressedSize + align;
-                    uncompressedDataSize += packageEntry.UncompressedSize;
-                    compressedDataSize += packageEntry.CompressedSize + align;
+                        temp.Position = 0;
+                        clean.WriteFromStream(temp, temp.Length);
+                        packageEntry.CompressedSize = (int)temp.Length;
+
+                        int align = packageEntry.CompressedSize.Align(2048) - packageEntry.CompressedSize;
+                        if (align > 0)
+                        {
+                            byte[] block = new byte[align];
+                            clean.Write(block, 0, (int)align);
+                        }
+
+                        offset += packageEntry.CompressedSize + align;
+                        uncompressedDataSize += packageEntry.UncompressedSize;
+                        compressedDataSize += packageEntry.CompressedSize + align;
+                    }
                 }
             }
             else if (compressionType == Packages.PackageCompressionType.SolidZlib)
             {
                 using (var compressed = new MemoryStream())
                 {
-                    var zlib = new ZlibStream(compressed, CompressionMode.Compress, CompressionLevel.Default, true);
+                    var zlib = new DeflaterOutputStream(compressed, new Deflater(Deflater.DEFAULT_COMPRESSION));
 
                     long offset = 0;
                     foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
