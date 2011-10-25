@@ -21,7 +21,7 @@
  */
 
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats.Vint
 {

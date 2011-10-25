@@ -68,10 +68,18 @@ namespace Gibbed.Volition.Unpack
             string basePath = LookupSteamId(20500);
             if (basePath == null)
             {
-                basePath = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games\\{13E51682-ADC7-4E51-9EBA-1C030781E4A2}", "ConfigApplicationPath", null);
+                basePath = (string)Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\GameUX\Games\{13E51682-ADC7-4E51-9EBA-1C030781E4A2}", "ConfigApplicationPath", null);
                 if (basePath == null)
                 {
-                    return null;
+                    basePath = (string)Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A357EF4C-2B6F-4980-ACA9-B1E42A74D7F3}", "InstallLocation", null);
+                    if (basePath == null)
+                    {
+                        basePath = (string)Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{A357EF4C-2B6F-4980-ACA9-B1E42A74D7F3}", "InstallLocation", null);
+                        if (basePath == null)
+                        {
+                            return null;
+                        }
+                    }
                 }
             }
 
@@ -141,6 +149,9 @@ namespace Gibbed.Volition.Unpack
                 @"build\dlc03",
                 @"build\dlc03\pc",
                 @"build\dlc03\pc\cache",
+                @"build\dlc04",
+                @"build\dlc04\pc",
+                @"build\dlc04\pc\cache",
             };
 
             foreach (string subPath in subPaths)

@@ -26,11 +26,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Gibbed.Volition.ConvertAsm")]
+[assembly: AssemblyTitle("Gibbed.Volition.ConvertPeg")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Gibbed.Volition.ConvertAsm")]
+[assembly: AssemblyProduct("Gibbed.Volition.ConvertPeg")]
 [assembly: AssemblyCopyright("Copyright © Gibbed 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("aaa5bf8a-6541-48f2-969f-14ef87116f7c")]
+[assembly: Guid("cd00f5c0-c4d1-4695-91e0-8828967d1260")]
 
 // Version information for an assembly consists of the following four values:
 //

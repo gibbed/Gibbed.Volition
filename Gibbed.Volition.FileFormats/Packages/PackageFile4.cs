@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 // VPP version 4
 // Used by: Saints Row 2
@@ -46,13 +46,7 @@ namespace Gibbed.Volition.FileFormats.Packages
 
         public void Deserialize(Stream input, bool littleEndian)
         {
-            var buffer = new byte[384];
-            if (input.ReadAligned(buffer, 0, 384, 2048) != 384)
-            {
-                throw new FormatException("failed to read header version 4");
-            }
-
-            var header = buffer.ToStructure<Structures.PackageHeader4>();
+            var header = input.ReadStructure<Structures.PackageHeader4>(2048);
 
             if (littleEndian == false)
             {
@@ -70,75 +64,63 @@ namespace Gibbed.Volition.FileFormats.Packages
             }
 
             // File Index
-            var indexBuffer = new byte[header.IndexSize];
-            if (input.ReadAligned(indexBuffer, 0, header.IndexSize, 2048) != header.IndexSize)
+            using (var indices = input.ReadToMemoryStream(header.IndexSize.Align(2048)))
             {
-                throw new FormatException("failed to read file index");
-            }
-
-            // Names
-            var namesData = input.ReadToMemoryStream(header.NamesSize.Align(2048));
-            if (namesData.Length != header.NamesSize.Align(2048))
-            {
-                throw new FormatException("failed to read name index");
-            }
-
-            // Extensions
-            var extensionsData = input.ReadToMemoryStream(header.ExtensionsSize.Align(2048));
-            if (extensionsData.Length != header.ExtensionsSize.Align(2048))
-            {
-                throw new FormatException("failed to read extensions index");
-            }
-
-            long baseOffset = input.Position;
-
-            this.Entries.Clear();
-            for (int i = 0; i < header.IndexCount; i++)
-            {
-                var entry = new PackageEntry();
-
-                int offset = i * 28; // Each index entry is 28 bytes long
-
-                var index = indexBuffer.ToStructure<Structures.PackageIndex4>(offset);
-
-                if (littleEndian == false)
+                // Names
+                using (var names = input.ReadToMemoryStream(header.NamesSize.Align(2048)))
                 {
-                    index = index.Swap();
+                    // Extensions
+                    using (var extensions = input.ReadToMemoryStream(header.ExtensionsSize.Align(2048)))
+                    {
+                        long baseOffset = input.Position;
+
+                        this.Entries.Clear();
+                        for (int i = 0; i < header.IndexCount; i++)
+                        {
+                            var entry = new PackageEntry();
+
+                            var index = indices.ReadStructure<Structures.PackageIndex4>();
+                            if (littleEndian == false)
+                            {
+                                index = index.Swap();
+                            }
+
+                            if (index.Unknown08 != 0 || index.Unknown1C != 0)
+                            {
+                                throw new FormatException("unexpected index entry value");
+                            }
+
+                            if ((header.Flags & PackageFlags.Compressed) != PackageFlags.Compressed && index.CompressedSize != -1)
+                            {
+                                throw new FormatException("index entry with a compressed size when not compressed");
+                            }
+
+                            names.Seek(index.NameOffset, SeekOrigin.Begin);
+                            entry.Name = names.ReadStringZ(Encoding.ASCII);
+                            extensions.Seek(index.ExtensionOffset, SeekOrigin.Begin);
+                            entry.Name += "." + extensions.ReadStringZ(Encoding.ASCII);
+
+                            entry.Offset = index.Offset;
+                            entry.CompressedSize = index.CompressedSize;
+                            entry.UncompressedSize = index.UncompressedSize;
+
+                            // package is compressed with zlib, offsets are not correct, fix 'em
+                            if ((header.Flags & PackageFlags.Compressed) == PackageFlags.Compressed)
+                            {
+                                entry.Offset = baseOffset;
+                                baseOffset += entry.CompressedSize.Align(2048);
+                                entry.CompressionType = Packages.PackageCompressionType.Zlib;
+                            }
+                            else
+                            {
+                                entry.Offset += baseOffset;
+                                entry.CompressionType = Packages.PackageCompressionType.None;
+                            }
+
+                            this.Entries.Add(entry);
+                        }
+                    }
                 }
-
-                if (index.Unknown08 != 0 || index.Unknown1C != 0)
-                {
-                    throw new FormatException("unexpected index entry value");
-                }
-
-                if ((header.Flags & PackageFlags.Compressed) != PackageFlags.Compressed && index.CompressedSize != -1)
-                {
-                    throw new FormatException("index entry with a compressed size when not compressed");
-                }
-
-                namesData.Seek(index.NameOffset, SeekOrigin.Begin);
-                entry.Name = namesData.ReadStringZ(Encoding.ASCII);
-                extensionsData.Seek(index.ExtensionOffset, SeekOrigin.Begin);
-                entry.Name += "." + extensionsData.ReadStringZ(Encoding.ASCII);
-
-                entry.Offset = index.Offset;
-                entry.CompressedSize = index.CompressedSize;
-                entry.UncompressedSize = index.UncompressedSize;
-
-                // package is compressed with zlib, offsets are not correct, fix 'em
-                if ((header.Flags & PackageFlags.Compressed) == PackageFlags.Compressed)
-                {
-                    entry.Offset = baseOffset;
-                    baseOffset += entry.CompressedSize.Align(2048);
-                    entry.CompressionType = Packages.PackageCompressionType.Zlib;
-                }
-                else
-                {
-                    entry.Offset += baseOffset;
-                    entry.CompressionType = Packages.PackageCompressionType.None;
-                }
-
-                this.Entries.Add(entry);
             }
         }
 

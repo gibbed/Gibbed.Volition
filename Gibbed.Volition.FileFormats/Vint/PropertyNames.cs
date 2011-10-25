@@ -22,7 +22,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats.Vint
 {
