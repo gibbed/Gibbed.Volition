@@ -41,6 +41,7 @@ namespace Gibbed.Volition.Unpack
             RedFactionGuerrilla,
             RedFactionArmageddon,
             SaintsRow2,
+            SaintsRow3InitiationStation,
         }
 
         private static string LookupSteamId(long id)
@@ -185,6 +186,41 @@ namespace Gibbed.Volition.Unpack
             return null;
         }
 
+        private static string LookupSaintsRow3InitiationStation(string inputPath)
+        {
+            string basePath = LookupSteamId(55370);
+            if (basePath == null)
+            {
+                return null;
+            }
+
+            string tryPath;
+
+            tryPath = Path.Combine(basePath, inputPath);
+            if (File.Exists(tryPath) == true)
+            {
+                return tryPath;
+            }
+
+            var subPaths = new string[]
+            {
+                @"packfiles",
+                @"packfiles\pc",
+                @"packfiles\pc\cache",
+            };
+
+            foreach (string subPath in subPaths)
+            {
+                tryPath = Path.Combine(Path.Combine(basePath, subPath), inputPath);
+                if (File.Exists(tryPath) == true)
+                {
+                    return tryPath;
+                }
+            }
+
+            return null;
+        }
+
         public static void Main(string[] args)
         {
             bool showHelp = false;
@@ -212,6 +248,11 @@ namespace Gibbed.Volition.Unpack
                     "sr2",
                     "automatically find SR2 packages",
                     v => game = v != null ? Game.SaintsRow2 : Game.None
+                },
+                {
+                    "is",
+                    "automatically find SR3 Initiation Station packages",
+                    v => game = v != null ? Game.SaintsRow3InitiationStation : Game.None
                 },
                 {
                     "h|help",
@@ -261,6 +302,10 @@ namespace Gibbed.Volition.Unpack
                 else if (game == Game.SaintsRow2)
                 {
                     newPath = LookupSaintsRow2(inputPath);
+                }
+                else if (game == Game.SaintsRow3InitiationStation)
+                {
+                    newPath = LookupSaintsRow3InitiationStation(inputPath);
                 }
 
                 if (newPath != null)
