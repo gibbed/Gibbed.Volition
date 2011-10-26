@@ -483,9 +483,9 @@ namespace Gibbed.Volition.FileFormats
                     byte[] uncompressedData = this.GetEntry(packageEntry.Name);
                     using (var temp = new MemoryStream())
                     {
-                        var zlib = new DeflaterOutputStream(temp, new Deflater(Deflater.DEFAULT_COMPRESSION));
+                        var zlib = new DeflaterOutputStream(temp);
                         zlib.Write(uncompressedData, 0, uncompressedData.Length);
-                        zlib.Flush();
+                        zlib.Finish();
 
                         temp.Position = 0;
                         clean.WriteFromStream(temp, temp.Length);
