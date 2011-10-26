@@ -166,32 +166,16 @@ namespace Gibbed.Volition.FileFormats
 
                 input.Seek(packageFile.SolidOffset, SeekOrigin.Begin);
 
-                var zlib = new InflaterInputStream(input);
-
                 // Decompress solid data
+                var zlib = new InflaterInputStream(input);
+                if (zlib.Read(solid, 0, solid.Length) != solid.Length)
                 {
-                    int left = solid.Length;
-                    int offset = 0;
-                    while (left > 0)
-                    {
-                        int read = zlib.Read(solid, offset, Math.Min(4096, left));
-                        if (read < 0)
-                        {
-                            throw new InvalidOperationException("zlib error");
-                        }
-                        else if (read == 0)
-                        {
-                            break;
-                        }
-
-                        left -= read;
-                        offset += read;
-                    }
+                    throw new InvalidOperationException("zlib error");
                 }
 
                 foreach (Packages.PackageEntry packageEntry in packageFile.Entries)
                 {
-                    MemoryEntry entry = new MemoryEntry();
+                    var entry = new MemoryEntry();
                     entry.Data = new byte[packageEntry.UncompressedSize];
                     Array.Copy(solid, (int)packageEntry.Offset, entry.Data, 0, entry.Data.Length);
                     entry.Size = entry.Data.Length;
