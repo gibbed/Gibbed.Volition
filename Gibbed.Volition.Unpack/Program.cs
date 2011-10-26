@@ -261,11 +261,11 @@ namespace Gibbed.Volition.Unpack
                 },
             };
 
-            List<string> extra;
+            List<string> extras;
 
             try
             {
-                extra = options.Parse(args);
+                extras = options.Parse(args);
             }
             catch (OptionException e)
             {
@@ -275,7 +275,7 @@ namespace Gibbed.Volition.Unpack
                 return;
             }
 
-            if (extra.Count < 1 || extra.Count > 2 || showHelp == true)
+            if (extras.Count < 1 || extras.Count > 2 || showHelp == true)
             {
                 Console.WriteLine("Usage: {0} [OPTIONS]+ input_vpp [output_dir]", GetExecutableName());
                 Console.WriteLine("Unpack specified Volition package file.");
@@ -285,7 +285,7 @@ namespace Gibbed.Volition.Unpack
                 return;
             }
 
-            string inputPath = extra[0];
+            string inputPath = extras[0];
 
             if (game != Game.None && File.Exists(inputPath) == false)
             {
@@ -314,9 +314,9 @@ namespace Gibbed.Volition.Unpack
                 }
             }
 
-            string outputPath = extra.Count > 1 ?
-                extra[1] :
-                Path.ChangeExtension(extra[0], null);
+            string outputPath = extras.Count > 1 ?
+                extras[1] :
+                Path.Combine(Directory.GetCurrentDirectory(), Path.GetFileNameWithoutExtension(extras[0]));
 
             using (var input = File.OpenRead(inputPath))
             {
