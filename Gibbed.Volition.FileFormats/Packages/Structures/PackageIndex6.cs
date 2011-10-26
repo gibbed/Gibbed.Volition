@@ -29,7 +29,7 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
     internal struct PackageIndex6
     {
         public int NameOffset;
-        public uint Unknown04;
+        public uint OffsetRuntime;
         public uint Offset;
         public int UncompressedSize;
         public int CompressedSize;
@@ -39,7 +39,7 @@ namespace Gibbed.Volition.FileFormats.Packages.Structures
         {
             var swapped = new PackageIndex6();
             swapped.NameOffset = this.NameOffset.Swap();
-            swapped.Unknown04 = this.Unknown04.Swap();
+            swapped.OffsetRuntime = this.OffsetRuntime.Swap();
             swapped.Offset = this.Offset.Swap();
             swapped.UncompressedSize = this.UncompressedSize.Swap();
             swapped.CompressedSize = this.CompressedSize.Swap();

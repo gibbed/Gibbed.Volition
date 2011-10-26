@@ -115,7 +115,10 @@ namespace Gibbed.Volition.FileFormats.Packages
                 {
                     long baseOffset = input.Position;
 
-                    if ((header.Flags & PackageFlags.Solid) == PackageFlags.Solid)
+                    bool isCompressed = (header.Flags & PackageFlags.Compressed) == PackageFlags.Compressed;
+                    bool isSolid = isCompressed == true && ((header.Flags & PackageFlags.Solid) == PackageFlags.Solid);
+
+                    if (isSolid == true)
                     {
                         this.IsSolid = true;
                         this.SolidOffset = baseOffset;
@@ -134,7 +137,7 @@ namespace Gibbed.Volition.FileFormats.Packages
                             index = index.Swap();
                         }
 
-                        if (index.Unknown04 != 0 || index.Unknown18 != 0)
+                        if (index.OffsetRuntime != 0 || index.Unknown18 != 0)
                         {
                             throw new FormatException("unexpected index entry value");
                         }
@@ -153,10 +156,10 @@ namespace Gibbed.Volition.FileFormats.Packages
                         entry.UncompressedSize = index.UncompressedSize;
 
                         // package is compressed with zlib, offsets are not correct, fix 'em
-                        if ((header.Flags & PackageFlags.Compressed) == PackageFlags.Compressed)
+                        if (isCompressed == true)
                         {
                             // solid compression (one zlib block)
-                            if ((header.Flags & PackageFlags.Solid) == PackageFlags.Solid)
+                            if (isSolid == true)
                             {
                                 entry.CompressionType = Packages.PackageCompressionType.SolidZlib;
                             }
@@ -188,7 +191,7 @@ namespace Gibbed.Volition.FileFormats.Packages
             {
                 var index = new Structures.PackageIndex6();
                 index.NameOffset = (int)namesBuffer.Position;
-                index.Unknown04 = 0;
+                index.OffsetRuntime = 0;
                 index.Offset = (uint)entry.Offset;
                 index.UncompressedSize = entry.UncompressedSize;
                 index.CompressedSize = entry.CompressedSize;
