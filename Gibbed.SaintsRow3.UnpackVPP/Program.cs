@@ -21,17 +21,17 @@
  */
 
 using System;
+using FileFormats = Gibbed.Volition.FileFormats;
+using Pack = Gibbed.Volition.Pack;
 
-namespace Gibbed.Volition.FileFormats.Packages
+namespace Gibbed.SaintsRow3.UnpackVPP
 {
-    [Flags]
-    internal enum PackageFlags : uint
+    internal class Program
     {
-        None = 0, // 0
-        Compressed = 1 << 0, // 1
-        Solid = 1 << 1, // 2
-        Unknown11 = 1 << 11,
-        Unknown12 = 1 << 12,
-        Unknown14 = 1 << 14,
+        public static void Main(string[] args)
+        {
+            Environment.ExitCode = new Pack.VPP.Unpacker<FileFormats.PackageFileV6>()
+                .Main(args);
+        }
     }
 }

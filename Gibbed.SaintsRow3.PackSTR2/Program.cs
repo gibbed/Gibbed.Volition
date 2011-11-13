@@ -20,31 +20,19 @@
  *    distribution.
  */
 
-using System.Runtime.InteropServices;
-using Gibbed.IO;
+using System;
+using FileFormats = Gibbed.Volition.FileFormats;
+using Pack = Gibbed.Volition.Pack;
 
-namespace Gibbed.Volition.FileFormats.Packages.Structures
+namespace Gibbed.SaintsRow3.PackSTR2
 {
-    [StructLayout(LayoutKind.Sequential, Size = 24)]
-    internal struct PackageIndex6
+    internal class Program
     {
-        public int NameOffset;
-        public uint OffsetRuntime;
-        public uint Offset;
-        public int UncompressedSize;
-        public int CompressedSize;
-        public uint Unknown18;
-
-        public PackageIndex6 Swap()
+        public static void Main(string[] args)
         {
-            var swapped = new PackageIndex6();
-            swapped.NameOffset = this.NameOffset.Swap();
-            swapped.OffsetRuntime = this.OffsetRuntime.Swap();
-            swapped.Offset = this.Offset.Swap();
-            swapped.UncompressedSize = this.UncompressedSize.Swap();
-            swapped.CompressedSize = this.CompressedSize.Swap();
-            swapped.Unknown18 = this.Unknown18.Swap();
-            return swapped;
+            Environment.ExitCode = new Pack.STR2.Packer
+                <FileFormats.PackageFileV6, FileFormats.Package.Entry>()
+                .Main(args);
         }
     }
 }

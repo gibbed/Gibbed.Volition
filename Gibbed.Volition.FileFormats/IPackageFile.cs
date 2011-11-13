@@ -22,24 +22,30 @@
 
 using System.Collections.Generic;
 using System.IO;
+using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats
 {
-    internal interface IPackageFile
+    public interface IPackageFile
     {
-        List<Packages.PackageEntry> Entries { get; }
-        int EstimateHeaderSize();
-        
-        void Deserialize(Stream input, bool littleEndian);
-        void Serialize(Stream output, bool littleEndian, Packages.PackageCompressionType compressionType);
-        
-        bool IsSolid { get; }
-        long SolidOffset { get; }
-        int SolidUncompressedSize { get; }
-        int SolidCompressedSize { get; }
+        Endian Endian { get; set; }
+        Package.HeaderFlags Flags { get; set; }
+        uint TotalSize { get; set; }
+        uint UncompressedSize { get; set; }
+        uint CompressedSize { get; set; }
 
-        int UncompressedDataSize { get; set; }
-        int CompressedDataSize { get; set; }
-        int PackageSize { get; set; }
+        IEnumerable<IPackageEntry> Directory { get; }
+
+        long DataOffset { get; }
+
+        int EstimateHeaderSize();
+        void Serialize(Stream output);
+        void Deserialize(Stream input);
+    }
+
+    public interface IPackageFile<TEntry> : IPackageFile
+        where TEntry: IPackageEntry
+    {
+        List<TEntry> Entries { get; }
     }
 }

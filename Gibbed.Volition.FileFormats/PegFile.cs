@@ -30,7 +30,7 @@ namespace Gibbed.Volition.FileFormats
 {
     public class PegFile
     {
-        public bool LittleEndian;
+        public Endian Endian;
         public ushort Version;
         public Platform Platform;
         public uint DataSize;
@@ -41,41 +41,41 @@ namespace Gibbed.Volition.FileFormats
         {
             var baseOffset = input.Position;
 
-            var magic = input.ReadValueU32(true);
+            var magic = input.ReadValueU32(Endian.Little);
             if (magic != 0x564B4547 && // VKEG
                 magic != 0x47454B56)
             {
                 throw new FormatException("not a peg file");
             }
 
-            var littleEndian = magic == 0x564B4547;
-            this.LittleEndian = littleEndian;
+            var endian = magic == 0x564B4547 ? Endian.Little : Endian.Big;
+            this.Endian = endian;
 
-            var version = input.ReadValueU16(littleEndian);
+            var version = input.ReadValueU16(endian);
             if (version != 10)
             {
                 throw new FormatException("unsupported peg version");
             }
             this.Version = version;
 
-            var platform = input.ReadValueU16(littleEndian);
+            var platform = input.ReadValueU16(endian);
             if (Enum.IsDefined(typeof(Platform), platform) == false)
             {
                 throw new FormatException("unsupported peg platform");
             }
             this.Platform = (Platform)platform;
 
-            var headerSize = input.ReadValueU32(littleEndian);
+            var headerSize = input.ReadValueU32(endian);
             if (baseOffset + headerSize > input.Length)
             {
                 throw new EndOfStreamException();
             }
 
-            this.DataSize = input.ReadValueU32(littleEndian);
+            this.DataSize = input.ReadValueU32(endian);
 
-            var textureCount = input.ReadValueU16(littleEndian);
-            var unknown12 = input.ReadValueU16(littleEndian);
-            var frameCount = input.ReadValueU16(littleEndian);
+            var textureCount = input.ReadValueU16(endian);
+            var unknown12 = input.ReadValueU16(endian);
+            var frameCount = input.ReadValueU16(endian);
             var unknown16 = input.ReadValueU8();
             var unknown17 = input.ReadValueU8();
 
@@ -93,7 +93,7 @@ namespace Gibbed.Volition.FileFormats
                 textures[i] = new Peg.Texture();
 
                 var frame = new Peg.Frame();
-                frame.Deserialize(input, littleEndian);
+                frame.Deserialize(input, endian);
                 textures[i].Frames.Add(frame);
                 totalFrames++;
 
@@ -121,7 +121,7 @@ namespace Gibbed.Volition.FileFormats
                 for (int j = 1; j < frame.FrameCount; j++)
                 {
                     var extraFrame = new Peg.Frame();
-                    extraFrame.Deserialize(input, littleEndian);
+                    extraFrame.Deserialize(input, endian);
 
                     if (extraFrame.FrameCount != 1)
                     {

@@ -29,18 +29,18 @@ namespace Gibbed.Volition.FileFormats
 {
     public class CVTFFile
     {
-        public void Deserialize(Stream input, bool littleEndian)
+        public void Deserialize(Stream input, Endian endian)
         {
-            var unknown1_count = input.ReadValueU32(littleEndian);
-            var unknown1_offset = input.ReadValueU32(littleEndian);
-            var unknown2_offset = input.ReadValueU32(littleEndian);
-            var unknown2_count = input.ReadValueU32(littleEndian);
-            var unknown3_offset = input.ReadValueU32(littleEndian);
-            var unknown3_count = input.ReadValueU32(littleEndian);
-            var unknown4_offset = input.ReadValueU32(littleEndian);
-            var unknown4_count = input.ReadValueU32(littleEndian);
-            var unknown5_offset = input.ReadValueU32(littleEndian);
-            var unknown5_count = input.ReadValueU32(littleEndian);
+            var unknown1_count = input.ReadValueU32(endian);
+            var unknown1_offset = input.ReadValueU32(endian);
+            var unknown2_offset = input.ReadValueU32(endian);
+            var unknown2_count = input.ReadValueU32(endian);
+            var unknown3_offset = input.ReadValueU32(endian);
+            var unknown3_count = input.ReadValueU32(endian);
+            var unknown4_offset = input.ReadValueU32(endian);
+            var unknown4_count = input.ReadValueU32(endian);
+            var unknown5_offset = input.ReadValueU32(endian);
+            var unknown5_count = input.ReadValueU32(endian);
 
             if (unknown1_count > 0)
             {
@@ -70,7 +70,7 @@ namespace Gibbed.Volition.FileFormats
                 var offsets = new uint[unknown4_count];
                 for (int i = 0; i < offsets.Length; i++)
                 {
-                    offsets[i] = input.ReadValueU32(littleEndian);
+                    offsets[i] = input.ReadValueU32(endian);
                 }
 
                 for (int i = 0; i < offsets.Length; i++)
@@ -93,7 +93,7 @@ namespace Gibbed.Volition.FileFormats
                 var offsets = new uint[unknown5_count];
                 for (int i = 0; i < offsets.Length; i++)
                 {
-                    offsets[i] = input.ReadValueU32(littleEndian);
+                    offsets[i] = input.ReadValueU32(endian);
                 }
 
                 for (int i = 0; i < offsets.Length; i++)

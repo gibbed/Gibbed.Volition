@@ -152,7 +152,7 @@ namespace Gibbed.Volition.ConvertPeg
                         xml.WriteStartElement("peg");
                         xml.WriteAttributeString("version", peg.Version.ToString());
                         xml.WriteAttributeString("platform", peg.Platform.ToString());
-                        xml.WriteAttributeString("little_endian", peg.LittleEndian.ToString());
+                        xml.WriteAttributeString("little_endian", peg.Endian.ToString());
 
                         if (peg.Textures != null &&
                             peg.Textures.Count > 0)

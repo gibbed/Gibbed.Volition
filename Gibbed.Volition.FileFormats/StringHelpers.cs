@@ -27,10 +27,11 @@ namespace Gibbed.Volition.FileFormats
     public static class StringHelpers
     {
         // From Volition (SR2, RFG)
-        public static UInt32 CrcVolition(this string input)
+        public static uint HashVolitionCRC(this string input)
         {
             input = input.ToLowerInvariant();
-            UInt32 hash = 0;
+
+            uint hash = 0;
             for (int i = 0; i < input.Length; i++)
             {
                 hash = CrcVolitionTable[(byte)hash ^ (byte)input[i]] ^ (hash >> 8);
@@ -38,25 +39,21 @@ namespace Gibbed.Volition.FileFormats
             return hash;
         }
 
-        public static UInt32 HashVolition(this string input)
+        public static uint HashVolition(this string input)
         {
-            UInt32 hash = 0;
+            input = input.ToLowerInvariant();
+
+            uint hash = 0;
             for (int i = 0; i < input.Length; i++)
             {
-                UInt32 c = (char)(input[i]);
-                if ((c - 0x41) <= 0x19)
-                {
-                    c += 0x20;
-                }
-
                 // rotate left by 6
                 hash = (hash << 6) | (hash >> (32 - 6));
-                hash = c ^ hash;
+                hash = (char)(input[i]) ^ hash;
             }
             return hash;
         }
 
-        private static UInt32[] CrcVolitionTable =
+        private static uint[] CrcVolitionTable =
         {
             0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
             0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
