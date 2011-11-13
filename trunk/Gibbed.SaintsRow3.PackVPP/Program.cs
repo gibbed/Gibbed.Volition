@@ -20,12 +20,19 @@
  *    distribution.
  */
 
-namespace Gibbed.Volition.FileFormats.Packages
+using System;
+using FileFormats = Gibbed.Volition.FileFormats;
+using Pack = Gibbed.Volition.Pack;
+
+namespace Gibbed.SaintsRow3.PackVPP
 {
-    public enum PackageCompressionType
+    internal class Program
     {
-        None,
-        Zlib,
-        SolidZlib,
+        public static void Main(string[] args)
+        {
+            Environment.ExitCode = new Pack.VPP.Packer
+                <FileFormats.PackageFileV6, FileFormats.Package.Entry>()
+                .Main(args);
+        }
     }
 }

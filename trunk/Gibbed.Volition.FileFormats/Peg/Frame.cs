@@ -41,23 +41,23 @@ namespace Gibbed.Volition.FileFormats.Peg
         public byte Levels;
         public uint DataSize;
 
-        public void Deserialize(Stream input, bool littleEndian)
+        public void Deserialize(Stream input, Endian endian)
         {
-            this.DataOffset = input.ReadValueU32(littleEndian);
-            this.Width = input.ReadValueU16(littleEndian);
-            this.Height = input.ReadValueU16(littleEndian);
+            this.DataOffset = input.ReadValueU32(endian);
+            this.Width = input.ReadValueU16(endian);
+            this.Height = input.ReadValueU16(endian);
 
-            var format = input.ReadValueU16(littleEndian);
+            var format = input.ReadValueU16(endian);
             if (Enum.IsDefined(typeof(PixelFormat), format) == false)
             {
                 throw new FormatException("unknown pixel format");
             }
             this.Format = (PixelFormat)format;
 
-            this.Unknown0A = input.ReadValueU16(littleEndian);
-            this.Unknown0C = input.ReadValueU32(littleEndian);
-            this.FrameCount = input.ReadValueU16(littleEndian);
-            this.Flags = (TextureFlags)input.ReadValueU16(littleEndian);
+            this.Unknown0A = input.ReadValueU16(endian);
+            this.Unknown0C = input.ReadValueU32(endian);
+            this.FrameCount = input.ReadValueU16(endian);
+            this.Flags = (TextureFlags)input.ReadValueU16(endian);
 
             input.Seek(4, SeekOrigin.Current);
             //var namePointer = input.ReadValueU32(littleEndian);
@@ -65,17 +65,17 @@ namespace Gibbed.Volition.FileFormats.Peg
             this.Unknown18 = input.ReadValueU16();
             this.Delay = input.ReadValueU8(); // seems to be related to FrameCount - timing related?
             this.Levels = input.ReadValueU8(); // refer to MSDN on IDirect3DDevice9::CreateTexture
-            this.DataSize = input.ReadValueU32(littleEndian);
+            this.DataSize = input.ReadValueU32(endian);
 
             if (this.Unknown18 != 0)
             {
                 //throw new InvalidOperationException();
             }
 
-            var nextFramePointer = input.ReadValueU32(littleEndian);
-            var prevFramePointer = input.ReadValueU32(littleEndian);
-            var d3dFormat = input.ReadValueU32(littleEndian);
-            var d3dTexture = input.ReadValueU32(littleEndian);
+            var nextFramePointer = input.ReadValueU32(endian);
+            var prevFramePointer = input.ReadValueU32(endian);
+            var d3dFormat = input.ReadValueU32(endian);
+            var d3dTexture = input.ReadValueU32(endian);
 
             if (nextFramePointer != 0 ||
                 prevFramePointer != 0 ||
@@ -86,25 +86,25 @@ namespace Gibbed.Volition.FileFormats.Peg
             }
         }
 
-        public void Serialize(Stream output, bool littleEndian)
+        public void Serialize(Stream output, Endian endian)
         {
-            output.WriteValueU32(this.DataOffset, littleEndian);
-            output.WriteValueU16(this.Width, littleEndian);
-            output.WriteValueU16(this.Height, littleEndian);
-            output.WriteValueU16((ushort)this.Format, littleEndian);
-            output.WriteValueU16(this.Unknown0A, littleEndian);
-            output.WriteValueU32(this.Unknown0C, littleEndian);
-            output.WriteValueU16(this.FrameCount, littleEndian);
-            output.WriteValueU16((ushort)this.Flags, littleEndian);
-            output.WriteValueU32(0, littleEndian);
+            output.WriteValueU32(this.DataOffset, endian);
+            output.WriteValueU16(this.Width, endian);
+            output.WriteValueU16(this.Height, endian);
+            output.WriteValueU16((ushort)this.Format, endian);
+            output.WriteValueU16(this.Unknown0A, endian);
+            output.WriteValueU32(this.Unknown0C, endian);
+            output.WriteValueU16(this.FrameCount, endian);
+            output.WriteValueU16((ushort)this.Flags, endian);
+            output.WriteValueU32(0, endian);
             output.WriteValueU16(this.Unknown18);
             output.WriteValueU8(this.Delay);
             output.WriteValueU8(this.Levels);
-            output.WriteValueU32(this.DataSize, littleEndian);
-            output.WriteValueU32(0, littleEndian);
-            output.WriteValueU32(0, littleEndian);
-            output.WriteValueU32(0, littleEndian);
-            output.WriteValueU32(0, littleEndian);
+            output.WriteValueU32(this.DataSize, endian);
+            output.WriteValueU32(0, endian);
+            output.WriteValueU32(0, endian);
+            output.WriteValueU32(0, endian);
+            output.WriteValueU32(0, endian);
         }
     }
 }

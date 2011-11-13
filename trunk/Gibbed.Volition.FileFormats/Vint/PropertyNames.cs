@@ -152,7 +152,7 @@ namespace Gibbed.Volition.FileFormats.Vint
 
             foreach (string item in table)
             {
-                hashes[item.CrcVolition()] = item;
+                hashes[item.HashVolitionCRC()] = item;
             }
 
             return hashes;

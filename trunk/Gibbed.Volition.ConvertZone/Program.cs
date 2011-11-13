@@ -33,7 +33,7 @@ namespace Gibbed.Volition.ConvertZone
             Console.WriteLine("[{0:X8} {1:X8}] [{2:X8}] {3}",
                 text.HashVolition(),
                 text.HashVolition().Swap(),
-                text.CrcVolition(),
+                text.HashVolitionCRC(),
                 text);
         }
 
