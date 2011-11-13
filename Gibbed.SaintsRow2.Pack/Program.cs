@@ -31,7 +31,7 @@ namespace Gibbed.SaintsRow2.Pack
         public static void Main(string[] args)
         {
             Environment.ExitCode = new Generic.VPP.Packer
-                <FileFormats.PackageFileV3, FileFormats.Package.Entry>()
+                <FileFormats.PackageFileV4, FileFormats.Package.Entry>()
                 .Main(args);
         }
     }
