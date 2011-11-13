@@ -23,12 +23,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.XPath;
+using System.Linq;
 using Gibbed.IO;
 using Gibbed.Volition.FileFormats;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using NDesk.Options;
-using Package = Gibbed.Volition.FileFormats.Package;
 using ZLIB = ComponentAce.Compression.Zlib;
 
 namespace Gibbed.Volition.Pack.VPP
@@ -125,7 +124,7 @@ namespace Gibbed.Volition.Pack.VPP
             {
                 package.Entries.Add(new TEntry()
                 {
-                    Name = kv.Value,
+                    Name = kv.Key,
                 });
             }
 
@@ -187,6 +186,16 @@ namespace Gibbed.Volition.Pack.VPP
                     {
                         using (var input = File.OpenRead(kv.Value))
                         {
+                            if (isCondensed == false)
+                            {
+                                var padding = offset.Align(2048) - offset;
+                                if (padding > 0)
+                                {
+                                    offset += padding;
+                                    output.Seek(padding, SeekOrigin.Current);
+                                }
+                            }
+
                             var entry = new TEntry();
                             entry.Name = kv.Key;
                             entry.Offset = (uint)offset;
@@ -206,17 +215,21 @@ namespace Gibbed.Volition.Pack.VPP
                                     output.WriteFromStream(compressed, compressed.Length);
                                 }
 
-                                offset += isCondensed == true ? entry.CompressedSize : entry.CompressedSize.Align(2048);
+                                offset += entry.CompressedSize;
                             }
                             else
                             {
                                 output.WriteFromStream(input, input.Length);
                                 entry.CompressedSize = 0xFFFFFFFF;
-                                offset += isCondensed == true ? entry.UncompressedSize : entry.UncompressedSize.Align(2048);
+                                offset += entry.UncompressedSize;
                             }
 
                             package.Entries.Add(entry);
                         }
+
+                        package.CompressedSize = isCompressed == false ?
+                             0xFFFFFFFF : (uint)package.Entries.Sum(e => e.CompressedSize);
+                        package.UncompressedSize = (uint)offset;
                     }
                 }
 

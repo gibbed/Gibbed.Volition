@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Gibbed.IO;
 
@@ -60,17 +61,9 @@ namespace Gibbed.Volition.FileFormats
         public int EstimateHeaderSize()
         {
             int totalSize = 0;
-
             totalSize += 2048; // header
             totalSize += (this.Entries.Count * 24).Align(2048);
-
-            int namesSize = 0;
-            foreach (var entry in this.Entries)
-            {
-                namesSize += entry.Name.Length + 1;
-            }
-
-            totalSize += namesSize.Align(2048);
+            totalSize += this.Entries.Sum(e => e.Name.Length + 1).Align(2048);
             return totalSize;
         }
 
