@@ -30,7 +30,7 @@ namespace Gibbed.SaintsRow2.Unpack
     {
         public static void Main(string[] args)
         {
-            Environment.ExitCode = new Generic.VPP.Unpacker<FileFormats.PackageFileV3>()
+            Environment.ExitCode = new Generic.VPP.Unpacker<FileFormats.PackageFileV4>()
                 .Main(args);
         }
     }
