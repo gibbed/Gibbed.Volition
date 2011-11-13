@@ -65,10 +65,23 @@ namespace Gibbed.Volition.FileFormats
             int namesSize = 0;
             foreach (var entry in this.Entries)
             {
-                namesSize += entry.Name.Length + 1;
+                namesSize += Path.GetFileNameWithoutExtension(entry.Name).Length + 1;
             }
-
             totalSize += namesSize.Align(2048);
+
+            int extensionsSize = 0;
+            foreach (var entry in this.Entries)
+            {
+                var extension = Path.GetExtension(entry.Name);
+                if (extension != null && extension.StartsWith(".") == true)
+                {
+                    extension = extension.Substring(1);
+                }
+
+                extensionsSize += extension.Length + 1;
+            }
+            totalSize += extensionsSize.Align(2048);
+
             return totalSize;
         }
 
