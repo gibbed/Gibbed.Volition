@@ -70,7 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsmFile.cs" />
     <Compile Include="CVTFFile.cs" />
     <Compile Include="IPackageEntry.cs" />
     <Compile Include="IPackageFile.cs" />
@@ -82,13 +81,16 @@
     <Compile Include="Package\HeaderV4.cs" />
     <Compile Include="Package\HeaderV6.cs" />
     <Compile Include="PackageFileV3.cs" />
-    <Compile Include="PegFile.cs" />
+    <Compile Include="PegFileV10.cs" />
+    <Compile Include="PegFileV13.cs" />
+    <Compile Include="Peg\FrameV13.cs" />
     <Compile Include="Peg\TextureFlags.cs" />
     <Compile Include="Peg\PixelFormat.cs" />
-    <Compile Include="Peg\Frame.cs" />
+    <Compile Include="Peg\FrameV10.cs" />
     <Compile Include="Peg\Texture.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamHelpers.cs" />
     <Compile Include="StringHelpers.cs" />
     <Compile Include="TableDescription.cs" />
     <Compile Include="TableFile.cs" />

@@ -22,6 +22,9 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Gibbed.Volition.FileFormats;
 
 namespace Gibbed.Volition.Test
 {
@@ -29,6 +32,12 @@ namespace Gibbed.Volition.Test
     {
         public static void Main(string[] args)
         {
+            using (var input = File.OpenRead(@"T:\SR2\pc\meshes\sp_atv01.cvtf"))
+            {
+                var cvtf = new CVTFFile();
+                cvtf.Deserialize(input, Gibbed.IO.Endian.Little);
+
+            }
         }
     }
 }

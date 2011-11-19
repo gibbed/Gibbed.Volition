@@ -24,98 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using Gibbed.Volition.FileFormats;
+using Gibbed.RedFaction3.FileFormats;
 using NDesk.Options;
 
-namespace Gibbed.Volition.ConvertAsm
+namespace Gibbed.RedFaction3.ConvertASM
 {
     internal class Program
     {
-        /*
-        private static void WriteSubEntry(XmlWriter writer, AsmFileEntry subEntry)
-        {
-            writer.WriteElementString("unk0", subEntry.Name);
-            writer.WriteElementString("unk1", subEntry.Unk1.ToString());
-            writer.WriteElementString("unk2", subEntry.Unk2.ToString());
-            writer.WriteElementString("unk3", subEntry.Unk3.ToString());
-            writer.WriteElementString("unk4", subEntry.Unk4.ToString());
-            writer.WriteElementString("unk5", subEntry.HeaderFileSize.ToString());
-            writer.WriteElementString("unk6", subEntry.DataFileSize.ToString());
-        }
-
-        private static void WriteEntry(XmlWriter writer, AsmEntry entry)
-        {
-            writer.WriteElementString("unk0", entry.Unk0);
-            writer.WriteElementString("unk1", entry.Unk1.ToString());
-            writer.WriteElementString("unk2", entry.Unk2.ToString());
-            writer.WriteElementString("unk4", entry.Unk4.ToString());
-            writer.WriteElementString("unk6", entry.Unk6.ToString());
-
-            writer.WriteStartElement("unk7s");
-            foreach (int unk7 in entry.FileSizes)
-            {
-                writer.WriteElementString("unk7", unk7.ToString());
-            }
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("subentries");
-            foreach (AsmFileEntry subEntry in entry.Files)
-            {
-                writer.WriteStartElement("subentry");
-                WriteSubEntry(writer, subEntry);
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-        }
-
-        private static void ReadDocument(AsmFile asm, Stream input)
-        {
-            XmlReader writer = XmlWriter.Create(output, settings);
-
-            writer.WriteStartDocument();
-            writer.WriteStartElement("entries");
-            writer.WriteAttributeString("version", asm.Version.ToString());
-
-            foreach (AsmEntry entry in asm.Entries)
-            {
-                writer.WriteStartElement("entry");
-                WriteEntry(writer, entry);
-                writer.WriteEndElement();
-            }
-
-            writer.WriteEndElement();
-            writer.WriteEndDocument();
-
-            writer.Flush();
-        }
-
-        private static void WriteDocument(AsmFile asm, Stream output)
-        {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.IndentChars = "\t";
-            settings.OmitXmlDeclaration = true;
-
-            XmlWriter writer = XmlWriter.Create(output, settings);
-
-            writer.WriteStartDocument();
-            writer.WriteStartElement("entries");
-            writer.WriteAttributeString("version", asm.Version.ToString());
-
-            foreach (AsmEntry entry in asm.Entries)
-            {
-                writer.WriteStartElement("entry");
-                WriteEntry(writer, entry);
-                writer.WriteEndElement();
-            }
-
-            writer.WriteEndElement();
-            writer.WriteEndDocument();
-
-            writer.Flush();
-        }
-        */
-
         private static string GetExecutableName()
         {
             return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
@@ -128,7 +43,7 @@ namespace Gibbed.Volition.ConvertAsm
             bool xml2asm = false;
             bool asm2xml = false;
 
-            OptionSet options = new OptionSet()
+            var options = new OptionSet()
             {
                 {
                     "o|overwrite",
@@ -183,18 +98,17 @@ namespace Gibbed.Volition.ConvertAsm
             {
                 return;
             }
-            
+
             if (asm2xml == true)
             {
                 using (var input = File.OpenRead(inputPath))
                 {
-                    AsmFile asm = new AsmFile();
+                    var asm = new AsmFile();
                     asm.Deserialize(input);
 
-                    using (var output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    using (var output = File.Create(outputPath))
                     {
-
-                        XmlSerializer serializer = new XmlSerializer(typeof(AsmFile));
+                        var serializer = new XmlSerializer(typeof(AsmFile));
                         serializer.Serialize(output, asm);
                     }
                 }
@@ -203,10 +117,10 @@ namespace Gibbed.Volition.ConvertAsm
             {
                 using (var input = File.OpenRead(inputPath))
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(AsmFile));
-                    AsmFile asm = (AsmFile)serializer.Deserialize(input);
+                    var serializer = new XmlSerializer(typeof(AsmFile));
+                    var asm = (AsmFile)serializer.Deserialize(input);
 
-                    using (var output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    using (var output = File.Create(outputPath))
                     {
                         asm.Serialize(output);
                     }

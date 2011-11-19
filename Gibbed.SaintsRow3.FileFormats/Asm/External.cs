@@ -18,16 +18,24 @@
  * 
  * 3. This notice may not be removed or altered from any source
  *    distribution.
+ *    
  */
 
-using System.Collections.Generic;
-
-namespace Gibbed.Volition.FileFormats.Peg
+namespace Gibbed.SaintsRow3.FileFormats.Asm
 {
-    public class Texture<TFrame>
+    public class External
     {
-        public string Name;
-        public List<TFrame> Frames
-            = new List<TFrame>();
+        public byte Id { get; set; }
+        public string Name { get; set; }
+
+        public External()
+        {
+        }
+
+        public External(string name, byte id)
+        {
+            this.Name = name;
+            this.Id = id;
+        }
     }
 }
