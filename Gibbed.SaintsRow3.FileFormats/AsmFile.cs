@@ -32,10 +32,10 @@ namespace Gibbed.SaintsRow3.FileFormats
     public class AsmFile
     {
         public ushort Version;
-        public List<Asm.External> Allocators = new List<Asm.External>();
-        public List<Asm.External> Primitives = new List<Asm.External>();
-        public List<Asm.External> Containers = new List<Asm.External>();
-        public List<Asm.StreamEntry> Entries = new List<Asm.StreamEntry>();
+        public List<Asm.External> AllocatorTypes = new List<Asm.External>();
+        public List<Asm.External> PrimitiveTypes = new List<Asm.External>();
+        public List<Asm.External> ContainerTypes = new List<Asm.External>();
+        public List<Asm.ContainerEntry> Containers = new List<Asm.ContainerEntry>();
 
         public void Deserialize(Stream input)
         {
@@ -55,48 +55,48 @@ namespace Gibbed.SaintsRow3.FileFormats
 
             var entryCount = input.ReadValueU16();
 
-            this.Allocators.Clear();
+            this.AllocatorTypes.Clear();
             if (this.Version >= 8)
             {
                 var allocatorCount = input.ReadValueU32(endian);
                 for (uint i = 0; i < allocatorCount; i++)
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
-                    var unknown = input.ReadValueU8();
-                    this.Allocators.Add(new Asm.External(name, unknown));
+                    var id = input.ReadValueU8();
+                    this.AllocatorTypes.Add(new Asm.External(name, id));
                 }
             }
 
-            this.Primitives.Clear();
+            this.PrimitiveTypes.Clear();
             if (this.Version >= 8)
             {
                 var primitiveCount = input.ReadValueU32(endian);
                 for (uint i = 0; i < primitiveCount; i++)
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
-                    var unknown = input.ReadValueU8();
-                    this.Primitives.Add(new Asm.External(name, unknown));
+                    var id = input.ReadValueU8();
+                    this.PrimitiveTypes.Add(new Asm.External(name, id));
                 }
             }
 
-            this.Containers.Clear();
+            this.ContainerTypes.Clear();
             if (this.Version >= 8)
             {
                 var containerCount = input.ReadValueU32(endian);
                 for (uint i = 0; i < containerCount; i++)
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
-                    var unknown = input.ReadValueU8();
-                    this.Containers.Add(new Asm.External(name, unknown));
+                    var id = input.ReadValueU8();
+                    this.ContainerTypes.Add(new Asm.External(name, id));
                 }
             }
 
-            this.Entries.Clear();
+            this.Containers.Clear();
             for (ushort i = 0; i < entryCount; i++)
             {
-                var entry = new Asm.StreamEntry();
-                entry.Deserialize(input, this.Version, endian);
-                this.Entries.Add(entry);
+                var container = new Asm.ContainerEntry();
+                container.Deserialize(input, this.Version, endian);
+                this.Containers.Add(container);
             }
         }
 
@@ -109,10 +109,10 @@ namespace Gibbed.SaintsRow3.FileFormats
             output.WriteValueU32(0xBEEFFEED, endian);
             output.WriteValueU16(this.Version, endian);
 
-            output.WriteValueU16((ushort)this.Entries.Count, endian);
-            for (ushort i = 0; i < (ushort)this.Entries.Count; i++)
+            output.WriteValueU16((ushort)this.Containers.Count, endian);
+            for (ushort i = 0; i < (ushort)this.Containers.Count; i++)
             {
-                this.Entries[i].Serialize(output, this.Version, endian);
+                this.Containers[i].Serialize(output, this.Version, endian);
             }
         }
     }

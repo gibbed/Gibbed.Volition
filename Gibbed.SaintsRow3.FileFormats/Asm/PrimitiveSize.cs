@@ -22,7 +22,7 @@
 
 namespace Gibbed.SaintsRow3.FileFormats.Asm
 {
-    public class FileSize
+    public class PrimitiveSize
     {
         public int HeaderFileSize { get; set; }
         public int DataFileSize { get; set; }
