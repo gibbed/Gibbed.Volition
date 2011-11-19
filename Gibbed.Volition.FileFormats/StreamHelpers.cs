@@ -41,5 +41,30 @@ namespace Gibbed.Volition.FileFormats
 
             return input.ReadString(length, true, encoding);
         }
+
+        public static void WriteStringU16(this Stream output, string value, ushort maximumLength, Encoding encoding, Endian endian)
+        {
+            var length = value == null ? 0 : value.Length;
+
+            if (length >= maximumLength)
+            {
+                length = maximumLength;
+                maximumLength--;
+            }
+
+            output.WriteValueU16((ushort)length, endian);
+
+            if (length > 0)
+            {
+                if (length == value.Length)
+                {
+                    output.WriteString(value, encoding);                    
+                }
+                else
+                {
+                    output.WriteString(value.Substring(0, length), encoding);
+                }
+            }
+        }
     }
 }

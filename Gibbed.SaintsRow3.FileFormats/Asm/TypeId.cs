@@ -23,16 +23,16 @@
 
 namespace Gibbed.SaintsRow3.FileFormats.Asm
 {
-    public class External
+    public class TypeId
     {
         public byte Id { get; set; }
         public string Name { get; set; }
 
-        public External()
+        public TypeId()
         {
         }
 
-        public External(string name, byte id)
+        public TypeId(string name, byte id)
         {
             this.Name = name;
             this.Id = id;
