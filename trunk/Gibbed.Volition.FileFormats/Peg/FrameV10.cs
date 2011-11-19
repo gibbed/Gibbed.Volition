@@ -26,7 +26,7 @@ using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats.Peg
 {
-    public class Frame
+    public class FrameV10
     {
         public uint DataOffset;
         public ushort Width;

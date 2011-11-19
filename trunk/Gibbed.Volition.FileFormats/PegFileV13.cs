@@ -28,14 +28,14 @@ using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats
 {
-    public class PegFile
+    public class PegFileV13
     {
         public Endian Endian;
         public ushort Version;
         public Platform Platform;
         public uint DataSize;
-        public List<Peg.Texture> Textures
-            = new List<Peg.Texture>();
+        public List<Peg.Texture<Peg.FrameV13>> Textures
+            = new List<Peg.Texture<Peg.FrameV13>>();
 
         public void Deserialize(Stream input)
         {
@@ -52,7 +52,7 @@ namespace Gibbed.Volition.FileFormats
             this.Endian = endian;
 
             var version = input.ReadValueU16(endian);
-            if (version != 10)
+            if (version != 13)
             {
                 throw new FormatException("unsupported peg version");
             }
@@ -86,32 +86,16 @@ namespace Gibbed.Volition.FileFormats
                 throw new FormatException("unexpected unknown values");
             }
 
-            var textures = new Peg.Texture[textureCount];
+            var textures = new Peg.Texture<Peg.FrameV13>[textureCount];
             int totalFrames = 0;
             for (int i = 0; i < textures.Length; i++)
             {
-                textures[i] = new Peg.Texture();
+                textures[i] = new Peg.Texture<Peg.FrameV13>();
 
-                var frame = new Peg.Frame();
+                var frame = new Peg.FrameV13();
                 frame.Deserialize(input, endian);
                 textures[i].Frames.Add(frame);
                 totalFrames++;
-
-                /* some pegs in SR2 seem to have been saved incorrectly?
-                 * or there is some sort of flag to mark that data is in
-                 * the same file as the header
-                 * 
-                 * see:
-                 *   ige_regular.peg_pc
-                 *   ige_small.peg_pc
-                 *   ige_smallest.peg_pc */
-                /*
-                if (i == 0 &&
-                    frame.DataOffset != 0)
-                {
-                    throw new FormatException("strange data offset");
-                }
-                */
 
                 if (frame.FrameCount == 0)
                 {
@@ -120,7 +104,7 @@ namespace Gibbed.Volition.FileFormats
 
                 for (int j = 1; j < frame.FrameCount; j++)
                 {
-                    var extraFrame = new Peg.Frame();
+                    var extraFrame = new Peg.FrameV13();
                     extraFrame.Deserialize(input, endian);
 
                     if (extraFrame.FrameCount != 1)

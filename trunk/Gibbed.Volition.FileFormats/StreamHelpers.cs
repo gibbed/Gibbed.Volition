@@ -20,14 +20,26 @@
  *    distribution.
  */
 
-using System.Collections.Generic;
+using System;
+using System.IO;
+using Gibbed.IO;
+using System.Text;
 
-namespace Gibbed.Volition.FileFormats.Peg
+namespace Gibbed.Volition.FileFormats
 {
-    public class Texture<TFrame>
+    public static class StreamHelpers
     {
-        public string Name;
-        public List<TFrame> Frames
-            = new List<TFrame>();
+        public static string ReadStringU16(this Stream input, ushort maximumLength, Encoding encoding, Endian endian)
+        {
+            var length = input.ReadValueU16(endian);
+
+            if (length >= maximumLength)
+            {
+                length = maximumLength;
+                length--;
+            }
+
+            return input.ReadString(length, true, encoding);
+        }
     }
 }

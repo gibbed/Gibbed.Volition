@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Gibbed.IO;
 using Gibbed.Volition.FileFormats;
 using NDesk.Options;
 using Peg = Gibbed.Volition.FileFormats.Peg;
@@ -122,121 +123,251 @@ namespace Gibbed.Volition.ConvertPeg
                     return;
                 }
 
-                var peg = new PegFile();
                 using (var input = File.OpenRead(inputPath))
                 {
-                    peg.Deserialize(input);
-                }
-
-                var dataPath = GetDataPath(inputPath, peg);
-                if (dataPath == null)
-                {
-                    Console.WriteLine("Could not find data file for '{0}'.", inputPath);
-                    return;
-                }
-
-                using (var data = File.OpenRead(dataPath))
-                {
-                    var outputPath = Path.ChangeExtension(inputPath, null);
-                    Directory.CreateDirectory(outputPath);
-
-                    var xmlPath = Path.Combine(outputPath, "@peg.xml");
-                    var settings = new XmlWriterSettings()
+                    var magic = input.ReadValueU32(Endian.Little);
+                    if (magic != 0x564B4547 &&
+                        magic != 0x47454B56)
                     {
-                        Indent = true,
-                    };
+                        throw new FormatException("not a peg file");
+                    }
 
-                    using (var xml = XmlWriter.Create(xmlPath, settings))
+                    var version = input.ReadValueU16(magic == 0x564B4547 ? Endian.Little : Endian.Big);
+                    if (version != 10 && version != 13)
                     {
-                        xml.WriteStartDocument();
-                        xml.WriteStartElement("peg");
-                        xml.WriteAttributeString("version", peg.Version.ToString());
-                        xml.WriteAttributeString("platform", peg.Platform.ToString());
-                        xml.WriteAttributeString("little_endian", peg.Endian.ToString());
+                        throw new FormatException("unsupported peg version");
+                    }
 
-                        if (peg.Textures != null &&
-                            peg.Textures.Count > 0)
+                    input.Seek(0, SeekOrigin.Begin);
+
+                    if (version == 10)
+                    {
+                        var peg = new PegFileV10();
+                        peg.Deserialize(input);
+
+                        var dataPath = GetDataPath(inputPath);
+                        if (dataPath == null)
                         {
-                            xml.WriteStartElement("textures");
-                            foreach (var texture in peg.Textures)
+                            Console.WriteLine("Could not find data file for '{0}'.", inputPath);
+                            return;
+                        }
+
+                        using (var data = File.OpenRead(dataPath))
+                        {
+                            var outputPath = Path.ChangeExtension(inputPath, null);
+                            Directory.CreateDirectory(outputPath);
+
+                            var xmlPath = Path.Combine(outputPath, "@peg.xml");
+                            var settings = new XmlWriterSettings()
                             {
-                                xml.WriteStartElement("texture");
-                                xml.WriteAttributeString("name", texture.Name);
+                                Indent = true,
+                            };
 
-                                if (texture.Frames != null &&
-                                    texture.Frames.Count > 0)
+                            using (var xml = XmlWriter.Create(xmlPath, settings))
+                            {
+                                xml.WriteStartDocument();
+                                xml.WriteStartElement("peg");
+                                xml.WriteAttributeString("version", peg.Version.ToString());
+                                xml.WriteAttributeString("platform", peg.Platform.ToString());
+                                xml.WriteAttributeString("little_endian", peg.Endian.ToString());
+
+                                if (peg.Textures != null &&
+                                    peg.Textures.Count > 0)
                                 {
-                                    var counter = 0;
-                                    var countLength = texture.Frames.Count.ToString().Length;
-                                    
-                                    var baseName = Path.GetFileNameWithoutExtension(texture.Name);
-                                    var basePath = Path.Combine(outputPath, baseName);
-
-                                    xml.WriteStartElement("frames");
-
-                                    foreach (var frame in texture.Frames)
+                                    xml.WriteStartElement("textures");
+                                    foreach (var texture in peg.Textures)
                                     {
-                                        xml.WriteStartElement("frame");
-                                        xml.WriteAttributeString("width", frame.Width.ToString());
-                                        xml.WriteAttributeString("height", frame.Height.ToString());
-                                        xml.WriteAttributeString("format", frame.Format.ToString());
-                                        xml.WriteAttributeString("flags", frame.Flags.ToString());
-                                        xml.WriteAttributeString("levels", frame.Levels.ToString());
-                                        xml.WriteAttributeString("animation_delay", frame.Delay.ToString());
-                                        xml.WriteAttributeString("u0A", frame.Unknown0A.ToString());
-                                        xml.WriteAttributeString("u0C", frame.Unknown0C.ToString());
-                                        xml.WriteAttributeString("u18", frame.Unknown18.ToString());
+                                        xml.WriteStartElement("texture");
+                                        xml.WriteAttributeString("name", texture.Name);
 
-                                        data.Seek(frame.DataOffset, SeekOrigin.Begin);
-                                        var buffer = new byte[frame.DataSize];
-                                        data.Read(buffer, 0, buffer.Length);
-
-                                        string framePath = basePath;
-                                        string dataType;
-
-                                        if (texture.Frames.Count != 1)
+                                        if (texture.Frames != null &&
+                                            texture.Frames.Count > 0)
                                         {
-                                            framePath += "_" + counter.ToString().PadLeft(countLength, '0');
-                                        }
+                                            var counter = 0;
+                                            var countLength = texture.Frames.Count.ToString().Length;
 
-                                        string actualPath;
-                                        if (SaveFrame(peg, frame, buffer, framePath, out actualPath, out dataType) == false)
-                                        {
-                                            actualPath = Path.ChangeExtension(framePath, ".raw");
-                                            dataType = "raw";
+                                            var baseName = Path.GetFileNameWithoutExtension(texture.Name);
+                                            var basePath = Path.Combine(outputPath, baseName);
 
-                                            using (var output = File.Create(actualPath))
+                                            xml.WriteStartElement("frames");
+
+                                            foreach (var frame in texture.Frames)
                                             {
-                                                output.Write(buffer, 0, buffer.Length);
+                                                xml.WriteStartElement("frame");
+                                                xml.WriteAttributeString("width", frame.Width.ToString());
+                                                xml.WriteAttributeString("height", frame.Height.ToString());
+                                                xml.WriteAttributeString("format", frame.Format.ToString());
+                                                xml.WriteAttributeString("flags", frame.Flags.ToString());
+                                                xml.WriteAttributeString("levels", frame.Levels.ToString());
+                                                xml.WriteAttributeString("animation_delay", frame.Delay.ToString());
+                                                xml.WriteAttributeString("u0A", frame.Unknown0A.ToString());
+                                                xml.WriteAttributeString("u0C", frame.Unknown0C.ToString());
+                                                xml.WriteAttributeString("u18", frame.Unknown18.ToString());
+
+                                                data.Seek(frame.DataOffset, SeekOrigin.Begin);
+                                                var buffer = new byte[frame.DataSize];
+                                                data.Read(buffer, 0, buffer.Length);
+
+                                                string framePath = basePath;
+                                                string dataType;
+
+                                                if (texture.Frames.Count != 1)
+                                                {
+                                                    framePath += "_" + counter.ToString().PadLeft(countLength, '0');
+                                                }
+
+                                                string actualPath;
+                                                if (SaveFrameV10(peg, frame, buffer, framePath, out actualPath, out dataType) == false)
+                                                {
+                                                    actualPath = Path.ChangeExtension(framePath, ".raw");
+                                                    dataType = "raw";
+
+                                                    using (var output = File.Create(actualPath))
+                                                    {
+                                                        output.Write(buffer, 0, buffer.Length);
+                                                    }
+                                                }
+
+                                                xml.WriteStartElement("source");
+                                                xml.WriteAttributeString("type", dataType);
+                                                xml.WriteValue(actualPath.Substring(outputPath.Length + 1));
+                                                xml.WriteEndElement();
+
+                                                xml.WriteEndElement();
+
+                                                counter++;
                                             }
+
+                                            xml.WriteEndElement();
                                         }
 
-                                        xml.WriteStartElement("source");
-                                        xml.WriteAttributeString("type", dataType);
-                                        xml.WriteValue(actualPath.Substring(outputPath.Length + 1));
                                         xml.WriteEndElement();
-
-                                        xml.WriteEndElement();
-
-                                        counter++;
                                     }
-
                                     xml.WriteEndElement();
                                 }
 
                                 xml.WriteEndElement();
+                                xml.WriteEndDocument();
                             }
-                            xml.WriteEndElement();
+                        }
+                    }
+                    else if (version == 13)
+                    {
+                        var peg = new PegFileV13();
+                        peg.Deserialize(input);
+
+                        var dataPath = GetDataPath(inputPath);
+                        if (dataPath == null)
+                        {
+                            Console.WriteLine("Could not find data file for '{0}'.", inputPath);
+                            return;
                         }
 
-                        xml.WriteEndElement();
-                        xml.WriteEndDocument();
+                        using (var data = File.OpenRead(dataPath))
+                        {
+                            var outputPath = Path.ChangeExtension(inputPath, null);
+                            Directory.CreateDirectory(outputPath);
+
+                            var xmlPath = Path.Combine(outputPath, "@peg.xml");
+                            var settings = new XmlWriterSettings()
+                            {
+                                Indent = true,
+                            };
+
+                            using (var xml = XmlWriter.Create(xmlPath, settings))
+                            {
+                                xml.WriteStartDocument();
+                                xml.WriteStartElement("peg");
+                                xml.WriteAttributeString("version", peg.Version.ToString());
+                                xml.WriteAttributeString("platform", peg.Platform.ToString());
+                                xml.WriteAttributeString("little_endian", peg.Endian.ToString());
+
+                                if (peg.Textures != null &&
+                                    peg.Textures.Count > 0)
+                                {
+                                    xml.WriteStartElement("textures");
+                                    foreach (var texture in peg.Textures)
+                                    {
+                                        xml.WriteStartElement("texture");
+                                        xml.WriteAttributeString("name", texture.Name);
+
+                                        if (texture.Frames != null &&
+                                            texture.Frames.Count > 0)
+                                        {
+                                            var counter = 0;
+                                            var countLength = texture.Frames.Count.ToString().Length;
+
+                                            var baseName = Path.GetFileNameWithoutExtension(texture.Name);
+                                            var basePath = Path.Combine(outputPath, baseName);
+
+                                            xml.WriteStartElement("frames");
+
+                                            foreach (var frame in texture.Frames)
+                                            {
+                                                xml.WriteStartElement("frame");
+                                                xml.WriteAttributeString("u04", frame.Unknown04.ToString());
+                                                xml.WriteAttributeString("width", frame.Width.ToString());
+                                                xml.WriteAttributeString("height", frame.Height.ToString());
+                                                xml.WriteAttributeString("format", frame.Format.ToString());
+                                                xml.WriteAttributeString("flags", frame.Flags.ToString());
+                                                xml.WriteAttributeString("levels", frame.Levels.ToString());
+                                                xml.WriteAttributeString("animation_delay", frame.Delay.ToString());
+                                                xml.WriteAttributeString("u0E", frame.Unknown0E.ToString());
+                                                xml.WriteAttributeString("u10", frame.Unknown10.ToString());
+                                                xml.WriteAttributeString("u12", frame.Unknown12.ToString());
+
+                                                data.Seek(frame.DataOffset, SeekOrigin.Begin);
+                                                var buffer = new byte[frame.DataSize];
+                                                data.Read(buffer, 0, buffer.Length);
+
+                                                string framePath = basePath;
+                                                string dataType;
+
+                                                if (texture.Frames.Count != 1)
+                                                {
+                                                    framePath += "_" + counter.ToString().PadLeft(countLength, '0');
+                                                }
+
+                                                string actualPath;
+                                                if (SaveFrameV16(peg, frame, buffer, framePath, out actualPath, out dataType) == false)
+                                                {
+                                                    actualPath = Path.ChangeExtension(framePath, ".raw");
+                                                    dataType = "raw";
+
+                                                    using (var output = File.Create(actualPath))
+                                                    {
+                                                        output.Write(buffer, 0, buffer.Length);
+                                                    }
+                                                }
+
+                                                xml.WriteStartElement("source");
+                                                xml.WriteAttributeString("type", dataType);
+                                                xml.WriteValue(actualPath.Substring(outputPath.Length + 1));
+                                                xml.WriteEndElement();
+
+                                                xml.WriteEndElement();
+
+                                                counter++;
+                                            }
+
+                                            xml.WriteEndElement();
+                                        }
+
+                                        xml.WriteEndElement();
+                                    }
+                                    xml.WriteEndElement();
+                                }
+
+                                xml.WriteEndElement();
+                                xml.WriteEndDocument();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
                     }
                 }
-            }
-            else
-            {
-                throw new NotSupportedException();
             }
         }
 
@@ -254,7 +385,7 @@ namespace Gibbed.Volition.ConvertPeg
                 extension.StartsWith(".cvbm_");
         }
 
-        private static string GetDataPath(string headerPath, PegFile peg)
+        private static string GetDataPath(string headerPath)
         {
             string prefix = null;
             string suffix = null;
@@ -284,21 +415,52 @@ namespace Gibbed.Volition.ConvertPeg
                 return dataPath;
             }
 
-            if (peg != null)
-            {
-                dataPath = Path.ChangeExtension(headerPath, prefix + peg.Platform.ToString().ToLowerInvariant());
-                if (File.Exists(dataPath) == true)
-                {
-                    return dataPath;
-                }
-            }
-
             return null;
         }
 
-        private static bool SaveFrame(
-            PegFile peg,
-            Peg.Frame frame,
+        private static bool SaveFrameV10(
+            PegFileV10 peg,
+            Peg.FrameV10 frame,
+            byte[] buffer,
+            string basePath,
+            out string finalPath,
+            out string type)
+        {
+            finalPath = Path.ChangeExtension(basePath, ".png");
+            type = "png";
+
+            switch (frame.Format)
+            {
+                case Peg.PixelFormat.A8R8G8B8:
+                {
+                    var bitmap = ImageHelper.ExportA8R8G8B8(
+                        frame.Width, frame.Height,
+                        buffer);
+                    bitmap.Save(
+                        finalPath, System.Drawing.Imaging.ImageFormat.Png);
+                    return true;
+                }
+
+                case Peg.PixelFormat.DXT1:
+                case Peg.PixelFormat.DXT3:
+                case Peg.PixelFormat.DXT5:
+                {
+                    var bitmap = ImageHelper.ExportDXT(
+                        frame.Format,
+                        frame.Width, frame.Height,
+                        buffer);
+                    bitmap.Save(
+                        finalPath, System.Drawing.Imaging.ImageFormat.Png);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool SaveFrameV16(
+            PegFileV13 peg,
+            Peg.FrameV13 frame,
             byte[] buffer,
             string basePath,
             out string finalPath,

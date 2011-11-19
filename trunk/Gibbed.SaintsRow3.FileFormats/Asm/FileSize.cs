@@ -20,14 +20,11 @@
  *    distribution.
  */
 
-using System.Collections.Generic;
-
-namespace Gibbed.Volition.FileFormats.Peg
+namespace Gibbed.SaintsRow3.FileFormats.Asm
 {
-    public class Texture<TFrame>
+    public class FileSize
     {
-        public string Name;
-        public List<TFrame> Frames
-            = new List<TFrame>();
+        public int HeaderFileSize { get; set; }
+        public int DataFileSize { get; set; }
     }
 }
