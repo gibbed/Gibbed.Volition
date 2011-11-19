@@ -66,11 +66,11 @@ namespace Gibbed.SaintsRow3.ConvertASM
                 },
             };
 
-            List<string> extra;
+            List<string> extras;
 
             try
             {
-                extra = options.Parse(args);
+                extras = options.Parse(args);
             }
             catch (OptionException e)
             {
@@ -80,7 +80,7 @@ namespace Gibbed.SaintsRow3.ConvertASM
                 return;
             }
 
-            if (extra.Count != 2 || showHelp == true || mode == Mode.Unknown)
+            if (extras.Count != 2 || showHelp == true || mode == Mode.Unknown)
             {
                 Console.WriteLine("Usage: {0} [OPTIONS]+ -a|-x input_file output_file", GetExecutableName());
                 Console.WriteLine(".asm_pc file conversions.");
@@ -90,8 +90,8 @@ namespace Gibbed.SaintsRow3.ConvertASM
                 return;
             }
 
-            var inputPath = extra[0];
-            var outputPath = extra[1];
+            var inputPath = extras[0];
+            var outputPath = extras[1];
 
             if (File.Exists(outputPath) && overwriteFiles == false)
             {
