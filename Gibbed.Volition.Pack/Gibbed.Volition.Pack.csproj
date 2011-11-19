@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PackerBase.cs" />
     <Compile Include="STR2\Packer.cs" />
     <Compile Include="STR2\Unpacker.cs" />
     <Compile Include="VPP\Packer.cs" />
