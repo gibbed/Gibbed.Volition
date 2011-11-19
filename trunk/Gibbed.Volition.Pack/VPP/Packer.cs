@@ -23,25 +23,21 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Gibbed.IO;
 using Gibbed.Volition.FileFormats;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using NDesk.Options;
-using ZLIB = ComponentAce.Compression.Zlib;
 
 namespace Gibbed.Volition.Pack.VPP
 {
-    public class Packer<TPackage, TEntry>
+    public class Packer<TPackage, TEntry> : PackerBase<TPackage, TEntry>
         where TPackage : IPackageFile<TEntry>, new()
         where TEntry : IPackageEntry, new()
     {
         private static string GetExecutableName()
         {
-            return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            return Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
         }
 
-        public int Main(string[] args)
+        public override int Main(string[] args)
         {
             var showHelp = false;
             var verbose = false;
@@ -119,125 +115,7 @@ namespace Gibbed.Volition.Pack.VPP
                 }
             }
 
-            package.Entries.Clear();
-            foreach (var kv in paths)
-            {
-                package.Entries.Add(new TEntry()
-                {
-                    Name = kv.Key,
-                });
-            }
-
-            var baseOffset = package.EstimateHeaderSize();
-
-            package.Entries.Clear();
-            using (var output = File.Create(outputPath))
-            {
-                if (isCondensed == true &&
-                    isCompressed == true)
-                {
-                    output.Seek(baseOffset, SeekOrigin.Begin);
-
-                    using (var compressed = new MemoryStream())
-                    {
-                        var z = new ZLIB.ZOutputStream(compressed, ZLIB.zlibConst.Z_BEST_COMPRESSION);
-                        z.FlushMode = ZLIB.zlibConst.Z_SYNC_FLUSH;
-
-                        long offset = 0;
-                        foreach (var kv in paths)
-                        {
-                            using (var input = File.OpenRead(kv.Value))
-                            {
-                                var entry = new TEntry();
-                                entry.Name = kv.Key;
-                                entry.Offset = (uint)offset;
-                                entry.UncompressedSize = (uint)input.Length;
-
-                                long size = z.TotalOut;
-
-                                z.WriteFromStream(input, input.Length);
-
-                                size = z.TotalOut - size;
-
-                                entry.CompressedSize = (uint)size;
-
-                                offset += entry.UncompressedSize;
-
-                                package.Entries.Add(entry);
-                            }
-                        }
-
-                        package.CompressedSize = (uint)compressed.Length;
-                        package.UncompressedSize = (uint)offset;
-
-                        compressed.Position = 0;
-                        output.WriteFromStream(compressed, compressed.Length);
-                    }
-
-                    output.Seek(0, SeekOrigin.Begin);
-                    package.Serialize(output);
-                }
-                else
-                {
-                    output.Seek(baseOffset, SeekOrigin.Begin);
-
-                    long offset = 0;
-                    foreach (var kv in paths)
-                    {
-                        using (var input = File.OpenRead(kv.Value))
-                        {
-                            if (isCondensed == false)
-                            {
-                                var padding = offset.Align(2048) - offset;
-                                if (padding > 0)
-                                {
-                                    offset += padding;
-                                    output.Seek(padding, SeekOrigin.Current);
-                                }
-                            }
-
-                            var entry = new TEntry();
-                            entry.Name = kv.Key;
-                            entry.Offset = (uint)offset;
-                            entry.UncompressedSize = (uint)input.Length;
-
-                            if (isCompressed == true)
-                            {
-                                using (var compressed = new MemoryStream())
-                                {
-                                    var zlib = new DeflaterOutputStream(compressed);
-                                    zlib.WriteFromStream(input, input.Length);
-                                    zlib.Finish();
-
-                                    entry.CompressedSize = (uint)compressed.Length;
-
-                                    compressed.Position = 0;
-                                    output.WriteFromStream(compressed, compressed.Length);
-                                }
-
-                                offset += entry.CompressedSize;
-                            }
-                            else
-                            {
-                                output.WriteFromStream(input, input.Length);
-                                entry.CompressedSize = 0xFFFFFFFF;
-                                offset += entry.UncompressedSize;
-                            }
-
-                            package.Entries.Add(entry);
-                        }
-
-                        package.CompressedSize = isCompressed == false ?
-                             0xFFFFFFFF : (uint)package.Entries.Sum(e => e.CompressedSize);
-                        package.UncompressedSize = (uint)offset;
-                    }
-                }
-
-                package.TotalSize = (uint)output.Length;
-                output.Seek(0, SeekOrigin.Begin);
-                package.Serialize(output);
-            }
-
+            this.Build(package, paths, outputPath);
             return 0;
         }
     }
