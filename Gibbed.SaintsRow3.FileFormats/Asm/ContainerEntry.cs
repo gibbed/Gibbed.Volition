@@ -105,7 +105,7 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
                 output.WriteBytes(this.Unknown6);
             }
 
-            if (version >= 10)
+            if (version < 10)
             {
                 output.WriteValueU32(this.SizeCount, endian);
             }
