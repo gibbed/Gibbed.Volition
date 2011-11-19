@@ -31,6 +31,7 @@ namespace Gibbed.SaintsRow3.FileFormats
 {
     public class AsmFile
     {
+        public Endian Endian;
         public ushort Version;
         public List<Asm.TypeId> AllocatorTypes = new List<Asm.TypeId>();
         public List<Asm.TypeId> PrimitiveTypes = new List<Asm.TypeId>();
@@ -98,18 +99,42 @@ namespace Gibbed.SaintsRow3.FileFormats
                 container.Deserialize(input, this.Version, endian);
                 this.Containers.Add(container);
             }
+
+            this.Endian = endian;
         }
 
         public void Serialize(Stream output)
         {
-            throw new NotImplementedException();
-
-            var endian = Endian.Little;
+            var endian = this.Endian;
 
             output.WriteValueU32(0xBEEFFEED, endian);
             output.WriteValueU16(this.Version, endian);
-
             output.WriteValueU16((ushort)this.Containers.Count, endian);
+
+            if (this.Version >= 8)
+            {
+                output.WriteValueU32((uint)this.AllocatorTypes.Count, endian);
+                foreach (var type in this.AllocatorTypes)
+                {
+                    output.WriteStringU16(type.Name, 0x40, Encoding.ASCII, endian);
+                    output.WriteValueU8(type.Id);
+                }
+
+                output.WriteValueU32((uint)this.PrimitiveTypes.Count, endian);
+                foreach (var type in this.PrimitiveTypes)
+                {
+                    output.WriteStringU16(type.Name, 0x40, Encoding.ASCII, endian);
+                    output.WriteValueU8(type.Id);
+                }
+
+                output.WriteValueU32((uint)this.ContainerTypes.Count, endian);
+                foreach (var type in this.ContainerTypes)
+                {
+                    output.WriteStringU16(type.Name, 0x40, Encoding.ASCII, endian);
+                    output.WriteValueU8(type.Id);
+                }
+            }
+
             for (ushort i = 0; i < (ushort)this.Containers.Count; i++)
             {
                 this.Containers[i].Serialize(output, this.Version, endian);
