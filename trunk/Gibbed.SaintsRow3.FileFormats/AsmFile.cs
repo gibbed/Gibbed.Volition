@@ -102,6 +102,8 @@ namespace Gibbed.SaintsRow3.FileFormats
 
         public void Serialize(Stream output)
         {
+            throw new NotImplementedException();
+
             var endian = Endian.Little;
 
             output.WriteValueU32(0xBEEFFEED, endian);
