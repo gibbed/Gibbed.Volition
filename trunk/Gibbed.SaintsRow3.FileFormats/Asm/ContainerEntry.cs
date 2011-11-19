@@ -36,7 +36,7 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
         public uint DataOffset { get; set; }
         public string Unknown5 { get; set; }
         public byte[] Unknown6 { get; set; }
-        public uint Unknown7 { get; set; }
+        public uint SizeCount { get; set; }
         public uint CompressedSize { get; set; }
         public List<PrimitiveSize> Sizes { get; set; }
         public List<PrimitiveEntry> Primitives { get; set; }
@@ -52,7 +52,7 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
             this.Name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
             this.Type = input.ReadValueU8();
             this.Flags = input.ReadValueU16();
-            var fileCount = input.ReadValueU16();
+            var primitiveCount = input.ReadValueU16();
             this.DataOffset = input.ReadValueU32();
 
             this.Unknown5 = version >= 10 ?
@@ -61,23 +61,24 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
             var unknownLength = input.ReadValueU32();
             this.Unknown6 = input.ReadBytes(unknownLength);
 
-            this.Unknown7 = version >= 10 ? 0 : input.ReadValueU32(endian);
+            this.SizeCount = version >= 10 ? 0 : input.ReadValueU32(endian);
             this.CompressedSize = input.ReadValueU32(endian);
 
             this.Sizes.Clear();
             if ((this.Flags & 0x80) != 0 || version >= 11)
             {
-                for (ushort i = 0; i < fileCount; i++)
+                var sizeCount = version >= 9 ? primitiveCount : this.SizeCount;
+                for (ushort i = 0; i < sizeCount; i++)
                 {
                     var size = new PrimitiveSize();
-                    size.HeaderFileSize = version >= 9 ? input.ReadValueS32(endian) : -1;
-                    size.DataFileSize = input.ReadValueS32(endian);
+                    size.HeaderSize = version >= 9 ? input.ReadValueS32(endian) : -1;
+                    size.DataSize = input.ReadValueS32(endian);
                     this.Sizes.Add(size);
                 }
             }
 
             this.Primitives.Clear();
-            for (short i = 0; i < fileCount; i++)
+            for (short i = 0; i < primitiveCount; i++)
             {
                 var file = new PrimitiveEntry();
                 file.Deserialize(input, endian);
@@ -87,25 +88,43 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
 
         public void Serialize(Stream output, ushort version, Endian endian)
         {
-            output.WriteValueU16((ushort)this.Name.Length);
-            output.WriteString(this.Name.Substring(0, (ushort)this.Name.Length), Encoding.ASCII);
+            output.WriteStringU16(this.Name, 0x40, Encoding.ASCII, endian);
             output.WriteValueU8(this.Type);
-            output.WriteValueU16(this.Flags);
-            output.WriteValueS16((short)this.Primitives.Count);
-            output.WriteValueU32(this.DataOffset);
-            output.WriteValueS32(this.Sizes.Count);
-            output.WriteValueU32(this.Unknown7);
+            output.WriteValueU16(this.Flags, endian);
+            output.WriteValueU16((ushort)this.Primitives.Count, endian);
+            output.WriteValueU32(this.DataOffset, endian);
 
-            for (int i = 0; i < this.Sizes.Count; i++)
+            if (version >= 10)
             {
-                if (version >= 9)
-                {
-                    output.WriteValueS32(this.Sizes[i].DataFileSize, endian);
-                }
-
-                output.WriteValueS32(this.Sizes[i].DataFileSize, endian);
+                output.WriteStringU16(this.Unknown5, 0x40, Encoding.ASCII, endian);
             }
 
+            output.WriteValueU32(this.Unknown6 == null ? 0 : (uint)this.Unknown6.Length);
+            if (this.Unknown6 != null)
+            {
+                output.WriteBytes(this.Unknown6);
+            }
+
+            if (version >= 10)
+            {
+                output.WriteValueU32(this.SizeCount, endian);
+            }
+
+            output.WriteValueU32(this.CompressedSize, endian);
+
+            if ((this.Flags & 0x80) != 0 || version >= 11)
+            {
+                foreach (var size in this.Sizes)
+                {
+                    if (version >= 9)
+                    {
+                        output.WriteValueS32(size.HeaderSize, endian);
+                    }
+
+                    output.WriteValueS32(size.DataSize, endian);
+                }
+            }
+            
             for (short i = 0; i < (short)this.Primitives.Count; i++)
             {
                 this.Primitives[i].Serialize(output, endian);

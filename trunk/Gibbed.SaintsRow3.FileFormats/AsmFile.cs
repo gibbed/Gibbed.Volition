@@ -32,9 +32,9 @@ namespace Gibbed.SaintsRow3.FileFormats
     public class AsmFile
     {
         public ushort Version;
-        public List<Asm.External> AllocatorTypes = new List<Asm.External>();
-        public List<Asm.External> PrimitiveTypes = new List<Asm.External>();
-        public List<Asm.External> ContainerTypes = new List<Asm.External>();
+        public List<Asm.TypeId> AllocatorTypes = new List<Asm.TypeId>();
+        public List<Asm.TypeId> PrimitiveTypes = new List<Asm.TypeId>();
+        public List<Asm.TypeId> ContainerTypes = new List<Asm.TypeId>();
         public List<Asm.ContainerEntry> Containers = new List<Asm.ContainerEntry>();
 
         public void Deserialize(Stream input)
@@ -63,7 +63,7 @@ namespace Gibbed.SaintsRow3.FileFormats
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
                     var id = input.ReadValueU8();
-                    this.AllocatorTypes.Add(new Asm.External(name, id));
+                    this.AllocatorTypes.Add(new Asm.TypeId(name, id));
                 }
             }
 
@@ -75,7 +75,7 @@ namespace Gibbed.SaintsRow3.FileFormats
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
                     var id = input.ReadValueU8();
-                    this.PrimitiveTypes.Add(new Asm.External(name, id));
+                    this.PrimitiveTypes.Add(new Asm.TypeId(name, id));
                 }
             }
 
@@ -87,7 +87,7 @@ namespace Gibbed.SaintsRow3.FileFormats
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
                     var id = input.ReadValueU8();
-                    this.ContainerTypes.Add(new Asm.External(name, id));
+                    this.ContainerTypes.Add(new Asm.TypeId(name, id));
                 }
             }
 

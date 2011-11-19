@@ -24,7 +24,7 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
 {
     public class PrimitiveSize
     {
-        public int HeaderFileSize { get; set; }
-        public int DataFileSize { get; set; }
+        public int HeaderSize { get; set; }
+        public int DataSize { get; set; }
     }
 }
