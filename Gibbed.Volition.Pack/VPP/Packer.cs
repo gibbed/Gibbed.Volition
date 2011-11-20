@@ -82,9 +82,10 @@ namespace Gibbed.Volition.Pack.VPP
                 return 1;
             }
 
-            if (extras.Count != 2 || showHelp == true)
+            if (extras.Count < 1 || showHelp == true)
             {
-                Console.WriteLine("Usage: {0} [OPTIONS]+ output_str2 input_directory+", GetExecutableName());
+                Console.WriteLine("Usage: {0} [OPTIONS]+ input_directory", GetExecutableName());
+                Console.WriteLine("       {0} [OPTIONS]+ output_str2 input_directory+", GetExecutableName());
                 Console.WriteLine("Pack directores into specified Volition streams package file.");
                 Console.WriteLine();
                 Console.WriteLine("Options:");
@@ -92,16 +93,14 @@ namespace Gibbed.Volition.Pack.VPP
                 return 2;
             }
 
-            string outputPath = extras[0];
-
-            var package = new TPackage();
+            string outputPath;
             var paths = new SortedDictionary<string, string>();
 
-            for (int i = 1; i < extras.Count; i++)
+            if (extras.Count == 1)
             {
-                var directory = extras[i];
+                outputPath = Path.ChangeExtension(extras[0] + "_PACKED", ".vpp_pc");
 
-                foreach (var path in Directory.GetFiles(directory, "*"))
+                foreach (var path in Directory.GetFiles(extras[0], "*"))
                 {
                     var fullPath = Path.GetFullPath(path);
                     var name = Path.GetFileName(fullPath);
@@ -114,7 +113,30 @@ namespace Gibbed.Volition.Pack.VPP
                     paths[name] = fullPath;
                 }
             }
+            else
+            {
+                outputPath = extras[0];
 
+                for (int i = 1; i < extras.Count; i++)
+                {
+                    var directory = extras[i];
+
+                    foreach (var path in Directory.GetFiles(directory, "*"))
+                    {
+                        var fullPath = Path.GetFullPath(path);
+                        var name = Path.GetFileName(fullPath);
+
+                        if (paths.ContainsKey(name) == true)
+                        {
+                            continue;
+                        }
+
+                        paths[name] = fullPath;
+                    }
+                }
+            }
+
+            var package = new TPackage();
             this.Build(package, paths, outputPath);
             return 0;
         }

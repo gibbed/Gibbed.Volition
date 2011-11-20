@@ -74,9 +74,10 @@ namespace Gibbed.Volition.Pack.STR2
                 return 1;
             }
 
-            if (extras.Count != 2 || showHelp == true)
+            if (extras.Count < 1 || extras.Count > 2 || showHelp == true)
             {
-                Console.WriteLine("Usage: {0} [OPTIONS]+ output_str2 input_directory", GetExecutableName());
+                Console.WriteLine("Usage: {0} [OPTIONS]+ input_directory", GetExecutableName());
+                Console.WriteLine("       {0} [OPTIONS]+ output_str2 input_directory", GetExecutableName());
                 Console.WriteLine("Pack directores into specified Volition streams package file.");
                 Console.WriteLine();
                 Console.WriteLine("Options:");
@@ -84,8 +85,8 @@ namespace Gibbed.Volition.Pack.STR2
                 return 2;
             }
 
-            string outputPath = extras[0];
-            string inputPath = extras[1];
+            string outputPath = extras.Count >= 2 ? extras[0] : Path.ChangeExtension(extras[0] + "_PACKED", ".vpp_pc");
+            string inputPath = extras.Count >= 2 ? extras[1] : extras[0];
 
             var package = new TPackage();
             var paths = new Dictionary<string, string>();
