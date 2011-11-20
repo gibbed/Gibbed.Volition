@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats
+namespace Gibbed.SaintsRow2.FileFormats
 {
     public class CVTFFile
     {
