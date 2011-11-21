@@ -70,6 +70,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interface\BoolProperty.cs" />
+    <Compile Include="Interface\ColorProperty.cs" />
+    <Compile Include="Interface\CriticalResource.cs" />
+    <Compile Include="Interface\CriticalResourceType.cs" />
+    <Compile Include="Interface\Metadata.cs" />
+    <Compile Include="Interface\Object.cs" />
+    <Compile Include="Interface\FloatProperty.cs" />
+    <Compile Include="Interface\IntProperty.cs" />
+    <Compile Include="Interface\IProperty.cs" />
+    <Compile Include="Interface\PropertyList.cs" />
+    <Compile Include="Interface\PropertyType.cs" />
+    <Compile Include="Interface\StringProperty.cs" />
+    <Compile Include="Interface\StringTable.cs" />
+    <Compile Include="Interface\Vector2FProperty.cs" />
+    <Compile Include="InterfaceFile.cs" />
     <Compile Include="IPackageEntry.cs" />
     <Compile Include="IPackageFile.cs" />
     <Compile Include="PackageFileV4.cs" />

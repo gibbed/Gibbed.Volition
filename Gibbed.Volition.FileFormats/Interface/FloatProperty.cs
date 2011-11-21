@@ -21,12 +21,32 @@
  */
 
 using System.IO;
+using Gibbed.IO;
 
-namespace Gibbed.SaintsRow2.FileFormats.Interface
+namespace Gibbed.Volition.FileFormats.Interface
 {
-    public abstract class Property
+    public class FloatProperty : IProperty
     {
-        public abstract string Tag { get; }
-        public abstract void Deserialize(Stream stream, InterfaceFile vint);
+        public float Value;
+
+        public string Tag
+        {
+            get { return "float"; }
+        }
+
+        public override string ToString()
+        {
+            return this.Value.ToString();
+        }
+
+        public void Serialize(Stream output, Endian endian, StringTable strings)
+        {
+            output.WriteValueF32(this.Value, endian);
+        }
+
+        public void Deserialize(Stream input, Endian endian, StringTable strings)
+        {
+            this.Value = input.ReadValueF32(endian);
+        }
     }
 }

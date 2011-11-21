@@ -20,29 +20,23 @@
  *    distribution.
  */
 
-using System;
-using System.IO;
-using Gibbed.IO;
-
-namespace Gibbed.SaintsRow2.FileFormats.Interface
+namespace Gibbed.Volition.FileFormats.Interface
 {
-    public class IntProperty : Property
+    public enum PropertyType : byte
     {
-        public Int32 Value;
-
-        public override string Tag
-        {
-            get { return "int"; }
-        }
-
-        public override void Deserialize(Stream stream, InterfaceFile vint)
-        {
-            this.Value = stream.ReadValueS32();
-        }
-
-        public override string ToString()
-        {
-            return this.Value.ToString();
-        }
+        Invalid = 0,
+        Int = 1,
+        UInt = 2,
+        Float = 3,
+        String = 4,
+        Bool = 5,
+        Color = 6,
+        Vector2F = 7,
+        Callback = 8,
+        Bitmap = 9,
+        Font = 10,
+        Sound = 11,
+        Enum = 12,
+        Variable = 13,
     }
 }
