@@ -22,11 +22,11 @@
 
 using System.IO;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
     public abstract class Property
     {
         public abstract string Tag { get; }
-        public abstract void Deserialize(Stream stream, VintFile vint);
+        public abstract void Deserialize(Stream stream, InterfaceFile vint);
     }
 }

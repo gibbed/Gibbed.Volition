@@ -230,7 +230,7 @@ namespace Gibbed.Volition.FileFormats
             }
 
             this.Endian = endian;
-            this.Flags = header.Flags;
+            this.Flags = header.Flags & Package.HeaderFlags.Compressed;
             this.UncompressedSize = header.UncompressedSize;
             this.CompressedSize = header.CompressedSize;
             this.DataOffset = input.Position;

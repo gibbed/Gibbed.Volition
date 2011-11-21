@@ -23,32 +23,25 @@
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
-    public class ColorProperty : Property
+    public class BoolProperty : Property
     {
-        public float R;
-        public float G;
-        public float B;
+        public bool Value;
 
         public override string Tag
         {
-            get { return "color"; }
+            get { return "bool"; }
         }
 
-        public override void Deserialize(Stream stream, VintFile vint)
+        public override void Deserialize(Stream stream, InterfaceFile vint)
         {
-            this.R = stream.ReadValueF32();
-            this.G = stream.ReadValueF32();
-            this.B = stream.ReadValueF32();
+            this.Value = stream.ReadValueBoolean();
         }
 
         public override string ToString()
         {
-            return
-                this.R.ToString() + "," +
-                this.G.ToString() + "," +
-                this.B.ToString();
+            return this.Value.ToString().ToLowerInvariant();
         }
     }
 }

@@ -20,24 +20,23 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
-    public class IntProperty : Property
+    public class FloatProperty : Property
     {
-        public Int32 Value;
+        public float Value;
 
         public override string Tag
         {
-            get { return "int"; }
+            get { return "float"; }
         }
 
-        public override void Deserialize(Stream stream, VintFile vint)
+        public override void Deserialize(Stream stream, InterfaceFile vint)
         {
-            this.Value = stream.ReadValueS32();
+            this.Value = stream.ReadValueF32();
         }
 
         public override string ToString()

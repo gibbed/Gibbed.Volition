@@ -93,17 +93,6 @@
     <Compile Include="StringHelpers.cs" />
     <Compile Include="TableDescription.cs" />
     <Compile Include="TableFile.cs" />
-    <Compile Include="VintFile.cs" />
-    <Compile Include="Vint\BoolProperty.cs" />
-    <Compile Include="Vint\ColorProperty.cs" />
-    <Compile Include="Vint\FloatProperty.cs" />
-    <Compile Include="Vint\IntProperty.cs" />
-    <Compile Include="Vint\Object.cs" />
-    <Compile Include="Vint\Property.cs" />
-    <Compile Include="Vint\PropertyNames.cs" />
-    <Compile Include="Vint\StringProperty.cs" />
-    <Compile Include="Vint\UIntProperty.cs" />
-    <Compile Include="Vint\Vector2FProperty.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -132,7 +121,9 @@
       <Name>Gibbed.IO</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Vint\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
