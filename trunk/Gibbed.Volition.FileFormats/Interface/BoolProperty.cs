@@ -23,29 +23,30 @@
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.SaintsRow2.FileFormats.Interface
+namespace Gibbed.Volition.FileFormats.Interface
 {
-    public class Vector2FProperty : Property
+    public class BoolProperty : IProperty
     {
-        public float X;
-        public float Y;
+        public bool Value;
 
-        public override string Tag
+        public string Tag
         {
-            get { return "vector2f"; }
-        }
-
-        public override void Deserialize(Stream stream, InterfaceFile vint)
-        {
-            this.X = stream.ReadValueF32();
-            this.Y = stream.ReadValueF32();
+            get { return "bool"; }
         }
 
         public override string ToString()
         {
-            return
-                this.X.ToString() + "," +
-                this.Y.ToString();
+            return this.Value.ToString();
+        }
+
+        public void Serialize(Stream output, Endian endian, StringTable strings)
+        {
+            output.WriteValueB8(this.Value);
+        }
+
+        public void Deserialize(Stream input, Endian endian, StringTable strings)
+        {
+            this.Value = input.ReadValueB8();
         }
     }
 }

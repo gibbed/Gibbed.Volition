@@ -23,25 +23,39 @@
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.SaintsRow2.FileFormats.Interface
+namespace Gibbed.Volition.FileFormats.Interface
 {
-    public class FloatProperty : Property
+    public class ColorProperty : IProperty
     {
-        public float Value;
+        public float R;
+        public float G;
+        public float B;
 
-        public override string Tag
+        public string Tag
         {
-            get { return "float"; }
-        }
-
-        public override void Deserialize(Stream stream, InterfaceFile vint)
-        {
-            this.Value = stream.ReadValueF32();
+            get { return "color"; }
         }
 
         public override string ToString()
         {
-            return this.Value.ToString();
+            return
+                this.R.ToString() + "," +
+                this.G.ToString() + "," +
+                this.B.ToString();
+        }
+
+        public void Serialize(Stream output, Endian endian, StringTable strings)
+        {
+            output.WriteValueF32(this.R, endian);
+            output.WriteValueF32(this.G, endian);
+            output.WriteValueF32(this.B, endian);
+        }
+
+        public void Deserialize(Stream input, Endian endian, StringTable strings)
+        {
+            this.R = input.ReadValueF32(endian);
+            this.G = input.ReadValueF32(endian);
+            this.B = input.ReadValueF32(endian);
         }
     }
 }

@@ -21,28 +21,37 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.SaintsRow2.FileFormats.Interface
+namespace Gibbed.Volition.FileFormats.Interface
 {
-    public class UIntProperty : Property
+    public class PropertyList
     {
-        public UInt32 Value;
+        public Dictionary<uint, IProperty> Properties
+            = new Dictionary<uint, IProperty>();
 
-        public override string Tag
+        public void Serialize(Stream output, Endian endian, StringTable strings)
         {
-            get { return "uint"; }
+            throw new NotImplementedException();
         }
 
-        public override void Deserialize(Stream stream, InterfaceFile vint)
+        public void Deserialize(Stream input, Endian endian, StringTable strings)
         {
-            this.Value = stream.ReadValueU32();
-        }
+            while (true)
+            {
+                var type = input.ReadValueEnum<PropertyType>(endian);
+                if (type == PropertyType.Invalid)
+                {
+                    break;
+                }
 
-        public override string ToString()
-        {
-            return this.Value.ToString();
+                var hash = input.ReadValueU32(endian);
+                var property = Object.CreateProperty(type);
+                property.Deserialize(input, endian, strings);
+                this.Properties.Add(hash, property);
+            }
         }
     }
 }

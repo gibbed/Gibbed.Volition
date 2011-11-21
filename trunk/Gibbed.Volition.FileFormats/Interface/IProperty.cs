@@ -23,25 +23,12 @@
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.SaintsRow2.FileFormats.Interface
+namespace Gibbed.Volition.FileFormats.Interface
 {
-    public class StringProperty : Property
+    public interface IProperty
     {
-        public string Value;
-
-        public override string Tag
-        {
-            get { return "string"; }
-        }
-
-        public override void Deserialize(Stream stream, InterfaceFile vint)
-        {
-            this.Value = vint.Strings[stream.ReadValueS32()];
-        }
-
-        public override string ToString()
-        {
-            return this.Value;
-        }
+        string Tag { get; }
+        void Serialize(Stream output, Endian endian, StringTable strings);
+        void Deserialize(Stream input, Endian endian, StringTable strings);
     }
 }

@@ -20,28 +20,12 @@
  *    distribution.
  */
 
-using System.IO;
-using Gibbed.IO;
-
-namespace Gibbed.SaintsRow2.FileFormats.Interface
+namespace Gibbed.Volition.FileFormats.Interface
 {
-    public class BoolProperty : Property
+    public class CriticalResource
     {
-        public bool Value;
-
-        public override string Tag
-        {
-            get { return "bool"; }
-        }
-
-        public override void Deserialize(Stream stream, InterfaceFile vint)
-        {
-            this.Value = stream.ReadValueBoolean();
-        }
-
-        public override string ToString()
-        {
-            return this.Value.ToString().ToLowerInvariant();
-        }
+        public CriticalResourceType Type;
+        public string Name;
+        public bool Autoload;
     }
 }
