@@ -23,29 +23,32 @@
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
-    public class Vector2FProperty : Property
+    public class ColorProperty : Property
     {
-        public float X;
-        public float Y;
+        public float R;
+        public float G;
+        public float B;
 
         public override string Tag
         {
-            get { return "vector2f"; }
+            get { return "color"; }
         }
 
-        public override void Deserialize(Stream stream, VintFile vint)
+        public override void Deserialize(Stream stream, InterfaceFile vint)
         {
-            this.X = stream.ReadValueF32();
-            this.Y = stream.ReadValueF32();
+            this.R = stream.ReadValueF32();
+            this.G = stream.ReadValueF32();
+            this.B = stream.ReadValueF32();
         }
 
         public override string ToString()
         {
             return
-                this.X.ToString() + "," +
-                this.Y.ToString();
+                this.R.ToString() + "," +
+                this.G.ToString() + "," +
+                this.B.ToString();
         }
     }
 }

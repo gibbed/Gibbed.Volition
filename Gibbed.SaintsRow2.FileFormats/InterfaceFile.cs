@@ -26,11 +26,11 @@ using System.IO;
 using System.Text;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats
+namespace Gibbed.SaintsRow2.FileFormats
 {
-    public class VintFile
+    public class InterfaceFile
     {
-        public UInt16 DocumentType;
+        public uint DocumentType;
         public float AnimationTime;
         public string Name;
 
@@ -39,10 +39,10 @@ namespace Gibbed.Volition.FileFormats
 
         public List<string> Strings = new List<string>();
 
-        public List<Vint.Object> Elements = new List<Vint.Object>();
-        public List<Vint.Object> Animations = new List<Vint.Object>();
+        public List<Interface.Object> Elements = new List<Interface.Object>();
+        public List<Interface.Object> Animations = new List<Interface.Object>();
 
-        private void ReadStrings(Stream stream, UInt32 offset)
+        private void ReadStrings(Stream stream, uint offset)
         {
             long position = stream.Position;
             stream.Seek(offset, SeekOrigin.Begin);
@@ -116,14 +116,14 @@ namespace Gibbed.Volition.FileFormats
 
             for (int i = 0; i < elementCount; i++)
             {
-                Vint.Object element = new Vint.Object();
+                var element = new Interface.Object();
                 element.Deserialize(stream, this);
                 this.Elements.Add(element);
             }
 
             for (int i = 0; i < animationCount; i++)
             {
-                Vint.Object animation = new Vint.Object();
+                var animation = new Interface.Object();
                 animation.Deserialize(stream, this);
                 this.Animations.Add(animation);
             }

@@ -25,27 +25,28 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using Gibbed.IO;
-using Gibbed.Volition.FileFormats;
+using Gibbed.SaintsRow2.FileFormats;
+using Interface = Gibbed.SaintsRow2.FileFormats.Interface;
 using NDesk.Options;
 
 namespace Gibbed.Volition.ConvertVintDoc
 {
     internal class Program
     {
-        private static void WriteProperty(XmlWriter writer, string name, Gibbed.Volition.FileFormats.Vint.Property property)
+        private static void WriteProperty(XmlWriter writer, string name, Interface.Property property)
         {
             writer.WriteElementString("name", name);
             writer.WriteElementString("type", property.Tag);
             writer.WriteElementString("value", property.ToString());
         }
 
-        private static void WriteObject(XmlWriter writer, Gibbed.Volition.FileFormats.Vint.Object o)
+        private static void WriteObject(XmlWriter writer, Interface.Object o)
         {
             writer.WriteElementString("name", o.Name);
             writer.WriteElementString("type", o.Type);
 
             writer.WriteStartElement("baseline");
-            foreach (KeyValuePair<string, Gibbed.Volition.FileFormats.Vint.Property> property in o.Baseline)
+            foreach (KeyValuePair<string, Interface.Property> property in o.Baseline)
             {
                 writer.WriteStartElement("property");
                 WriteProperty(writer, property.Key, property.Value);
@@ -54,12 +55,12 @@ namespace Gibbed.Volition.ConvertVintDoc
             writer.WriteEndElement(); // baseline
 
             writer.WriteStartElement("overrides");
-            foreach (KeyValuePair<string, Dictionary<string, Gibbed.Volition.FileFormats.Vint.Property>> resolution in o.Overrides)
+            foreach (KeyValuePair<string, Dictionary<string, Interface.Property>> resolution in o.Overrides)
             {
                 writer.WriteStartElement("resolution");
                 writer.WriteElementString("name", resolution.Key);
 
-                foreach (KeyValuePair<string, Gibbed.Volition.FileFormats.Vint.Property> property in resolution.Value)
+                foreach (KeyValuePair<string, Interface.Property> property in resolution.Value)
                 {
                     writer.WriteStartElement("property");
                     WriteProperty(writer, property.Key, property.Value);
@@ -71,7 +72,7 @@ namespace Gibbed.Volition.ConvertVintDoc
             writer.WriteEndElement(); // overrides
 
             writer.WriteStartElement("children");
-            foreach (Gibbed.Volition.FileFormats.Vint.Object child in o.Children)
+            foreach (Interface.Object child in o.Children)
             {
                 writer.WriteStartElement("object");
                 WriteObject(writer, child);
@@ -80,7 +81,7 @@ namespace Gibbed.Volition.ConvertVintDoc
             writer.WriteEndElement(); // children
         }
 
-        private static void WriteDocument(VintFile vint, Stream output)
+        private static void WriteDocument(InterfaceFile vint, Stream output)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -117,7 +118,7 @@ namespace Gibbed.Volition.ConvertVintDoc
             writer.WriteEndElement(); // critical_resources
 
             writer.WriteStartElement("elements");
-            foreach (Gibbed.Volition.FileFormats.Vint.Object element in vint.Elements)
+            foreach (Interface.Object element in vint.Elements)
             {
                 writer.WriteStartElement("object");
                 WriteObject(writer, element);
@@ -126,7 +127,7 @@ namespace Gibbed.Volition.ConvertVintDoc
             writer.WriteEndElement(); // elements
 
             writer.WriteStartElement("animations");
-            foreach (Gibbed.Volition.FileFormats.Vint.Object animation in vint.Animations)
+            foreach (Interface.Object animation in vint.Animations)
             {
                 writer.WriteStartElement("object");
                 WriteObject(writer, animation);
@@ -212,7 +213,7 @@ namespace Gibbed.Volition.ConvertVintDoc
 
                         input.Seek(-4, SeekOrigin.Current);
 
-                        VintFile vint = new VintFile();
+                        var vint = new InterfaceFile();
                         vint.Deserialize(input);
 
                         using (var output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))

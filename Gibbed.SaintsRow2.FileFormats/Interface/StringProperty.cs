@@ -23,25 +23,25 @@
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
-    public class BoolProperty : Property
+    public class StringProperty : Property
     {
-        public bool Value;
+        public string Value;
 
         public override string Tag
         {
-            get { return "bool"; }
+            get { return "string"; }
         }
 
-        public override void Deserialize(Stream stream, VintFile vint)
+        public override void Deserialize(Stream stream, InterfaceFile vint)
         {
-            this.Value = stream.ReadValueBoolean();
+            this.Value = vint.Strings[stream.ReadValueS32()];
         }
 
         public override string ToString()
         {
-            return this.Value.ToString().ToLowerInvariant();
+            return this.Value;
         }
     }
 }

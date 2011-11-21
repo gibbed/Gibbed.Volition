@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
     public class Object
     {
@@ -109,12 +109,12 @@ namespace Gibbed.Volition.FileFormats.Vint
             return this.Name;
         }
 
-        public void Deserialize(Stream stream, VintFile vint)
+        public void Deserialize(Stream stream, InterfaceFile vint)
         {
             this.Name = vint.Strings[stream.ReadValueS32()];
             this.Type = vint.Strings[stream.ReadValueS32()];
             UInt16 childCount = stream.ReadValueU16();
-            
+
             this.Overrides.Clear();
 
             byte unk4 = stream.ReadValueU8();
@@ -128,7 +128,8 @@ namespace Gibbed.Volition.FileFormats.Vint
                 for (byte i = 0; i < overrideCount; i++)
                 {
                     overrideNames[i] = vint.Strings[stream.ReadValueS32()];
-                    /*UInt32 overrideOffset = */stream.ReadValueU32();
+                    /*UInt32 overrideOffset = */
+                    stream.ReadValueU32();
                 }
 
                 for (byte i = 0; i < overrideCount; i++)

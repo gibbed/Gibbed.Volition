@@ -22,9 +22,9 @@
 
 using System;
 using System.Collections.Generic;
-using Gibbed.IO;
+using Gibbed.Volition.FileFormats;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
     public static class PropertyNames
     {

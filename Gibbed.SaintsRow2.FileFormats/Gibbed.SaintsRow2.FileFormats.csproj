@@ -41,6 +41,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CVTFFile.cs" />
+    <Compile Include="InterfaceFile.cs" />
+    <Compile Include="Interface\BoolProperty.cs" />
+    <Compile Include="Interface\ColorProperty.cs" />
+    <Compile Include="Interface\FloatProperty.cs" />
+    <Compile Include="Interface\IntProperty.cs" />
+    <Compile Include="Interface\Object.cs" />
+    <Compile Include="Interface\Property.cs" />
+    <Compile Include="Interface\PropertyNames.cs" />
+    <Compile Include="Interface\StringProperty.cs" />
+    <Compile Include="Interface\UIntProperty.cs" />
+    <Compile Include="Interface\Vector2FProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

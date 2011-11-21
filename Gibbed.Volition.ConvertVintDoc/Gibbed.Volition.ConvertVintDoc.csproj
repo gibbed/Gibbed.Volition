@@ -75,6 +75,10 @@
       <Project>{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}</Project>
       <Name>Gibbed.IO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gibbed.SaintsRow2.FileFormats\Gibbed.SaintsRow2.FileFormats.csproj">
+      <Project>{F309AADE-48A4-4CF3-8541-E7BB8FAF385E}</Project>
+      <Name>Gibbed.SaintsRow2.FileFormats</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gibbed.Volition.FileFormats\Gibbed.Volition.FileFormats.csproj">
       <Project>{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}</Project>
       <Name>Gibbed.Volition.FileFormats</Name>

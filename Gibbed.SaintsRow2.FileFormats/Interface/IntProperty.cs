@@ -24,20 +24,20 @@ using System;
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Volition.FileFormats.Vint
+namespace Gibbed.SaintsRow2.FileFormats.Interface
 {
-    public class UIntProperty : Property
+    public class IntProperty : Property
     {
-        public UInt32 Value;
+        public Int32 Value;
 
         public override string Tag
         {
-            get { return "uint"; }
+            get { return "int"; }
         }
 
-        public override void Deserialize(Stream stream, VintFile vint)
+        public override void Deserialize(Stream stream, InterfaceFile vint)
         {
-            this.Value = stream.ReadValueU32();
+            this.Value = stream.ReadValueS32();
         }
 
         public override string ToString()
