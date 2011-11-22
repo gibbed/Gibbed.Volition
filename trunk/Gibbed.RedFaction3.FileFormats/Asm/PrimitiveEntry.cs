@@ -27,37 +27,37 @@ using Gibbed.Volition.FileFormats;
 
 namespace Gibbed.RedFaction3.FileFormats.Asm
 {
-    public class FileEntry
+    public class PrimitiveEntry
     {
         public string Name { get; set; }
-        public byte Unk1 { get; set; }
-        public byte Unk2 { get; set; }
-        public byte Unk3 { get; set; }
-        public byte Unk4 { get; set; }
-        public int HeaderFileSize { get; set; }
-        public int DataFileSize { get; set; }
+        public byte Type { get; set; }
+        public byte Allocator { get; set; }
+        public byte Unknown3 { get; set; }
+        public byte Unknown4 { get; set; }
+        public int HeaderSize { get; set; }
+        public int DataSize { get; set; }
 
-        public void Deserialize(Stream input)
+        public void Deserialize(Stream input, Endian endian)
         {
-            this.Name = input.ReadStringU16(0x40, Encoding.ASCII, Endian.Little);
-            this.Unk1 = input.ReadValueU8();
-            this.Unk2 = input.ReadValueU8();
-            this.Unk3 = input.ReadValueU8();
-            this.Unk4 = input.ReadValueU8();
-            this.HeaderFileSize = input.ReadValueS32();
-            this.DataFileSize = input.ReadValueS32();
+            this.Name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
+            this.Type = input.ReadValueU8();
+            this.Allocator = input.ReadValueU8();
+            this.Unknown3 = input.ReadValueU8();
+            this.Unknown4 = input.ReadValueU8();
+            this.HeaderSize = input.ReadValueS32(endian);
+            this.DataSize = input.ReadValueS32(endian);
         }
 
-        public void Serialize(Stream output)
+        public void Serialize(Stream output, Endian endian)
         {
-            output.WriteValueU16((ushort)this.Name.Length);
+            output.WriteValueU16((ushort)this.Name.Length, endian);
             output.WriteString(this.Name.Substring(0, (ushort)this.Name.Length), Encoding.ASCII);
-            output.WriteValueU8(this.Unk1);
-            output.WriteValueU8(this.Unk2);
-            output.WriteValueU8(this.Unk3);
-            output.WriteValueU8(this.Unk4);
-            output.WriteValueS32(this.HeaderFileSize);
-            output.WriteValueS32(this.DataFileSize);
+            output.WriteValueU8(this.Type);
+            output.WriteValueU8(this.Allocator);
+            output.WriteValueU8(this.Unknown3);
+            output.WriteValueU8(this.Unknown4);
+            output.WriteValueS32(this.HeaderSize, endian);
+            output.WriteValueS32(this.DataSize, endian);
         }
     }
 }

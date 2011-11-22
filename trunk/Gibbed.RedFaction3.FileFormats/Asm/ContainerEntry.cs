@@ -26,7 +26,7 @@ using System.Text;
 using Gibbed.IO;
 using Gibbed.Volition.FileFormats;
 
-namespace Gibbed.SaintsRow3.FileFormats.Asm
+namespace Gibbed.RedFaction3.FileFormats.Asm
 {
     public class ContainerEntry
     {
@@ -34,16 +34,14 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
         public byte Type { get; set; }
         public ushort Flags { get; set; }
         public uint DataOffset { get; set; }
-        public string Unknown5 { get; set; }
-        public byte[] Unknown6 { get; set; }
-        public uint SizeCount { get; set; }
         public uint CompressedSize { get; set; }
-        public List<PrimitiveSize> Sizes { get; set; }
+
+        public List<int> Sizes { get; set; }
         public List<PrimitiveEntry> Primitives { get; set; }
 
         public ContainerEntry()
         {
-            this.Sizes = new List<PrimitiveSize>();
+            this.Sizes = new List<int>();
             this.Primitives = new List<PrimitiveEntry>();
         }
 
@@ -54,36 +52,12 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
             output.WriteValueU16(this.Flags, endian);
             output.WriteValueU16((ushort)this.Primitives.Count, endian);
             output.WriteValueU32(this.DataOffset, endian);
-
-            if (version >= 10)
-            {
-                output.WriteStringU16(this.Unknown5, 0x40, Encoding.ASCII, endian);
-            }
-
-            output.WriteValueU32(this.Unknown6 == null ? 0 : (uint)this.Unknown6.Length);
-            if (this.Unknown6 != null)
-            {
-                output.WriteBytes(this.Unknown6);
-            }
-
-            if (version < 10)
-            {
-                output.WriteValueU32(this.SizeCount, endian);
-            }
-
+            output.WriteValueS32(this.Sizes.Count, endian);
             output.WriteValueU32(this.CompressedSize, endian);
 
-            if ((this.Flags & 0x80) != 0 || version >= 11)
+            foreach (var size in this.Sizes)
             {
-                foreach (var size in this.Sizes)
-                {
-                    if (version >= 9)
-                    {
-                        output.WriteValueS32(size.HeaderSize, endian);
-                    }
-
-                    output.WriteValueS32(size.DataSize, endian);
-                }
+                output.WriteValueS32(size, endian);
             }
 
             for (short i = 0; i < (short)this.Primitives.Count; i++)
@@ -99,27 +73,12 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
             this.Flags = input.ReadValueU16(endian);
             var primitiveCount = input.ReadValueU16(endian);
             this.DataOffset = input.ReadValueU32(endian);
-
-            this.Unknown5 = version >= 10 ?
-                input.ReadStringU16(0x40, Encoding.ASCII, endian) : "";
-
-            var unknownLength = input.ReadValueU32(endian);
-            this.Unknown6 = input.ReadBytes(unknownLength);
-
-            this.SizeCount = version >= 9 ? 0 : input.ReadValueU32(endian);
+            var sizeCount = input.ReadValueU32(endian);
             this.CompressedSize = input.ReadValueU32(endian);
 
-            this.Sizes.Clear();
-            if ((this.Flags & 0x80) != 0 || version >= 11)
+            for (ushort i = 0; i < sizeCount; i++)
             {
-                var sizeCount = version >= 9 ? primitiveCount : this.SizeCount;
-                for (uint i = 0; i < sizeCount; i++)
-                {
-                    var size = new PrimitiveSize();
-                    size.HeaderSize = version >= 9 ? input.ReadValueS32(endian) : -1;
-                    size.DataSize = input.ReadValueS32(endian);
-                    this.Sizes.Add(size);
-                }
+                this.Sizes.Add(input.ReadValueS32(endian));
             }
 
             this.Primitives.Clear();

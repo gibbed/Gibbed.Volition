@@ -54,13 +54,13 @@ namespace Gibbed.SaintsRow3.FileFormats
                 throw new FormatException("unsupported asm version " + this.Version.ToString());
             }
 
-            var entryCount = input.ReadValueU16();
+            var containerCount = input.ReadValueU16();
 
             this.AllocatorTypes.Clear();
             if (this.Version >= 8)
             {
-                var allocatorCount = input.ReadValueU32(endian);
-                for (uint i = 0; i < allocatorCount; i++)
+                var allocatorTypeCount = input.ReadValueU32(endian);
+                for (uint i = 0; i < allocatorTypeCount; i++)
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
                     var id = input.ReadValueU8();
@@ -71,8 +71,8 @@ namespace Gibbed.SaintsRow3.FileFormats
             this.PrimitiveTypes.Clear();
             if (this.Version >= 8)
             {
-                var primitiveCount = input.ReadValueU32(endian);
-                for (uint i = 0; i < primitiveCount; i++)
+                var primitiveTypeCount = input.ReadValueU32(endian);
+                for (uint i = 0; i < primitiveTypeCount; i++)
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
                     var id = input.ReadValueU8();
@@ -83,8 +83,8 @@ namespace Gibbed.SaintsRow3.FileFormats
             this.ContainerTypes.Clear();
             if (this.Version >= 8)
             {
-                var containerCount = input.ReadValueU32(endian);
-                for (uint i = 0; i < containerCount; i++)
+                var containerTypeCount = input.ReadValueU32(endian);
+                for (uint i = 0; i < containerTypeCount; i++)
                 {
                     var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
                     var id = input.ReadValueU8();
@@ -93,7 +93,7 @@ namespace Gibbed.SaintsRow3.FileFormats
             }
 
             this.Containers.Clear();
-            for (ushort i = 0; i < entryCount; i++)
+            for (ushort i = 0; i < containerCount; i++)
             {
                 var container = new Asm.ContainerEntry();
                 container.Deserialize(input, this.Version, endian);

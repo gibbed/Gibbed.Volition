@@ -44,6 +44,7 @@ namespace Gibbed.Volition.FileFormats.Interface
             switch (type)
             {
                 case PropertyType.Int: return new IntProperty();
+                case PropertyType.UInt: return new UIntProperty();
                 case PropertyType.Float: return new FloatProperty();
                 case PropertyType.Bool: return new BoolProperty();
                 case PropertyType.String: return new StringProperty();

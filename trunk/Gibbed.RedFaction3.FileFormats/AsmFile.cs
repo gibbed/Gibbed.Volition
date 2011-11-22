@@ -29,42 +29,50 @@ namespace Gibbed.RedFaction3.FileFormats
 {
     public class AsmFile
     {
-        public short Version;
-        public List<Asm.StreamEntry> Streams = new List<Asm.StreamEntry>();
+        public Endian Endian;
+        public ushort Version;
+        public List<Asm.ContainerEntry> Containers = new List<Asm.ContainerEntry>();
 
         public void Deserialize(Stream input)
         {
-            if (input.ReadValueU32() != 0xBEEFFEED)
+            var magic = input.ReadValueU32();
+            if (magic != 0xBEEFFEED)
             {
                 throw new FormatException("not an asm file");
             }
 
-            this.Version = input.ReadValueS16();
-            if (this.Version != 5)
+            var endian = magic == 0xBEEFFEED ? Endian.Little : Endian.Big;
+
+            this.Version = input.ReadValueU16(endian);
+            if (this.Version != 11)
             {
                 throw new FormatException("unsupported asm version " + this.Version.ToString());
             }
 
-            short count = input.ReadValueS16();
+            var containerCount = input.ReadValueU16();
 
-            this.Streams.Clear();
-            for (short i = 0; i < count; i++)
+            this.Containers.Clear();
+            for (ushort i = 0; i < containerCount; i++)
             {
-                var stream = new Asm.StreamEntry();
-                stream.Deserialize(input);
-                this.Streams.Add(stream);
+                var container = new Asm.ContainerEntry();
+                container.Deserialize(input, this.Version, endian);
+                this.Containers.Add(container);
             }
+
+            this.Endian = endian;
         }
 
         public void Serialize(Stream output)
         {
-            output.WriteValueU32(0xBEEFFEED);
-            output.WriteValueS16(this.Version);
+            var endian = this.Endian;
 
-            output.WriteValueS16((short)this.Streams.Count);
-            for (short i = 0; i < (short)this.Streams.Count; i++)
+            output.WriteValueU32(0xBEEFFEED, endian);
+            output.WriteValueU16(this.Version, endian);
+            output.WriteValueU16((ushort)this.Containers.Count, endian);
+
+            for (ushort i = 0; i < (ushort)this.Containers.Count; i++)
             {
-                this.Streams[i].Serialize(output);
+                this.Containers[i].Serialize(output, this.Version, endian);
             }
         }
     }
