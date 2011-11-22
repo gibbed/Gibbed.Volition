@@ -44,7 +44,7 @@ namespace Gibbed.RedFaction3.FileFormats
             var endian = magic == 0xBEEFFEED ? Endian.Little : Endian.Big;
 
             this.Version = input.ReadValueU16(endian);
-            if (this.Version != 11)
+            if (this.Version != 5)
             {
                 throw new FormatException("unsupported asm version " + this.Version.ToString());
             }
