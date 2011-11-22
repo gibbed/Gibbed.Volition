@@ -29,9 +29,12 @@ namespace Gibbed.Volition.FileFormats
         // From Volition (SR2, RFG)
         public static uint HashVolitionCRC(this string input)
         {
-            input = input.ToLowerInvariant();
+            return input.HashVolitionCRC(0);
+        }
 
-            uint hash = 0;
+        public static uint HashVolitionCRC(this string input, uint hash)
+        {
+            input = input.ToLowerInvariant();
             for (int i = 0; i < input.Length; i++)
             {
                 hash = CrcVolitionTable[(byte)hash ^ (byte)input[i]] ^ (hash >> 8);

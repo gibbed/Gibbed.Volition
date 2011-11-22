@@ -83,6 +83,7 @@
     <Compile Include="Interface\PropertyType.cs" />
     <Compile Include="Interface\StringProperty.cs" />
     <Compile Include="Interface\StringTable.cs" />
+    <Compile Include="Interface\UIntProperty.cs" />
     <Compile Include="Interface\Vector2FProperty.cs" />
     <Compile Include="InterfaceFile.cs" />
     <Compile Include="IPackageEntry.cs" />

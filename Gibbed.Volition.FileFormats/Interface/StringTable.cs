@@ -90,13 +90,15 @@ namespace Gibbed.Volition.FileFormats.Interface
                 offsets[i] = input.ReadValueU32(endian);
             }
 
+            var encoding = Encoding.GetEncoding(1252);
+
             this.Strings.Clear();
             using (var data = input.ReadToMemoryStream(size))
             {
                 for (uint i = 0; i < count; i++)
                 {
                     data.Seek(offsets[i], SeekOrigin.Begin);
-                    this.Strings.Add(data.ReadStringZ(Encoding.ASCII));
+                    this.Strings.Add(data.ReadStringZ(encoding));
                 }
             }
         }
