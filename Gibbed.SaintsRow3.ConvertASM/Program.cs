@@ -40,15 +40,9 @@ namespace Gibbed.SaintsRow3.ConvertASM
         {
             var mode = Mode.Unknown;
             var showHelp = false;
-            bool overwriteFiles = false;
 
             var options = new OptionSet()
             {
-                {
-                    "o|overwrite",
-                    "overwrite files if they already exist", 
-                    v => overwriteFiles = v != null
-                },
                 {
                     "a|xml2asm",
                     "convert xml to asm",
@@ -92,11 +86,6 @@ namespace Gibbed.SaintsRow3.ConvertASM
 
             var inputPath = extras[0];
             var outputPath = extras[1];
-
-            if (File.Exists(outputPath) && overwriteFiles == false)
-            {
-                return;
-            }
 
             if (mode == Mode.ToXML)
             {
