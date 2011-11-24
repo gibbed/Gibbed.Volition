@@ -157,7 +157,7 @@ namespace Gibbed.SaintsRow3.UpdateASM
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Error: unexpected mesh extension '{0}'",
+                                    Console.WriteLine("Error: unexpected character mesh extension '{0}'",
                                         extension);
                                     return;
                                 }
@@ -190,8 +190,30 @@ namespace Gibbed.SaintsRow3.UpdateASM
                                 break;
                             }
 
+                            // static mesh
+                            case 19:
+                            {
+                                var extension = Path.GetExtension(primitive.Name);
+
+                                if (extension == ".csmesh_pc")
+                                {
+                                    headerName = primitive.Name;
+                                    dataName = Path.ChangeExtension(headerName, ".gsmesh_pc");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Error: unexpected static mesh extension '{0}'",
+                                        extension);
+                                    return;
+                                }
+
+                                break;
+                            }
+
+                            case 7: // .cmorph_pc
                             case 15: // .cefc_pc
                             case 20: // .rig_pc
+                            case 22: // .matlib_pc
                             case 26: // .vint_doc
                             case 27: // .lua
                             {
