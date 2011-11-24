@@ -85,7 +85,7 @@ namespace Gibbed.Volition.Pack.STR2
                 return 2;
             }
 
-            string outputPath = extras.Count >= 2 ? extras[0] : Path.ChangeExtension(extras[0] + "_PACKED", ".vpp_pc");
+            string outputPath = extras.Count >= 2 ? extras[0] : Path.ChangeExtension(extras[0] + "_PACKED", ".str2_pc");
             string inputPath = extras.Count >= 2 ? extras[1] : extras[0];
 
             var package = new TPackage();
