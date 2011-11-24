@@ -145,6 +145,26 @@ namespace Gibbed.SaintsRow3.UpdateASM
 
                         switch (primitive.Type)
                         {
+                            // character meshes
+                            case 5:
+                            {
+                                var extension = Path.GetExtension(primitive.Name);
+
+                                if (extension == ".ccmesh_pc")
+                                {
+                                    headerName = primitive.Name;
+                                    dataName = Path.ChangeExtension(headerName, ".gcmesh_pc");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Error: unexpected mesh extension '{0}'",
+                                        extension);
+                                    return;
+                                }
+
+                                break;
+                            }
+
                             // pegs
                             case 16:
                             {
@@ -170,6 +190,8 @@ namespace Gibbed.SaintsRow3.UpdateASM
                                 break;
                             }
 
+                            case 15: // .cefc_pc
+                            case 20: // .rig_pc
                             case 26: // .vint_doc
                             case 27: // .lua
                             {
