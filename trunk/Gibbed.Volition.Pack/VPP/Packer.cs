@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gibbed.IO;
 using Gibbed.Volition.FileFormats;
 using NDesk.Options;
 
@@ -43,9 +44,25 @@ namespace Gibbed.Volition.Pack.VPP
             var verbose = false;
             var isCompressed = false;
             var isCondensed = false;
+            var endian = Endian.Little;
 
             var options = new OptionSet()
             {
+                {
+                    "c|compress",
+                    "compress data",
+                    v => isCompressed = v != null
+                },
+                {
+                    "l|little-endian",
+                    "pack data in little-endian mode (default)",
+                    v => endian = v != null ? Endian.Little : endian
+                },
+                {
+                    "b|big-endian",
+                    "pack data in big-endian mode",
+                    v => endian = v != null ? Endian.Big : endian
+                },
                 {
                     "c|compress",
                     "compress data",
@@ -137,6 +154,7 @@ namespace Gibbed.Volition.Pack.VPP
             }
 
             var package = new TPackage();
+            package.Endian = endian;
             this.Build(package, paths, outputPath);
             return 0;
         }
