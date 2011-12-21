@@ -155,35 +155,33 @@ namespace Gibbed.Volition.Pack.STR2
 
                             var entryPath = Path.Combine(outputPath, entry.Name);
 
-                            if (overwriteFiles == false &&
-                                File.Exists(entryPath) == true)
+                            if (overwriteFiles == true ||
+                                File.Exists(entryPath) == false)
                             {
-                                continue;
-                            }
-
-                            if (verbose == true)
-                            {
-                                Console.WriteLine("[{0}/{1}] {2}",
-                                    current.ToString().PadLeft(padding),
-                                    total,
-                                    entry.Name);
-                            }
-
-                            Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
-
-                            data.Seek(dataOffset, SeekOrigin.Begin);
-                            using (var output = File.Create(entryPath))
-                            {
-                                if (isCompressed == false)
+                                if (verbose == true)
                                 {
-                                    output.WriteFromStream(data, entry.UncompressedSize);
+                                    Console.WriteLine("[{0}/{1}] {2}",
+                                        current.ToString().PadLeft(padding),
+                                        total,
+                                        entry.Name);
                                 }
-                                else
+
+                                Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
+
+                                data.Seek(dataOffset, SeekOrigin.Begin);
+                                using (var output = File.Create(entryPath))
                                 {
-                                    using (var temp = data.ReadToMemoryStream(entry.CompressedSize))
+                                    if (isCompressed == false)
                                     {
-                                        var zlib = new InflaterInputStream(temp);
-                                        output.WriteFromStream(zlib, entry.UncompressedSize);
+                                        output.WriteFromStream(data, entry.UncompressedSize);
+                                    }
+                                    else
+                                    {
+                                        using (var temp = data.ReadToMemoryStream(entry.CompressedSize))
+                                        {
+                                            var zlib = new InflaterInputStream(temp);
+                                            output.WriteFromStream(zlib, entry.UncompressedSize);
+                                        }
                                     }
                                 }
                             }
