@@ -89,7 +89,7 @@ namespace Gibbed.Volition.Pack.STR2
             string inputPath = extras.Count >= 2 ? extras[1] : extras[0];
 
             var package = new TPackage();
-            var paths = new Dictionary<string, string>();
+            var paths = new List<KeyValuePair<string, string>>();
 
             bool isCompressed;
             bool isCondensed;
@@ -133,12 +133,7 @@ namespace Gibbed.Volition.Pack.STR2
                         path = Path.Combine(inputPath, path);
                     }
 
-                    if (paths.ContainsKey(name) == true)
-                    {
-                        throw new FormatException("duplicate name");
-                    }
-
-                    paths.Add(name, path);
+                    paths.Add(new KeyValuePair<string, string>(name, path));
                 }
 
                 var flags = Package.HeaderFlags.None;

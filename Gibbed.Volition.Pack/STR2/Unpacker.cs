@@ -112,6 +112,8 @@ namespace Gibbed.Volition.Pack.STR2
                     Encoding = Encoding.UTF8,
                 };
 
+                var previousNames = new Dictionary<string, long>();
+
                 using (var xml = XmlWriter.Create(Path.Combine(outputPath, "@streams.xml"), settings))
                 {
                     var isCompressed = (package.Flags & Package.HeaderFlags.Compressed) != 0;
@@ -146,9 +148,25 @@ namespace Gibbed.Volition.Pack.STR2
 
                         foreach (var entry in package.Directory.OrderBy(e => e.Offset))
                         {
+                            string outputName;
+
+                            if (previousNames.ContainsKey(entry.Name) == true)
+                            {
+                                outputName = string.Format("{0} [DUPLICATE_{1}]{2}",
+                                    Path.ChangeExtension(entry.Name, null),
+                                    previousNames[entry.Name],
+                                    Path.GetExtension(entry.Name) ?? "");
+                                previousNames[entry.Name]++;
+                            }
+                            else
+                            {
+                                outputName = entry.Name;
+                                previousNames.Add(entry.Name, 1);
+                            }
+
                             xml.WriteStartElement("entry");
                             xml.WriteAttributeString("name", entry.Name);
-                            xml.WriteValue(entry.Name);
+                            xml.WriteValue(outputName);
                             xml.WriteEndElement();
 
                             current++;

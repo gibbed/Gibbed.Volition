@@ -94,6 +94,8 @@ namespace Gibbed.Volition.Pack.VPP
                 extras[1] :
                 Path.Combine(Directory.GetCurrentDirectory(), Path.GetFileNameWithoutExtension(extras[0]));
 
+            var previousNames = new Dictionary<string, long>();
+
             using (var input = File.OpenRead(inputPath))
             {
                 var package = new TPackage();
@@ -130,7 +132,23 @@ namespace Gibbed.Volition.Pack.VPP
                     {
                         current++;
 
-                        var entryPath = Path.Combine(outputPath, entry.Name);
+                        string outputName;
+
+                        if (previousNames.ContainsKey(entry.Name) == true)
+                        {
+                            outputName = string.Format("{0} [DUPLICATE_{1}]{2}",
+                                Path.ChangeExtension(entry.Name, null),
+                                previousNames[entry.Name],
+                                Path.GetExtension(entry.Name) ?? "");
+                            previousNames[entry.Name]++;
+                        }
+                        else
+                        {
+                            outputName = entry.Name;
+                            previousNames.Add(entry.Name, 1);
+                        }
+
+                        var entryPath = Path.Combine(outputPath, outputName);
 
                         if (overwriteFiles == true ||
                             File.Exists(entryPath) == false)
