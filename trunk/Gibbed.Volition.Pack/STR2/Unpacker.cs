@@ -171,7 +171,7 @@ namespace Gibbed.Volition.Pack.STR2
 
                             current++;
 
-                            var entryPath = Path.Combine(outputPath, entry.Name);
+                            var entryPath = Path.Combine(outputPath, outputName);
 
                             if (overwriteFiles == true ||
                                 File.Exists(entryPath) == false)
