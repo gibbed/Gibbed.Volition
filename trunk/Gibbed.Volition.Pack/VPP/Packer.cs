@@ -54,6 +54,11 @@ namespace Gibbed.Volition.Pack.VPP
                     v => isCompressed = v != null
                 },
                 {
+                    "n|condense",
+                    "condense data",
+                    v => isCondensed = v != null
+                },
+                {
                     "l|little-endian",
                     "pack data in little-endian mode (default)",
                     v => endian = v != null ? Endian.Little : endian
@@ -62,16 +67,6 @@ namespace Gibbed.Volition.Pack.VPP
                     "b|big-endian",
                     "pack data in big-endian mode",
                     v => endian = v != null ? Endian.Big : endian
-                },
-                {
-                    "c|compress",
-                    "compress data",
-                    v => isCompressed = v != null
-                },
-                {
-                    "n|condense",
-                    "condense data",
-                    v => isCondensed = v != null
                 },
                 {
                     "v|verbose",
