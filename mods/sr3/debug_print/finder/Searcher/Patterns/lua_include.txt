@@ -1,0 +1,34 @@
+﻿56
+8B 74 24 08
+56
+E8 xx xx xx xx
+6A 00
+F7 D8
+50
+56
+E8 xx xx xx xx
+8B F0
+68 xx xx xx xx
+56
+E8 xx xx xx xx
+83 C4 18
+85 C0
+74 0D
+56
+E8 xx xx xx xx
+83 C4 04
+33 C0
+5E
+C3
+68 xx xx xx xx
+56
+68 xx xx xx xx
+68 00 04 00 00
+68 xx xx xx xx
+E8 xx xx xx xx
+68 xx xx xx xx
+E8 xx xx xx xx
+83 C4 18
+33 C0
+5E
+C3
