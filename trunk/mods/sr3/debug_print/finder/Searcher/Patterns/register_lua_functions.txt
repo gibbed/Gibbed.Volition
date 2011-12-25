@@ -1,0 +1,74 @@
+﻿81 EC C0 00 00 00
+53
+56
+57
+8B BC 24 D0 00 00 00
+C7 44 24 0C xx xx xx xx
+C7 44 24 10 xx xx xx xx
+C7 44 24 14 xx xx xx xx
+C7 44 24 18 xx xx xx xx
+C7 44 24 1C xx xx xx xx
+C7 44 24 20 xx xx xx xx
+C7 44 24 24 xx xx xx xx
+C7 44 24 28 xx xx xx xx
+C7 44 24 2C xx xx xx xx
+C7 44 24 30 xx xx xx xx
+C7 44 24 34 xx xx xx xx
+C7 44 24 38 xx xx xx xx
+C7 44 24 3C xx xx xx xx
+C7 44 24 40 xx xx xx xx
+C7 44 24 44 xx xx xx xx
+C7 44 24 48 xx xx xx xx
+C7 44 24 4C xx xx xx xx
+C7 44 24 50 xx xx xx xx
+C7 44 24 54 xx xx xx xx
+C7 44 24 58 xx xx xx xx
+C7 44 24 5C xx xx xx xx
+C7 44 24 60 xx xx xx xx
+C7 44 24 64 xx xx xx xx
+C7 44 24 68 xx xx xx xx
+C7 44 24 6C xx xx xx xx
+C7 44 24 70 xx xx xx xx
+C7 44 24 74 xx xx xx xx
+C7 44 24 78 xx xx xx xx
+C7 44 24 7C xx xx xx xx
+C7 84 24 80 00 00 00 xx xx xx xx
+C7 84 24 84 00 00 00 xx xx xx xx
+C7 84 24 88 00 00 00 xx xx xx xx
+C7 84 24 8C 00 00 00 xx xx xx xx
+C7 84 24 90 00 00 00 xx xx xx xx
+C7 84 24 94 00 00 00 xx xx xx xx
+C7 84 24 98 00 00 00 xx xx xx xx
+C7 84 24 9C 00 00 00 xx xx xx xx
+C7 84 24 A0 00 00 00 xx xx xx xx
+C7 84 24 A4 00 00 00 xx xx xx xx
+C7 84 24 A8 00 00 00 xx xx xx xx
+C7 84 24 AC 00 00 00 xx xx xx xx
+C7 84 24 B0 00 00 00 xx xx xx xx
+C7 84 24 B4 00 00 00 xx xx xx xx
+C7 84 24 B8 00 00 00 xx xx xx xx
+C7 84 24 BC 00 00 00 xx xx xx xx
+C7 84 24 C0 00 00 00 xx xx xx xx
+C7 84 24 C4 00 00 00 xx xx xx xx
+C7 84 24 C8 00 00 00 xx xx xx xx
+8D 74 24 0C
+BB 18 00 00 00
+8B 46 04
+6A 00
+50
+57
+E8 xx xx xx xx
+8B 0E
+51
+68 EE D8 FF FF
+57
+E8 xx xx xx xx
+83 C4 18
+83 C6 08
+83 EB 01
+75 DB
+5F
+5E
+5B
+81 C4 C0 00 00 00
+C3
