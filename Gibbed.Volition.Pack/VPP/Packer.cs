@@ -26,6 +26,7 @@ using System.IO;
 using Gibbed.IO;
 using Gibbed.Volition.FileFormats;
 using NDesk.Options;
+using Package = Gibbed.Volition.FileFormats.Package;
 
 namespace Gibbed.Volition.Pack.VPP
 {
@@ -150,6 +151,21 @@ namespace Gibbed.Volition.Pack.VPP
 
             var package = new TPackage();
             package.Endian = endian;
+
+            var flags = Package.HeaderFlags.None;
+
+            if (isCompressed == true)
+            {
+                flags |= Package.HeaderFlags.Compressed;
+            }
+
+            if (isCondensed == true)
+            {
+                flags |= Package.HeaderFlags.Condensed;
+            }
+
+            package.Flags = flags;
+
             this.Build(package, paths, outputPath);
             return 0;
         }
