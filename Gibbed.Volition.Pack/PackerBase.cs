@@ -20,6 +20,7 @@
  *    distribution.
  */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Gibbed.IO;
@@ -42,6 +43,7 @@ namespace Gibbed.Volition.Pack
             string outputPath)
         {
             var isCompressed = (package.Flags & Package.HeaderFlags.Compressed) != 0;
+            var isCompressedInChunks = (package.Flags & Package.HeaderFlags.CompressedInChunks) != 0;
             var isCondensed = (package.Flags & Package.HeaderFlags.Condensed) != 0;
 
             package.Entries.Clear();
@@ -101,6 +103,85 @@ namespace Gibbed.Volition.Pack
 
                     output.Seek(0, SeekOrigin.Begin);
                     package.Serialize(output);
+                }
+                else if (
+                    isCompressedInChunks == true &&
+                    isCompressed == true)
+                {
+                    output.Seek(baseOffset, SeekOrigin.Begin);
+
+                    long offset = 0;
+                    uint uncompressedSize = 0;
+
+                    foreach (var kv in paths)
+                    {
+                        using (var input = File.OpenRead(kv.Value))
+                        {
+                            if (isCondensed == false)
+                            {
+                                var offsetPadding =
+                                    offset.Align(2048) - offset;
+                                if (offsetPadding > 0)
+                                {
+                                    offset += offsetPadding;
+                                    output.Seek(offsetPadding, SeekOrigin.Current);
+                                }
+
+                                var sizePadding =
+                                    uncompressedSize.Align(2048) - uncompressedSize;
+                                if (sizePadding > 0)
+                                {
+                                    uncompressedSize += sizePadding;
+                                }
+                            }
+
+                            var entry = new TEntry();
+                            entry.Name = kv.Key;
+                            entry.Offset = (uint)offset;
+                            entry.UncompressedSize = (uint)input.Length;
+                            entry.CompressedSize = 0;
+
+                            var left = input.Length;
+                            while (left > 0)
+                            {
+                                using (var compressed = new MemoryStream())
+                                {
+                                    var chunkUncompressedSize = (uint)Math.Min(0x10000, left);
+
+                                    var zlib = new DeflaterOutputStream(compressed, new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(9, true));
+                                    zlib.WriteFromStream(input, chunkUncompressedSize);
+                                    zlib.Finish();
+
+                                    var chunkCompressedSize = (uint)compressed.Length;
+
+                                    if (chunkCompressedSize > 0xFFFF)
+                                    {
+                                        throw new InvalidOperationException();
+                                    }
+
+                                    output.WriteValueU16((ushort)chunkCompressedSize, package.Endian);
+                                    output.WriteValueU16(0, package.Endian);
+                                    output.WriteValueU32(chunkUncompressedSize, package.Endian);
+
+                                    entry.CompressedSize += 2 + 2 + 4;
+                                    entry.CompressedSize += chunkCompressedSize;
+
+                                    compressed.Position = 0;
+                                    output.WriteFromStream(compressed, compressed.Length);
+
+                                    left -= chunkUncompressedSize;
+                                }
+                            }
+
+                            offset += entry.CompressedSize;
+                            uncompressedSize += entry.UncompressedSize;
+
+                            package.Entries.Add(entry);
+                        }
+                    }
+
+                    package.CompressedSize = (uint)offset;
+                    package.UncompressedSize = uncompressedSize;
                 }
                 else if (isCompressed == true)
                 {

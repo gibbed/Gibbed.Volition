@@ -26,6 +26,29 @@ namespace Gibbed.Volition.FileFormats
 {
     public static class StringHelpers
     {
+        public static UInt32 HashFNV32(this string input)
+        {
+            return input.HashFNV32(0x811C9DC5);
+        }
+
+        public static UInt32 HashFNV32(this string input, UInt32 hash)
+        {
+            if (input.Length == 0)
+            {
+                return 0;
+            }
+
+            string lower = input.ToLowerInvariant();
+
+            for (int i = 0; i < lower.Length; i++)
+            {
+                hash *= 0x1000193;
+                hash ^= (char)(lower[i]);
+            }
+
+            return hash;
+        }
+
         // From Volition (SR2, RFG)
         public static uint HashVolitionCRC(this string input)
         {

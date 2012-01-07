@@ -41,7 +41,6 @@ namespace Gibbed.SaintsRow3.UpdateASM
         {
             var verbose = false;
             var showHelp = false;
-            bool overwriteFiles = false;
 
             var options = new OptionSet()
             {
@@ -245,8 +244,8 @@ namespace Gibbed.SaintsRow3.UpdateASM
                                 return;
                             }
 
-                            container.Sizes[i].HeaderSize = (int)entry.UncompressedSize;
-                            primitive.HeaderSize = (int)entry.UncompressedSize;
+                            container.Sizes[i].CPUSize = (int)entry.UncompressedSize;
+                            primitive.CPUSize = (int)entry.UncompressedSize;
 
                             primitiveNames.Remove(headerName);
                             fileNames.Remove(headerName);
@@ -266,8 +265,8 @@ namespace Gibbed.SaintsRow3.UpdateASM
                                 return;
                             }
 
-                            container.Sizes[i].DataSize = (int)entry.UncompressedSize;
-                            primitive.DataSize = (int)entry.UncompressedSize;
+                            container.Sizes[i].GPUSize = (int)entry.UncompressedSize;
+                            primitive.GPUSize = (int)entry.UncompressedSize;
 
                             primitiveNames.Remove(dataName);
                             fileNames.Remove(dataName);

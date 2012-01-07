@@ -40,6 +40,17 @@ namespace Gibbed.Volition.FileFormats
     {
         public Endian Endian { get; set; }
         public Package.HeaderFlags Flags { get; set; }
+
+        public Package.HeaderFlags SupportedFlags
+        {
+            get
+            {
+                return
+                    Package.HeaderFlags.Compressed |
+                    Package.HeaderFlags.Condensed;
+            }
+        }
+
         public uint TotalSize { get; set; }
         public uint UncompressedSize { get; set; }
         public uint CompressedSize { get; set; }
@@ -66,6 +77,40 @@ namespace Gibbed.Volition.FileFormats
             return totalSize;
         }
 
+        protected static Package.HeaderFlags ConvertFlags(Package.HeaderFlagsV3 flags)
+        {
+            var newFlags = Package.HeaderFlags.None;
+
+            if ((flags & Package.HeaderFlagsV3.Compressed) != 0)
+            {
+                newFlags |= Package.HeaderFlags.Compressed;
+            }
+
+            if ((flags & Package.HeaderFlagsV3.Condensed) != 0)
+            {
+                newFlags |= Package.HeaderFlags.Condensed;
+            }
+
+            return newFlags;
+        }
+
+        protected static Package.HeaderFlagsV3 ConvertFlags(Package.HeaderFlags flags)
+        {
+            var newFlags = Package.HeaderFlagsV3.None;
+
+            if ((flags & Package.HeaderFlags.Compressed) != 0)
+            {
+                newFlags |= Package.HeaderFlagsV3.Compressed;
+            }
+
+            if ((flags & Package.HeaderFlags.Condensed) != 0)
+            {
+                newFlags |= Package.HeaderFlagsV3.Condensed;
+            }
+
+            return newFlags;
+        }
+
         public void Serialize(Stream output)
         {
             var endian = this.Endian;
@@ -89,7 +134,7 @@ namespace Gibbed.Volition.FileFormats
             header.Name = "         Created using      Gibbed's     Volition Tools ";
             header.Path = "           Read the       Foundation     Novels from       Asimov.       I liked them. ";
 
-            header.Flags = this.Flags;
+            header.Flags = ConvertFlags(this.Flags);
 
             header.DirectoryCount = (uint)this.Entries.Count;
             header.PackageSize = this.TotalSize;
@@ -169,7 +214,7 @@ namespace Gibbed.Volition.FileFormats
             }
 
             this.Endian = endian;
-            this.Flags = header.Flags;
+            this.Flags = ConvertFlags(header.Flags);
             this.UncompressedSize = header.UncompressedSize;
             this.CompressedSize = header.CompressedSize;
             this.DataOffset = input.Position;

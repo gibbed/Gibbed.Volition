@@ -20,11 +20,23 @@
  *    distribution.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 namespace Gibbed.SaintsRow3.FileFormats.Asm
 {
-    public class PrimitiveSize
+    [Flags]
+    public enum PrimitiveFlags : byte
     {
-        public int CPUSize { get; set; }
-        public int GPUSize { get; set; }
+        Unknown0 = 1 << 0,
+        Unknown1 = 1 << 1,
+        IsSplit = 1 << 2,
+        Unknown3 = 1 << 3,
+        Unknown4 = 1 << 4,
+        Unknown5 = 1 << 5,
+        Unknown6 = 1 << 6,
+        Unknown7 = 1 << 7,
     }
 }

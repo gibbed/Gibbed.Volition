@@ -45,41 +45,62 @@ namespace Gibbed.Volition.Pack.VPP
             var verbose = false;
             var isCompressed = false;
             var isCondensed = false;
+            var isCompressedInChunks = false;
             var endian = Endian.Little;
 
-            var options = new OptionSet()
+            var package = new TPackage();
+            var options = new OptionSet();
+
+            if ((package.SupportedFlags & Package.HeaderFlags.Compressed) != 0)
             {
-                {
+                options.Add(
                     "c|compress",
                     "compress data",
                     v => isCompressed = v != null
-                },
-                {
+                );
+            }
+
+            if ((package.SupportedFlags & Package.HeaderFlags.Condensed) != 0)
+            {
+                options.Add(
                     "n|condense",
                     "condense data",
                     v => isCondensed = v != null
-                },
-                {
-                    "l|little-endian",
-                    "pack data in little-endian mode (default)",
-                    v => endian = v != null ? Endian.Little : endian
-                },
-                {
-                    "b|big-endian",
-                    "pack data in big-endian mode",
-                    v => endian = v != null ? Endian.Big : endian
-                },
-                {
-                    "v|verbose",
-                    "enable verbose logging", 
-                    v => verbose = v != null
-                },
-                {
-                    "h|help",
-                    "show this message and exit", 
-                    v => showHelp = v != null
-                },
-            };
+                );
+            }
+
+            if ((package.SupportedFlags & Package.HeaderFlags.CompressedInChunks) != 0)
+            {
+                options.Add(
+                    "y|chunked-compression",
+                    "chunked compression mode (PS3)",
+                    v => isCompressedInChunks = v != null
+                );
+            }
+
+            options.Add(
+                "l|little-endian",
+                "pack data in little-endian mode (default)",
+                v => endian = v != null ? Endian.Little : endian
+            );
+
+            options.Add(
+                "b|big-endian",
+                "pack data in big-endian mode",
+                v => endian = v != null ? Endian.Big : endian
+            );
+            
+            options.Add(
+                "v|verbose",
+                "enable verbose logging",
+                v => verbose = v != null
+            );
+
+            options.Add(
+                "h|help",
+                "show this message and exit",
+                v => showHelp = v != null
+            );
 
             List<string> extras;
 
@@ -98,8 +119,8 @@ namespace Gibbed.Volition.Pack.VPP
             if (extras.Count < 1 || showHelp == true)
             {
                 Console.WriteLine("Usage: {0} [OPTIONS]+ input_directory", GetExecutableName());
-                Console.WriteLine("       {0} [OPTIONS]+ output_str2 input_directory+", GetExecutableName());
-                Console.WriteLine("Pack directores into specified Volition streams package file.");
+                Console.WriteLine("       {0} [OPTIONS]+ output_vpp input_directory+", GetExecutableName());
+                Console.WriteLine("Pack directores into specified Volition package file.");
                 Console.WriteLine();
                 Console.WriteLine("Options:");
                 options.WriteOptionDescriptions(Console.Out);
@@ -149,7 +170,6 @@ namespace Gibbed.Volition.Pack.VPP
                 }
             }
 
-            var package = new TPackage();
             package.Endian = endian;
 
             var flags = Package.HeaderFlags.None;
@@ -162,6 +182,11 @@ namespace Gibbed.Volition.Pack.VPP
             if (isCondensed == true)
             {
                 flags |= Package.HeaderFlags.Condensed;
+            }
+
+            if (isCompressedInChunks == true)
+            {
+                flags |= Package.HeaderFlags.CompressedInChunks;
             }
 
             package.Flags = flags;
