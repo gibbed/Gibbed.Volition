@@ -111,6 +111,7 @@ namespace Gibbed.Volition.Pack.VPP
 
                     var dataOffset = package.DataOffset;
                     var isCompressed = (package.Flags & Package.HeaderFlags.Compressed) != 0;
+                    var isCompressedInChunks = (package.Flags & Package.HeaderFlags.CompressedInChunks) != 0;
                     var isCondensed = (package.Flags & Package.HeaderFlags.Condensed) != 0;
 
                     if (isCondensed == true && isCompressed == true)
@@ -163,12 +164,61 @@ namespace Gibbed.Volition.Pack.VPP
 
                             Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
 
+                            var dataStart = dataOffset;
+
+                            Console.WriteLine("data start = {0:X8}", dataStart);
+
                             data.Seek(dataOffset, SeekOrigin.Begin);
                             using (var output = File.Create(entryPath))
                             {
                                 if (isCompressed == false)
                                 {
                                     output.WriteFromStream(data, entry.UncompressedSize);
+                                }
+                                else if (isCompressedInChunks == true)
+                                {
+                                    long chunkLeft = entry.UncompressedSize;
+                                    var chunkStart = input.Position;
+                                    var chunkEnd = input.Position + entry.CompressedSize;
+
+                                    while (chunkLeft > 0)
+                                    {
+                                        if (input.Position >= chunkEnd)
+                                        {
+                                            throw new InvalidOperationException();
+                                        }
+
+                                        var chunkCompressedSize = input.ReadValueU16(package.Endian);
+                                        var chunkUnknown = input.ReadValueU16(package.Endian);
+                                        var chunkUncompressedSize = input.ReadValueU32(package.Endian);
+
+                                        Console.WriteLine("  @ {0:X8}", input.Position);
+                                        Console.WriteLine("  csize = {0}", chunkCompressedSize);
+                                        Console.WriteLine("  usize = {0} ", chunkUncompressedSize);
+
+                                        if (input.Position + chunkCompressedSize > chunkEnd)
+                                        {
+                                            throw new FormatException();
+                                        }
+
+                                        if (chunkUnknown != 0)
+                                        {
+                                            throw new FormatException();
+                                        }
+
+                                        if (chunkUncompressedSize > chunkLeft)
+                                        {
+                                            throw new FormatException();
+                                        }
+
+                                        using (var temp = data.ReadToMemoryStream(chunkCompressedSize))
+                                        {
+                                            var zlib = new InflaterInputStream(temp, new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(true));
+                                            output.WriteFromStream(zlib, chunkUncompressedSize);
+                                        }
+
+                                        chunkLeft -= chunkUncompressedSize;
+                                    }
                                 }
                                 else
                                 {

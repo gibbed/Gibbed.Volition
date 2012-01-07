@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsmFile.cs" />
+    <Compile Include="Asm\ContainerFlags.cs" />
+    <Compile Include="Asm\PrimitiveFlags.cs" />
     <Compile Include="Asm\TypeId.cs" />
     <Compile Include="Asm\PrimitiveEntry.cs" />
     <Compile Include="Asm\PrimitiveSize.cs" />

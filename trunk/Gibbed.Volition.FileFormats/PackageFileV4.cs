@@ -38,6 +38,17 @@ namespace Gibbed.Volition.FileFormats
     {
         public Endian Endian { get; set; }
         public Package.HeaderFlags Flags { get; set; }
+
+        public Package.HeaderFlags SupportedFlags
+        {
+            get
+            {
+                return
+                    Package.HeaderFlags.Compressed |
+                    Package.HeaderFlags.CompressedInChunks;
+            }
+        }
+
         public uint TotalSize { get; set; }
         public uint UncompressedSize { get; set; }
         public uint CompressedSize { get; set; }
@@ -57,6 +68,12 @@ namespace Gibbed.Volition.FileFormats
 
         public int EstimateHeaderSize()
         {
+            var names = new List<string>();
+            var extensions = new List<string>();
+
+            var nameOffsets = new Dictionary<string, uint>();
+            var extensionOffsets = new Dictionary<string, uint>();
+
             int totalSize = 0;
 
             totalSize += 2048; // header
@@ -65,7 +82,13 @@ namespace Gibbed.Volition.FileFormats
             int namesSize = 0;
             foreach (var entry in this.Entries)
             {
-                namesSize += Path.GetFileNameWithoutExtension(entry.Name).Length + 1;
+                var name = Path.GetFileNameWithoutExtension(entry.Name);
+
+                if (names.Contains(name) == false)
+                {
+                    namesSize += name.Length + 1;
+                    names.Add(name);
+                }
             }
             totalSize += namesSize.Align(2048);
 
@@ -78,11 +101,49 @@ namespace Gibbed.Volition.FileFormats
                     extension = extension.Substring(1);
                 }
 
-                extensionsSize += extension.Length + 1;
+                if (extensions.Contains(extension) == false)
+                {
+                    extensionsSize += extension.Length + 1;
+                    extensions.Add(extension);
+                }
             }
             totalSize += extensionsSize.Align(2048);
 
             return totalSize;
+        }
+
+        protected static Package.HeaderFlags ConvertFlags(Package.HeaderFlagsV4 flags)
+        {
+            var newFlags = Package.HeaderFlags.None;
+
+            if ((flags & Package.HeaderFlagsV4.Compressed) != 0)
+            {
+                newFlags |= Package.HeaderFlags.Compressed;
+            }
+
+            if ((flags & Package.HeaderFlagsV4.CompressedInChunks) != 0)
+            {
+                newFlags |= Package.HeaderFlags.CompressedInChunks;
+            }
+
+            return newFlags;
+        }
+
+        protected static Package.HeaderFlagsV4 ConvertFlags(Package.HeaderFlags flags)
+        {
+            var newFlags = Package.HeaderFlagsV4.None;
+
+            if ((flags & Package.HeaderFlags.Compressed) != 0)
+            {
+                newFlags |= Package.HeaderFlagsV4.Compressed;
+            }
+
+            if ((flags & Package.HeaderFlags.CompressedInChunks) != 0)
+            {
+                newFlags |= Package.HeaderFlagsV4.CompressedInChunks;
+            }
+
+            return newFlags;
         }
 
         public void Serialize(Stream output)
@@ -137,19 +198,19 @@ namespace Gibbed.Volition.FileFormats
                 directory.WriteValueU32(entry.UncompressedSize, endian);
                 directory.WriteValueU32(entry.CompressedSize, endian);
                 directory.WriteValueU32(0, endian);
-                names.WriteStringZ(entry.Name, Encoding.ASCII);
             }
 
             var header = new Package.HeaderV4();
             header.Name = "         Created using      Gibbed's     Volition Tools ";
             header.Path = "           Read the       Foundation     Novels from       Asimov.       I liked them. ";
 
-            header.Flags = this.Flags;
+            header.Flags = ConvertFlags(this.Flags);
 
             header.DirectoryCount = (uint)this.Entries.Count;
             header.PackageSize = this.TotalSize;
             header.DirectorySize = (uint)directory.Length;
             header.NamesSize = (uint)names.Length;
+            header.ExtensionsSize = (uint)extensions.Length;
             header.UncompressedSize = this.UncompressedSize;
             header.CompressedSize = (this.Flags & Package.HeaderFlags.Compressed) != 0 ?
                 this.CompressedSize : 0xFFFFFFFF;
@@ -160,6 +221,9 @@ namespace Gibbed.Volition.FileFormats
             names.Seek(0, SeekOrigin.Begin);
             names.SetLength(names.Length.Align(2048));
 
+            extensions.Seek(0, SeekOrigin.Begin);
+            extensions.SetLength(names.Length.Align(2048));
+
             output.WriteValueU32(0x51890ACE, endian);
             output.WriteValueU32(4, endian);
 
@@ -167,6 +231,7 @@ namespace Gibbed.Volition.FileFormats
             output.Seek(2048, SeekOrigin.Begin);
             output.WriteFromStream(directory, directory.Length);
             output.WriteFromStream(names, names.Length);
+            output.WriteFromStream(extensions, extensions.Length);
         }
 
         public void Deserialize(Stream input)
@@ -230,7 +295,7 @@ namespace Gibbed.Volition.FileFormats
             }
 
             this.Endian = endian;
-            this.Flags = header.Flags & Package.HeaderFlags.Compressed;
+            this.Flags = ConvertFlags(header.Flags);
             this.UncompressedSize = header.UncompressedSize;
             this.CompressedSize = header.CompressedSize;
             this.DataOffset = input.Position;

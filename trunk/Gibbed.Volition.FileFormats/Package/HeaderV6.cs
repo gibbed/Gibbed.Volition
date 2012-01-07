@@ -1,9 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ * 
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+using System.IO;
 using System.Text;
 using Gibbed.IO;
-using System.IO;
 
 namespace Gibbed.Volition.FileFormats.Package
 {
@@ -11,7 +30,7 @@ namespace Gibbed.Volition.FileFormats.Package
     {
         public string Name;
         public string Path;
-        public HeaderFlags Flags;
+        public HeaderFlagsV6 Flags;
         public uint Unknown150;
         public uint DirectoryCount;
         public uint PackageSize;
@@ -28,7 +47,7 @@ namespace Gibbed.Volition.FileFormats.Package
             output.WriteString(this.Name, 65, Encoding.ASCII);
             output.WriteString(this.Path, 256, Encoding.ASCII);
             output.Seek(3, SeekOrigin.Current);
-            output.WriteValueEnum<HeaderFlags>(this.Flags, endian);
+            output.WriteValueEnum<HeaderFlagsV6>(this.Flags, endian);
             output.WriteValueU32(this.Unknown150, endian);
             output.WriteValueU32(this.DirectoryCount, endian);
             output.WriteValueU32(this.PackageSize, endian);
@@ -46,7 +65,7 @@ namespace Gibbed.Volition.FileFormats.Package
             this.Name = input.ReadString(65, true, Encoding.ASCII);
             this.Path = input.ReadString(256, true, Encoding.ASCII);
             input.Seek(3, SeekOrigin.Current);
-            this.Flags = input.ReadValueEnum<HeaderFlags>(endian);
+            this.Flags = input.ReadValueEnum<HeaderFlagsV6>(endian);
             this.Unknown150 = input.ReadValueU32(endian);
             this.DirectoryCount = input.ReadValueU32(endian);
             this.PackageSize = input.ReadValueU32(endian);

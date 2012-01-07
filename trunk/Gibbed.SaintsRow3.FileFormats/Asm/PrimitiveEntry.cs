@@ -32,23 +32,11 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
         public string Name { get; set; }
         public byte Type { get; set; }
         public byte Allocator { get; set; }
-        public byte Unknown3 { get; set; }
-        public byte Unknown4 { get; set; }
-        public int HeaderSize { get; set; }
-        public int DataSize { get; set; }
+        public PrimitiveFlags Flags { get; set; }
+        public byte SplitIndex { get; set; }
+        public int CPUSize { get; set; }
+        public int GPUSize { get; set; }
         public byte Unknown7 { get; set; }
-
-        public void Deserialize(Stream input, Endian endian)
-        {
-            this.Name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
-            this.Type = input.ReadValueU8();
-            this.Allocator = input.ReadValueU8();
-            this.Unknown3 = input.ReadValueU8();
-            this.Unknown4 = input.ReadValueU8();
-            this.HeaderSize = input.ReadValueS32(endian);
-            this.DataSize = input.ReadValueS32(endian);
-            this.Unknown7 = input.ReadValueU8();
-        }
 
         public void Serialize(Stream output, Endian endian)
         {
@@ -56,11 +44,23 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
             output.WriteString(this.Name.Substring(0, (ushort)this.Name.Length), Encoding.ASCII);
             output.WriteValueU8(this.Type);
             output.WriteValueU8(this.Allocator);
-            output.WriteValueU8(this.Unknown3);
-            output.WriteValueU8(this.Unknown4);
-            output.WriteValueS32(this.HeaderSize, endian);
-            output.WriteValueS32(this.DataSize, endian);
+            output.WriteValueU8((byte)this.Flags);
+            output.WriteValueU8(this.SplitIndex);
+            output.WriteValueS32(this.CPUSize, endian);
+            output.WriteValueS32(this.GPUSize, endian);
             output.WriteValueU8(this.Unknown7);
+        }
+
+        public void Deserialize(Stream input, Endian endian)
+        {
+            this.Name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
+            this.Type = input.ReadValueU8();
+            this.Allocator = input.ReadValueU8();
+            this.Flags = (PrimitiveFlags)input.ReadValueU8();
+            this.SplitIndex = input.ReadValueU8();
+            this.CPUSize = input.ReadValueS32(endian);
+            this.GPUSize = input.ReadValueS32(endian);
+            this.Unknown7 = input.ReadValueU8();
         }
     }
 }
