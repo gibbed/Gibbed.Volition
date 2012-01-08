@@ -30,6 +30,7 @@ namespace Gibbed.Volition.FileFormats
     {
         Endian Endian { get; set; }
         Package.HeaderFlags Flags { get; set; }
+        uint ExtraFlags { get; set; }
         Package.HeaderFlags SupportedFlags { get; }
         uint TotalSize { get; set; }
         uint UncompressedSize { get; set; }
