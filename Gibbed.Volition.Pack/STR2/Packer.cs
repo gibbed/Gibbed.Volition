@@ -151,7 +151,7 @@ namespace Gibbed.Volition.Pack.STR2
                 package.Flags = flags;
             }
 
-            this.Build(package, paths, outputPath);
+            this.Build(package, paths, outputPath, false);
 
             return 0;
         }

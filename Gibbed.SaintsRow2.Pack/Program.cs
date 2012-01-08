@@ -32,7 +32,9 @@ namespace Gibbed.SaintsRow2.Pack
         {
             Environment.ExitCode = new Generic.VPP.Packer
                 <FileFormats.PackageFileV4, FileFormats.Package.Entry>()
-                .Main(args);
+                {
+                    SupportPS3Chunking = true,
+                }.Main(args);
         }
     }
 }

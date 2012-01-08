@@ -45,11 +45,13 @@ namespace Gibbed.Volition.Pack.VPP
             var verbose = false;
             var isCompressed = false;
             var isCondensed = false;
-            var isCompressedInChunks = false;
+            var ps3 = false;
             var endian = Endian.Little;
 
             var package = new TPackage();
             var options = new OptionSet();
+
+            var extraFlags = 0u;
 
             if ((package.SupportedFlags & Package.HeaderFlags.Compressed) != 0)
             {
@@ -69,12 +71,18 @@ namespace Gibbed.Volition.Pack.VPP
                 );
             }
 
-            if ((package.SupportedFlags & Package.HeaderFlags.CompressedInChunks) != 0)
+            options.Add<int>(
+                "f|flag=",
+                "extra flag (as bit)",
+                v => extraFlags |= (v == null ? 0 : (1u << v))
+            );
+
+            if (this.SupportPS3Chunking == true)
             {
                 options.Add(
-                    "y|chunked-compression",
-                    "chunked compression mode (PS3)",
-                    v => isCompressedInChunks = v != null
+                    "ps3",
+                    "use chunked compression mode (PS3)",
+                    v => ps3 = v != null
                 );
             }
 
@@ -184,14 +192,9 @@ namespace Gibbed.Volition.Pack.VPP
                 flags |= Package.HeaderFlags.Condensed;
             }
 
-            if (isCompressedInChunks == true)
-            {
-                flags |= Package.HeaderFlags.CompressedInChunks;
-            }
-
             package.Flags = flags;
 
-            this.Build(package, paths, outputPath);
+            this.Build(package, paths, outputPath, ps3);
             return 0;
         }
     }
