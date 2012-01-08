@@ -44,8 +44,7 @@ namespace Gibbed.Volition.FileFormats
             get
             {
                 return
-                    Package.HeaderFlags.Compressed |
-                    Package.HeaderFlags.CompressedInChunks;
+                    Package.HeaderFlags.Compressed;
             }
         }
 
@@ -121,11 +120,6 @@ namespace Gibbed.Volition.FileFormats
                 newFlags |= Package.HeaderFlags.Compressed;
             }
 
-            if ((flags & Package.HeaderFlagsV4.CompressedInChunks) != 0)
-            {
-                newFlags |= Package.HeaderFlags.CompressedInChunks;
-            }
-
             return newFlags;
         }
 
@@ -136,11 +130,6 @@ namespace Gibbed.Volition.FileFormats
             if ((flags & Package.HeaderFlags.Compressed) != 0)
             {
                 newFlags |= Package.HeaderFlagsV4.Compressed;
-            }
-
-            if ((flags & Package.HeaderFlags.CompressedInChunks) != 0)
-            {
-                newFlags |= Package.HeaderFlagsV4.CompressedInChunks;
             }
 
             return newFlags;

@@ -33,7 +33,7 @@ namespace Gibbed.Volition.FileFormats.Package
         Unknown2 = 1u << 2,
         Unknown3 = 1u << 3,
         Unknown4 = 1u << 4,
-        CompressedInChunks = 1u << 5,
+        Unknown5 = 1u << 5,
         Unknown6 = 1u << 6,
         Unknown7 = 1u << 7,
         Unknown8 = 1u << 8,

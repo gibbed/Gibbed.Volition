@@ -35,6 +35,8 @@ namespace Gibbed.Volition.Pack.VPP
     public class Unpacker<TPackage>
         where TPackage : IPackageFile, new()
     {
+        public bool SupportPS3Chunking = false;
+
         private static string GetExecutableName()
         {
             return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
@@ -44,26 +46,37 @@ namespace Gibbed.Volition.Pack.VPP
         {
             var showHelp = false;
             var overwriteFiles = false;
+            var ps3 = false;
             var verbose = false;
 
-            var options = new OptionSet()
+            var options = new OptionSet();
+
+            options.Add(
+                "o|overwrite",
+                "overwrite files if they already exist", 
+                v => overwriteFiles = v != null
+            );
+
+            if (this.SupportPS3Chunking == true)
             {
-                {
-                    "o|overwrite",
-                    "overwrite files if they already exist", 
-                    v => overwriteFiles = v != null
-                },
-                {
-                    "v|verbose",
-                    "enable verbose logging", 
-                    v => verbose = v != null
-                },
-                {
-                    "h|help",
-                    "show this message and exit", 
-                    v => showHelp = v != null
-                },
-            };
+                options.Add(
+                    "ps3",
+                    "file is from PS3 vers",
+                    v => ps3 = v != null
+                );
+            }
+
+            options.Add(
+                "v|verbose",
+                "enable verbose logging", 
+                v => verbose = v != null
+            );
+
+            options.Add(
+                "h|help",
+                "show this message and exit",
+                v => showHelp = v != null
+            );
 
             List<string> extras;
 
@@ -111,7 +124,6 @@ namespace Gibbed.Volition.Pack.VPP
 
                     var dataOffset = package.DataOffset;
                     var isCompressed = (package.Flags & Package.HeaderFlags.Compressed) != 0;
-                    var isCompressedInChunks = (package.Flags & Package.HeaderFlags.CompressedInChunks) != 0;
                     var isCondensed = (package.Flags & Package.HeaderFlags.Condensed) != 0;
 
                     if (isCondensed == true && isCompressed == true)
@@ -166,8 +178,6 @@ namespace Gibbed.Volition.Pack.VPP
 
                             var dataStart = dataOffset;
 
-                            Console.WriteLine("data start = {0:X8}", dataStart);
-
                             data.Seek(dataOffset, SeekOrigin.Begin);
                             using (var output = File.Create(entryPath))
                             {
@@ -175,7 +185,7 @@ namespace Gibbed.Volition.Pack.VPP
                                 {
                                     output.WriteFromStream(data, entry.UncompressedSize);
                                 }
-                                else if (isCompressedInChunks == true)
+                                else if (ps3 == true)
                                 {
                                     long chunkLeft = entry.UncompressedSize;
                                     var chunkStart = input.Position;
@@ -191,10 +201,6 @@ namespace Gibbed.Volition.Pack.VPP
                                         var chunkCompressedSize = input.ReadValueU16(package.Endian);
                                         var chunkUnknown = input.ReadValueU16(package.Endian);
                                         var chunkUncompressedSize = input.ReadValueU32(package.Endian);
-
-                                        Console.WriteLine("  @ {0:X8}", input.Position);
-                                        Console.WriteLine("  csize = {0}", chunkCompressedSize);
-                                        Console.WriteLine("  usize = {0} ", chunkUncompressedSize);
 
                                         if (input.Position + chunkCompressedSize > chunkEnd)
                                         {

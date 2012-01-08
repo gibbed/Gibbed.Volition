@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gibbed.IO;
 using Gibbed.Volition.FileFormats;
+using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using Package = Gibbed.Volition.FileFormats.Package;
 using ZLIB = ComponentAce.Compression.Zlib;
@@ -35,15 +36,17 @@ namespace Gibbed.Volition.Pack
         where TPackage : IPackageFile<TEntry>, new()
         where TEntry : IPackageEntry, new()
     {
+        public bool SupportPS3Chunking = false;
+
         public abstract int Main(string[] args);
 
         protected void Build(
             TPackage package,
             IEnumerable<KeyValuePair<string, string>> paths,
-            string outputPath)
+            string outputPath,
+            bool ps3)
         {
             var isCompressed = (package.Flags & Package.HeaderFlags.Compressed) != 0;
-            var isCompressedInChunks = (package.Flags & Package.HeaderFlags.CompressedInChunks) != 0;
             var isCondensed = (package.Flags & Package.HeaderFlags.Condensed) != 0;
 
             package.Entries.Clear();
@@ -105,7 +108,7 @@ namespace Gibbed.Volition.Pack
                     package.Serialize(output);
                 }
                 else if (
-                    isCompressedInChunks == true &&
+                    ps3 == true &&
                     isCompressed == true)
                 {
                     output.Seek(baseOffset, SeekOrigin.Begin);
@@ -148,7 +151,7 @@ namespace Gibbed.Volition.Pack
                                 {
                                     var chunkUncompressedSize = (uint)Math.Min(0x10000, left);
 
-                                    var zlib = new DeflaterOutputStream(compressed, new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(9, true));
+                                    var zlib = new DeflaterOutputStream(compressed, new Deflater(9, true));
                                     zlib.WriteFromStream(input, chunkUncompressedSize);
                                     zlib.Finish();
 

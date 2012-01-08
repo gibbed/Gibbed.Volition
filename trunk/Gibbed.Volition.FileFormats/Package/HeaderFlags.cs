@@ -30,6 +30,5 @@ namespace Gibbed.Volition.FileFormats.Package
         None = 0u,
         Compressed = 1u << 0,
         Condensed = 1u << 1,
-        CompressedInChunks = 1u << 2,
     }
 }
