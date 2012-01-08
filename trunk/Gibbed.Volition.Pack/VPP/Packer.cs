@@ -193,6 +193,7 @@ namespace Gibbed.Volition.Pack.VPP
             }
 
             package.Flags = flags;
+            package.ExtraFlags = extraFlags;
 
             this.Build(package, paths, outputPath, ps3);
             return 0;

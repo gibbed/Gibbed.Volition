@@ -38,6 +38,7 @@ namespace Gibbed.Volition.FileFormats
     {
         public Endian Endian { get; set; }
         public Package.HeaderFlags Flags { get; set; }
+        public uint ExtraFlags { get; set; }
 
         public Package.HeaderFlags SupportedFlags
         {
@@ -195,6 +196,11 @@ namespace Gibbed.Volition.FileFormats
 
             header.Flags = ConvertFlags(this.Flags);
 
+            if (this.ExtraFlags != 0)
+            {
+                header.Flags |= (Package.HeaderFlagsV4)this.ExtraFlags;
+            }
+
             header.DirectoryCount = (uint)this.Entries.Count;
             header.PackageSize = this.TotalSize;
             header.DirectorySize = (uint)directory.Length;
@@ -211,7 +217,7 @@ namespace Gibbed.Volition.FileFormats
             names.SetLength(names.Length.Align(2048));
 
             extensions.Seek(0, SeekOrigin.Begin);
-            extensions.SetLength(names.Length.Align(2048));
+            extensions.SetLength(extensions.Length.Align(2048));
 
             output.WriteValueU32(0x51890ACE, endian);
             output.WriteValueU32(4, endian);

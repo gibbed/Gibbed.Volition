@@ -40,6 +40,7 @@ namespace Gibbed.Volition.FileFormats
     {
         public Endian Endian { get; set; }
         public Package.HeaderFlags Flags { get; set; }
+        public uint ExtraFlags { get; set; }
 
         public Package.HeaderFlags SupportedFlags
         {
@@ -135,6 +136,11 @@ namespace Gibbed.Volition.FileFormats
             header.Path = "           Read the       Foundation     Novels from       Asimov.       I liked them. ";
 
             header.Flags = ConvertFlags(this.Flags);
+
+            if (this.ExtraFlags != 0)
+            {
+                header.Flags |= (Package.HeaderFlagsV3)this.ExtraFlags;
+            }
 
             header.DirectoryCount = (uint)this.Entries.Count;
             header.PackageSize = this.TotalSize;
