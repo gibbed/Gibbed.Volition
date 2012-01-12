@@ -108,6 +108,24 @@ bool HookGame(void)
 		return true;
 	}
 
+	// 960264 as DX9
+	else if (UINT32(0x00B94A92) == 960264)
+	{
+		PatchCode(0x00E085FC, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00DF6AD0;
+		lua_tolstring = (LUA_TOLSTRING)0x00DF6E90;
+		return true;
+	}
+
+	// 960264 as DX11
+	else if (UINT32(0x00B93C12) == 960264)
+	{
+		PatchCode(0x00E76BCC, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00DFAEE0;
+		lua_tolstring = (LUA_TOLSTRING)0x00DFB2A0;
+		return true;
+	}
+
 	return false;
 }
 
