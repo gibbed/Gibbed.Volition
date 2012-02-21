@@ -148,10 +148,6 @@ namespace Gibbed.Volition.Pack.STR2
 
                         foreach (var entry in package.Directory.OrderBy(e => e.Offset))
                         {
-                            if (package.DataOffset + entry.Offset != dataOffset)
-                            {
-                            }
-
                             string outputName;
 
                             if (previousNames.ContainsKey(entry.Name) == true)
