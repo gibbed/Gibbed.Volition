@@ -148,6 +148,10 @@ namespace Gibbed.Volition.Pack.STR2
 
                         foreach (var entry in package.Directory.OrderBy(e => e.Offset))
                         {
+                            if (package.DataOffset + entry.Offset != dataOffset)
+                            {
+                            }
+
                             string outputName;
 
                             if (previousNames.ContainsKey(entry.Name) == true)
@@ -206,9 +210,16 @@ namespace Gibbed.Volition.Pack.STR2
 
                             var dataSize = isCompressed == false ?
                                 entry.UncompressedSize : entry.CompressedSize;
+                            
                             if (isCondensed == false)
                             {
                                 dataSize = dataSize.Align(2048);
+                            }
+                            else if (
+                                isCondensed == true &&
+                                isCompressed == false)
+                            {
+                                dataSize = dataSize.Align(16);
                             }
 
                             dataOffset += dataSize;

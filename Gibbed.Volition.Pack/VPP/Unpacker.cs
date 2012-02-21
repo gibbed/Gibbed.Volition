@@ -243,6 +243,12 @@ namespace Gibbed.Volition.Pack.VPP
                         {
                             dataSize = dataSize.Align(2048);
                         }
+                        else if (
+                            isCondensed == true &&
+                            isCompressed == false)
+                        {
+                            dataSize = dataSize.Align(16);
+                        }
 
                         dataOffset += dataSize;
                     }
