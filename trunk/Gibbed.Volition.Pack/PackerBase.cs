@@ -261,6 +261,17 @@ namespace Gibbed.Volition.Pack
                                     output.Seek(padding, SeekOrigin.Current);
                                 }
                             }
+                            else if (
+                                isCondensed == true &&
+                                isCompressed == false)
+                            {
+                                var padding = offset.Align(16) - offset;
+                                if (padding > 0)
+                                {
+                                    offset += padding;
+                                    output.Seek(padding, SeekOrigin.Current);
+                                }
+                            }
 
                             var entry = new TEntry();
                             entry.Name = kv.Key;
