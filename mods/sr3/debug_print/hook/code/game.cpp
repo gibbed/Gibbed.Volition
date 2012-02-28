@@ -126,6 +126,8 @@ bool HookGame(void)
 		return true;
 	}
 
+	// 960956 wasn't an EXE patch
+
 	// 964345 as DX9
 	else if (UINT32(0x00B9A432) == 877048)
 	{
@@ -144,6 +146,62 @@ bool HookGame(void)
 		return true;
 	}
 
+	// 965967 as DX9
+	else if (UINT32(0x00B9A242) == 965967)
+	{
+		PatchCode(0x00E0F2DC, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00DFD7C0;
+		lua_tolstring = (LUA_TOLSTRING)0x00DFDB80;
+		return true;
+	}
+
+	// 965967 as DX11
+	else if (UINT32(0x00B997C2) == 965967)
+	{
+		PatchCode(0x00E7DAAC, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00E01E50;
+		lua_tolstring = (LUA_TOLSTRING)0x00E02210;
+		return true;
+	}
+
+	// 966663 wasn't an EXE patch
+
+	// 966711 as DX9
+	else if (UINT32(0x00B9A232) == 966711)
+	{
+		PatchCode(0x00E0F2DC, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00DFD7C0;
+		lua_tolstring = (LUA_TOLSTRING)0x00DFDB80;
+		return true;
+	}
+
+	// 966711 as DX11
+	else if (UINT32(0x00B99782) == 966711)
+	{
+		PatchCode(0x00E7DAAC, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00E01E50;
+		lua_tolstring = (LUA_TOLSTRING)0x00E02210;
+		return true;
+	}
+
+	// 968252 as DX9
+	else if (UINT32(0x00B9A2C2) == 968252)
+	{
+		PatchCode(0x00E0F60C, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00DFDAE0;
+		lua_tolstring = (LUA_TOLSTRING)0x00DFDEA0;
+		return true;
+	}
+
+	// 968252 as DX11
+	else if (UINT32(0x00B998C2) == 968252)
+	{
+		PatchCode(0x00E7DCFC, &debugPrintAddress, 4);
+		lua_gettop = (LUA_GETTOP)0x00E02350;
+		lua_tolstring = (LUA_TOLSTRING)0x00E02710;
+		return true;
+	}
+
 	return false;
 }
 
@@ -152,15 +210,15 @@ bool GameAttach(void)
 	/*
 	if (IdentifyGameVersion() == false)
 	{
-		MessageBoxW(0, L"Failed to identify game version.", L"Error", MB_OK | MB_ICONERROR);
+		MessageBoxW(0, L"Failed to identify game version.", L"gibbed's xinput hook for SR:TT", MB_OK | MB_ICONERROR);
 		return false;
 	}
 	*/
 
 	if (HookGame() == false)
 	{
-		//MessageBoxW(0, L"Failed to hook game.", L"Error", MB_OK | MB_ICONERROR);
-		MessageBoxW(0, L"Failed to identify game version.", L"Error", MB_OK | MB_ICONERROR);
+		//MessageBoxW(0, L"Failed to hook game.", L"gibbed's xinput hook for SR:TT", MB_OK | MB_ICONERROR);
+		MessageBoxW(0, L"Failed to identify game version.", L"gibbed's xinput hook for SR:TT", MB_OK | MB_ICONERROR);
 		return false;
 	}
 
