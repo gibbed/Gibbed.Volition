@@ -190,7 +190,7 @@ namespace Searcher
                                   inputName == "saintsrowthethird"
                                       ? "DX9"
                                       : (inputName == "saintsrowthethird_dx11" ? "DX11" : "unknown"));
-                Console.WriteLine("else if (UINT32(0x{0:X8}) == 0x{1:X8})",
+                Console.WriteLine("else if (UINT32(0x{0:X8}) == {1})",
                                   changelistAddress.Value,
                                   changelistValue.Value);
                 Console.WriteLine("{");
