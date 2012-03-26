@@ -58,7 +58,7 @@ namespace Searcher
             {
                 {
                     "h|help",
-                    "show this message and exit", 
+                    "show this message and exit",
                     v => showHelp = v != null
                 },
             };
@@ -92,6 +92,13 @@ namespace Searcher
             var registerLuaFunctionsByteSearch = LoadPattern("register_lua_functions.txt");
             var luaIncludeByteSearch = LoadPattern("lua_include.txt");
 
+            uint? changelistAddress = null;
+            uint? changelistValue = null;
+            uint? debugPrintOffsetAddress = null;
+            uint? assertMsgOffsetAddress = null;
+            uint? gettopAddress = null;
+            uint? tolstringAddress = null;
+
             using (var input = File.OpenRead(inputPath))
             {
                 var exe = new Executable32();
@@ -108,9 +115,11 @@ namespace Searcher
                 }
                 else
                 {
-                    Console.WriteLine("   changelist = {0}", BitConverter.ToUInt32(code, (int)changelistOffset + 0x22));
-                    
-                    var changelistAddress = changelistOffset + 0x22;
+                    changelistValue = BitConverter.ToUInt32(code, (int)changelistOffset + 0x22);
+
+                    Console.WriteLine("   changelist = {0}", changelistValue);
+
+                    changelistAddress = changelistOffset + 0x22;
                     changelistAddress += exe.NTHeaders32.OptionalHeader.ImageBase;
                     changelistAddress += section.VirtualAddress;
 
@@ -124,11 +133,11 @@ namespace Searcher
                 }
                 else
                 {
-                    var debugPrintOffsetAddress = registerLuaFunctionsOffset + 0x6C;
+                    debugPrintOffsetAddress = registerLuaFunctionsOffset + 0x6C;
                     debugPrintOffsetAddress += exe.NTHeaders32.OptionalHeader.ImageBase;
                     debugPrintOffsetAddress += section.VirtualAddress;
 
-                    var assertMsgOffsetAddress = registerLuaFunctionsOffset + 0x7C;
+                    assertMsgOffsetAddress = registerLuaFunctionsOffset + 0x7C;
                     assertMsgOffsetAddress += exe.NTHeaders32.OptionalHeader.ImageBase;
                     assertMsgOffsetAddress += section.VirtualAddress;
 
@@ -155,14 +164,45 @@ namespace Searcher
                             var gettopOffset = BitConverter.ToUInt32(includeCode, 0x07);
                             var tolstringOffset = BitConverter.ToUInt32(includeCode, 0x12);
 
-                            var gettopAddress = (includeAddress + 0x0B) + gettopOffset;
-                            var tolstringAddress = (includeAddress + 0x16) + tolstringOffset;
+                            gettopAddress = (includeAddress + 0x0B) + gettopOffset;
+                            tolstringAddress = (includeAddress + 0x16) + tolstringOffset;
 
                             Console.WriteLine("   lua_gettop @ 0x{0:X8}", gettopAddress);
                             Console.WriteLine("lua_tolstring @ 0x{0:X8}", tolstringAddress);
                         }
                     }
                 }
+            }
+
+            Console.WriteLine();
+
+            // ReSharper disable ConditionIsAlwaysTrueOrFalse
+            if (changelistAddress.HasValue == true &&
+                changelistValue.HasValue == true &&
+                debugPrintOffsetAddress.HasValue == true &&
+                gettopAddress.HasValue == true &&
+                tolstringAddress.HasValue == true) // ReSharper restore ConditionIsAlwaysTrueOrFalse
+            {
+                var inputName = (Path.GetFileNameWithoutExtension(inputPath) ?? "saintsrowthethird").ToLowerInvariant();
+
+                Console.WriteLine("// {0} as {1}",
+                                  changelistValue,
+                                  inputName == "saintsrowthethird"
+                                      ? "DX9"
+                                      : (inputName == "saintsrowthethird_dx11" ? "DX11" : "unknown"));
+                Console.WriteLine("else if (UINT32(0x{0:X8}) == 0x{1:X8})",
+                                  changelistAddress.Value,
+                                  changelistValue.Value);
+                Console.WriteLine("{");
+                Console.WriteLine("\tPatchCode(0x{0:X8}, &debugPrintAddress, 4);", debugPrintOffsetAddress.Value);
+                Console.WriteLine("\tlua_gettop = (LUA_GETTOP)0x{0:X8};", gettopAddress.Value);
+                Console.WriteLine("\tlua_tolstring = (LUA_TOLSTRING)0x{0:X8};", tolstringAddress.Value);
+                Console.WriteLine("\treturn true;");
+                Console.WriteLine("}");
+            }
+            else
+            {
+                Console.WriteLine("// Missing information, could not generate code.");
             }
         }
     }

@@ -51,11 +51,11 @@ namespace Searcher
         {
             get
             {
-                return this.Values.Count;
+                return this._Values.Count;
             }
         }
 
-        private List<BytePatternEntry> Values = new List<BytePatternEntry>();
+        private readonly List<BytePatternEntry> _Values = new List<BytePatternEntry>();
 
         /// <summary>
         /// 
@@ -63,9 +63,7 @@ namespace Searcher
         /// <param name="pattern"></param>
         public ByteSearch(string pattern)
         {
-            Regex regex;
-
-            regex = new Regex("^(([0-9,a-f]{2})|([x]{2})|(\\s))+$", RegexOptions.IgnoreCase);
+            var regex = new Regex("^(([0-9,a-f]{2})|([x]{2})|(\\s))+$", RegexOptions.IgnoreCase);
 
             if (regex.Match(pattern).Success == false)
             {
@@ -92,7 +90,7 @@ namespace Searcher
                     entry.Mask = 0xFF;
                 }
 
-                this.Values.Add(entry);
+                this._Values.Add(entry);
             }
         }
 
@@ -120,9 +118,9 @@ namespace Searcher
                 for (int j = 0; matched && (j < this.Size); j++)
                 {
                     matched =
-                        (this.Values[j].Value & this.Values[j].Mask)
+                        (this._Values[j].Value & this._Values[j].Mask)
                         ==
-                        (data[i + j] & this.Values[j].Mask);
+                        (data[i + j] & this._Values[j].Mask);
                 }
 
                 if (matched)
