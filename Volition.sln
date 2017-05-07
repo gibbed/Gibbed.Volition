@@ -1,71 +1,69 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.FileFormats", "Gibbed.Volition.FileFormats\Gibbed.Volition.FileFormats.csproj", "{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.FileFormats", "projects\Gibbed.Volition.FileFormats\Gibbed.Volition.FileFormats.csproj", "{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.Test", "Gibbed.Volition.Test\Gibbed.Volition.Test.csproj", "{BA0103B2-A1DE-49F5-B066-84693E857EBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.ConvertPeg", "projects\Gibbed.Volition.ConvertPeg\Gibbed.Volition.ConvertPeg.csproj", "{98054545-BEA6-4CAB-B5FE-F970D99F15EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.ConvertPeg", "Gibbed.Volition.ConvertPeg\Gibbed.Volition.ConvertPeg.csproj", "{98054545-BEA6-4CAB-B5FE-F970D99F15EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.IO", "projects\Gibbed.IO\Gibbed.IO.csproj", "{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.IO", "Gibbed.IO\Gibbed.IO.csproj", "{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Squish", "projects\Gibbed.Squish\Gibbed.Squish.csproj", "{242D0738-AA4C-4C9C-A218-891A8F55559C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Squish", "Gibbed.Squish\Gibbed.Squish.csproj", "{242D0738-AA4C-4C9C-A218-891A8F55559C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NDesk.Options", "NDesk.Options\NDesk.Options.csproj", "{C98A6CD6-9422-4B35-8B7A-F520D75534D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NDesk.Options", "projects\NDesk.Options\NDesk.Options.csproj", "{C98A6CD6-9422-4B35-8B7A-F520D75534D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{09A2E18E-5476-4BA8-90D9-A6722A4449C5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{6A105917-65EA-4AE8-8C21-051959E7D1A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentAce.Compression.Zlib", "ComponentAce.Compression.Zlib\ComponentAce.Compression.Zlib.csproj", "{8909BE63-2F9F-4BE6-846D-351A6315B7BE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{4007CA3A-8F3D-4AF0-B624-32BB22F73063}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generic", "Generic", "{EFF1FA26-C851-442B-ABD8-A41024472307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.Pack", "Gibbed.Volition.Pack\Gibbed.Volition.Pack.csproj", "{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.Pack", "projects\Gibbed.Volition.Pack\Gibbed.Volition.Pack.csproj", "{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.UnpackVPP", "Gibbed.SaintsRow3.UnpackVPP\Gibbed.SaintsRow3.UnpackVPP.csproj", "{4ABD6FF0-D30B-42F2-A301-6FEBD1E633F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.UnpackVPP", "projects\Gibbed.SaintsRow3.UnpackVPP\Gibbed.SaintsRow3.UnpackVPP.csproj", "{4ABD6FF0-D30B-42F2-A301-6FEBD1E633F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.UnpackSTR2", "Gibbed.SaintsRow3.UnpackSTR2\Gibbed.SaintsRow3.UnpackSTR2.csproj", "{3757D29B-04B4-48E5-8965-ABB71C7B9AD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.UnpackSTR2", "projects\Gibbed.SaintsRow3.UnpackSTR2\Gibbed.SaintsRow3.UnpackSTR2.csproj", "{3757D29B-04B4-48E5-8965-ABB71C7B9AD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.PackSTR2", "Gibbed.SaintsRow3.PackSTR2\Gibbed.SaintsRow3.PackSTR2.csproj", "{B23AE70B-8251-4FEF-BEAE-4CAEEF1110E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.PackSTR2", "projects\Gibbed.SaintsRow3.PackSTR2\Gibbed.SaintsRow3.PackSTR2.csproj", "{B23AE70B-8251-4FEF-BEAE-4CAEEF1110E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.PackVPP", "Gibbed.SaintsRow3.PackVPP\Gibbed.SaintsRow3.PackVPP.csproj", "{D9273D44-8FF8-4095-9276-194C4E565A2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.PackVPP", "projects\Gibbed.SaintsRow3.PackVPP\Gibbed.SaintsRow3.PackVPP.csproj", "{D9273D44-8FF8-4095-9276-194C4E565A2E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Saints Row 3", "Saints Row 3", "{90BB77B6-9732-4DAA-8897-569067E24561}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Saints Row 2", "Saints Row 2", "{32B992D8-7423-4DA9-9714-6FE023E1FE16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow2.Unpack", "Gibbed.SaintsRow2.Unpack\Gibbed.SaintsRow2.Unpack.csproj", "{B2565374-F092-4409-87F7-0E53FD9830D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow2.Unpack", "projects\Gibbed.SaintsRow2.Unpack\Gibbed.SaintsRow2.Unpack.csproj", "{B2565374-F092-4409-87F7-0E53FD9830D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow2.Pack", "Gibbed.SaintsRow2.Pack\Gibbed.SaintsRow2.Pack.csproj", "{71B19150-F94D-4E30-A891-679CD7A35826}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow2.Pack", "projects\Gibbed.SaintsRow2.Pack\Gibbed.SaintsRow2.Pack.csproj", "{71B19150-F94D-4E30-A891-679CD7A35826}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Red Faction 3", "Red Faction 3", "{EFE9116C-481C-4918-B872-B5950A815522}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.ConvertASM", "Gibbed.RedFaction3.ConvertASM\Gibbed.RedFaction3.ConvertASM.csproj", "{8CD202AD-3072-463C-8E50-77F76F47F581}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.ConvertASM", "projects\Gibbed.RedFaction3.ConvertASM\Gibbed.RedFaction3.ConvertASM.csproj", "{8CD202AD-3072-463C-8E50-77F76F47F581}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Formats", "Formats", "{5BD6B22D-0577-4FD6-9C4C-785B6F4DF243}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.FileFormats", "Gibbed.RedFaction3.FileFormats\Gibbed.RedFaction3.FileFormats.csproj", "{E9CE3128-DB51-4755-8070-330FF954BB79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.FileFormats", "projects\Gibbed.RedFaction3.FileFormats\Gibbed.RedFaction3.FileFormats.csproj", "{E9CE3128-DB51-4755-8070-330FF954BB79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.FileFormats", "Gibbed.SaintsRow3.FileFormats\Gibbed.SaintsRow3.FileFormats.csproj", "{34F373CE-FC89-427C-9341-30949A343EB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.FileFormats", "projects\Gibbed.SaintsRow3.FileFormats\Gibbed.SaintsRow3.FileFormats.csproj", "{34F373CE-FC89-427C-9341-30949A343EB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.ConvertASM", "Gibbed.SaintsRow3.ConvertASM\Gibbed.SaintsRow3.ConvertASM.csproj", "{79768AE6-5D1A-4836-B80B-81DCF1BCE8EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.ConvertASM", "projects\Gibbed.SaintsRow3.ConvertASM\Gibbed.SaintsRow3.ConvertASM.csproj", "{79768AE6-5D1A-4836-B80B-81DCF1BCE8EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.UpdateASM", "Gibbed.SaintsRow3.UpdateASM\Gibbed.SaintsRow3.UpdateASM.csproj", "{0F8D9640-142E-4624-907C-843BC1DC68A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.UpdateASM", "projects\Gibbed.SaintsRow3.UpdateASM\Gibbed.SaintsRow3.UpdateASM.csproj", "{0F8D9640-142E-4624-907C-843BC1DC68A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow2.FileFormats", "Gibbed.SaintsRow2.FileFormats\Gibbed.SaintsRow2.FileFormats.csproj", "{F309AADE-48A4-4CF3-8541-E7BB8FAF385E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow2.FileFormats", "projects\Gibbed.SaintsRow2.FileFormats\Gibbed.SaintsRow2.FileFormats.csproj", "{F309AADE-48A4-4CF3-8541-E7BB8FAF385E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.ConvertVINTDOC", "Gibbed.Volition.ConvertVINTDOC\Gibbed.Volition.ConvertVINTDOC.csproj", "{50467572-824A-4510-A7E0-CCE1E3C909AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.ConvertVINTDOC", "projects\Gibbed.Volition.ConvertVINTDOC\Gibbed.Volition.ConvertVINTDOC.csproj", "{50467572-824A-4510-A7E0-CCE1E3C909AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.PackVPP", "Gibbed.RedFaction3.PackVPP\Gibbed.RedFaction3.PackVPP.csproj", "{3041BE8D-0626-4994-809D-81BC4C91543D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.PackVPP", "projects\Gibbed.RedFaction3.PackVPP\Gibbed.RedFaction3.PackVPP.csproj", "{3041BE8D-0626-4994-809D-81BC4C91543D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.UnpackVPP", "Gibbed.RedFaction3.UnpackVPP\Gibbed.RedFaction3.UnpackVPP.csproj", "{563EBFCD-A406-4D9A-89CF-D40A76663B4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.UnpackVPP", "projects\Gibbed.RedFaction3.UnpackVPP\Gibbed.RedFaction3.UnpackVPP.csproj", "{563EBFCD-A406-4D9A-89CF-D40A76663B4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.PackSTR2", "Gibbed.RedFaction3.PackSTR2\Gibbed.RedFaction3.PackSTR2.csproj", "{667640BE-2F20-4702-9AAC-7DA6BD199EE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.PackSTR2", "projects\Gibbed.RedFaction3.PackSTR2\Gibbed.RedFaction3.PackSTR2.csproj", "{667640BE-2F20-4702-9AAC-7DA6BD199EE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.UnpackSTR2", "Gibbed.RedFaction3.UnpackSTR2\Gibbed.RedFaction3.UnpackSTR2.csproj", "{378E2658-E9D3-4D09-AE0D-E8779E40322D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.RedFaction3.UnpackSTR2", "projects\Gibbed.RedFaction3.UnpackSTR2\Gibbed.RedFaction3.UnpackSTR2.csproj", "{378E2658-E9D3-4D09-AE0D-E8779E40322D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentAce.Compression.Zlib", "projects\ComponentAce.Compression.Zlib\ComponentAce.Compression.Zlib.csproj", "{8909BE63-2F9F-4BE6-846D-351A6315B7BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,16 +85,6 @@ Global
 		{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}.Release|x86.ActiveCfg = Release|Any CPU
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Debug|x86.ActiveCfg = Debug|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Debug|x86.Build.0 = Debug|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Release|Any CPU.ActiveCfg = Release|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Release|Mixed Platforms.Build.0 = Release|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Release|x86.ActiveCfg = Release|x86
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA}.Release|x86.Build.0 = Release|x86
 		{98054545-BEA6-4CAB-B5FE-F970D99F15EF}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{98054545-BEA6-4CAB-B5FE-F970D99F15EF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{98054545-BEA6-4CAB-B5FE-F970D99F15EF}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -137,16 +125,6 @@ Global
 		{C98A6CD6-9422-4B35-8B7A-F520D75534D1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C98A6CD6-9422-4B35-8B7A-F520D75534D1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C98A6CD6-9422-4B35-8B7A-F520D75534D1}.Release|x86.ActiveCfg = Release|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|x86.ActiveCfg = Release|Any CPU
 		{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -327,6 +305,16 @@ Global
 		{378E2658-E9D3-4D09-AE0D-E8779E40322D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{378E2658-E9D3-4D09-AE0D-E8779E40322D}.Release|x86.ActiveCfg = Release|x86
 		{378E2658-E9D3-4D09-AE0D-E8779E40322D}.Release|x86.Build.0 = Release|x86
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8909BE63-2F9F-4BE6-846D-351A6315B7BE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -337,7 +325,6 @@ Global
 		{34F373CE-FC89-427C-9341-30949A343EB2} = {5BD6B22D-0577-4FD6-9C4C-785B6F4DF243}
 		{F309AADE-48A4-4CF3-8541-E7BB8FAF385E} = {5BD6B22D-0577-4FD6-9C4C-785B6F4DF243}
 		{EFF1FA26-C851-442B-ABD8-A41024472307} = {6A105917-65EA-4AE8-8C21-051959E7D1A8}
-		{BA0103B2-A1DE-49F5-B066-84693E857EBA} = {6A105917-65EA-4AE8-8C21-051959E7D1A8}
 		{4007CA3A-8F3D-4AF0-B624-32BB22F73063} = {6A105917-65EA-4AE8-8C21-051959E7D1A8}
 		{98054545-BEA6-4CAB-B5FE-F970D99F15EF} = {EFF1FA26-C851-442B-ABD8-A41024472307}
 		{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C} = {EFF1FA26-C851-442B-ABD8-A41024472307}
