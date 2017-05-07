@@ -7,3 +7,6 @@
 [submodule "projects/NDesk.Options"]
 	path = projects/NDesk.Options
 	url = https://github.com/gibbed/NDesk.Options
+[submodule "projects/ComponentAce.Compression.Zlib"]
+	path = projects/ComponentAce.Compression.Zlib
+	url = https://github.com/gibbed/ComponentAce.Compression.Zlib
