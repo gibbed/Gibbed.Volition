@@ -51,9 +51,9 @@
       <Project>{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}</Project>
       <Name>Gibbed.Volition.FileFormats</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gibbed.Volition.Pack\Gibbed.Volition.Pack.csproj">
+    <ProjectReference Include="..\Gibbed.Volition.Packing\Gibbed.Volition.Packing.csproj">
       <Project>{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}</Project>
-      <Name>Gibbed.Volition.Pack</Name>
+      <Name>Gibbed.Volition.Packing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

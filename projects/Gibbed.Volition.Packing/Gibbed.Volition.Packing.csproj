@@ -8,8 +8,8 @@
     <ProjectGuid>{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gibbed.Volition.Pack</RootNamespace>
-    <AssemblyName>Gibbed.Volition.Pack</AssemblyName>
+    <RootNamespace>Gibbed.Volition.Packing</RootNamespace>
+    <AssemblyName>Gibbed.Volition.Packing</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

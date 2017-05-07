@@ -29,7 +29,7 @@ using Gibbed.Volition.FileFormats;
 using NDesk.Options;
 using Package = Gibbed.Volition.FileFormats.Package;
 
-namespace Gibbed.Volition.Pack.STR2
+namespace Gibbed.Volition.Packing.STR2
 {
     public class Packer<TPackage, TEntry> : PackerBase<TPackage, TEntry>
         where TPackage : IPackageFile<TEntry>, new()

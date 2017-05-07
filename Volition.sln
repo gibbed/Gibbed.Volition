@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{4007CA3A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generic", "Generic", "{EFF1FA26-C851-442B-ABD8-A41024472307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.Pack", "projects\Gibbed.Volition.Pack\Gibbed.Volition.Pack.csproj", "{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.Packing", "projects\Gibbed.Volition.Packing\Gibbed.Volition.Packing.csproj", "{43B8EFA8-3D07-426F-A3AC-E27907A9BA0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.SaintsRow3.UnpackVPP", "projects\Gibbed.SaintsRow3.UnpackVPP\Gibbed.SaintsRow3.UnpackVPP.csproj", "{4ABD6FF0-D30B-42F2-A301-6FEBD1E633F9}"
 EndProject

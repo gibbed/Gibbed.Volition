@@ -22,7 +22,7 @@
 
 using System;
 using FileFormats = Gibbed.Volition.FileFormats;
-using Generic = Gibbed.Volition.Pack;
+using Generic = Gibbed.Volition.Packing;
 
 namespace Gibbed.SaintsRow2.Unpack
 {

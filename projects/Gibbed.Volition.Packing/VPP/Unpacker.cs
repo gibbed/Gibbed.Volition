@@ -30,7 +30,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using NDesk.Options;
 using Package = Gibbed.Volition.FileFormats.Package;
 
-namespace Gibbed.Volition.Pack.VPP
+namespace Gibbed.Volition.Packing.VPP
 {
     public class Unpacker<TPackage>
         where TPackage : IPackageFile, new()

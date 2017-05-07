@@ -28,7 +28,7 @@ using Gibbed.Volition.FileFormats;
 using NDesk.Options;
 using Package = Gibbed.Volition.FileFormats.Package;
 
-namespace Gibbed.Volition.Pack.VPP
+namespace Gibbed.Volition.Packing.VPP
 {
     public class Packer<TPackage, TEntry> : PackerBase<TPackage, TEntry>
         where TPackage : IPackageFile<TEntry>, new()

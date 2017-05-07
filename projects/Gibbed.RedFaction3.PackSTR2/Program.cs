@@ -22,7 +22,7 @@
 
 using System;
 using FileFormats = Gibbed.Volition.FileFormats;
-using Pack = Gibbed.Volition.Pack;
+using Generic = Gibbed.Volition.Packing;
 
 namespace Gibbed.RedFaction3.PackSTR2
 {
@@ -30,7 +30,7 @@ namespace Gibbed.RedFaction3.PackSTR2
     {
         public static void Main(string[] args)
         {
-            Environment.ExitCode = new Pack.STR2.Packer
+            Environment.ExitCode = new Generic.STR2.Packer
                 <FileFormats.PackageFileV3, FileFormats.Package.Entry>()
                 .Main(args);
         }

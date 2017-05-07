@@ -27,11 +27,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Gibbed.Volition.Pack")]
+[assembly: AssemblyTitle("Gibbed.Volition.Packing")]
 [assembly: AssemblyDescription("http://gib.me/")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Gibbed")]
-[assembly: AssemblyProduct("Gibbed.Volition.Pack")]
+[assembly: AssemblyProduct("Gibbed.Volition.Packing")]
 [assembly: AssemblyCopyright("Copyright © Gibbed 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

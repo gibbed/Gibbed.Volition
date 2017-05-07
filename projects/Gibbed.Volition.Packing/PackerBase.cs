@@ -30,7 +30,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using Package = Gibbed.Volition.FileFormats.Package;
 using ZLIB = ComponentAce.Compression.Zlib;
 
-namespace Gibbed.Volition.Pack
+namespace Gibbed.Volition.Packing
 {
     public abstract class PackerBase<TPackage, TEntry>
         where TPackage : IPackageFile<TEntry>, new()
