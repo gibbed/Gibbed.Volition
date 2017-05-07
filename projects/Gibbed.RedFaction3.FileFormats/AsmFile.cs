@@ -29,9 +29,31 @@ namespace Gibbed.RedFaction3.FileFormats
 {
     public class AsmFile
     {
-        public Endian Endian;
-        public ushort Version;
-        public List<Asm.ContainerEntry> Containers = new List<Asm.ContainerEntry>();
+        private Endian _Endian;
+        private ushort _Version;
+        private readonly List<Asm.ContainerEntry> _Containers;
+
+        public AsmFile()
+        {
+            this._Containers = new List<Asm.ContainerEntry>();
+        }
+
+        public Endian Endian
+        {
+            get { return this._Endian; }
+            set { this._Endian = value; }
+        }
+
+        public ushort Version
+        {
+            get { return this._Version; }
+            set { this._Version = value; }
+        }
+
+        public List<Asm.ContainerEntry> Containers
+        {
+            get { return this._Containers; }
+        }
 
         public void Deserialize(Stream input)
         {
@@ -43,36 +65,44 @@ namespace Gibbed.RedFaction3.FileFormats
 
             var endian = magic == 0xBEEFFEED ? Endian.Little : Endian.Big;
 
-            this.Version = input.ReadValueU16(endian);
-            if (this.Version != 5)
+            var version = input.ReadValueU16(endian);
+            if (version != 5)
             {
-                throw new FormatException("unsupported asm version " + this.Version.ToString());
+                throw new FormatException("unsupported asm version " + this._Version.ToString());
             }
 
             var containerCount = input.ReadValueU16();
 
-            this.Containers.Clear();
+            var containers = new Asm.ContainerEntry[containerCount];
             for (ushort i = 0; i < containerCount; i++)
             {
                 var container = new Asm.ContainerEntry();
-                container.Deserialize(input, this.Version, endian);
-                this.Containers.Add(container);
+                container.Deserialize(input, this._Version, endian);
+                containers[i] = container;
             }
 
-            this.Endian = endian;
+            this._Endian = endian;
+            this._Version = version;
+            this._Containers.Clear();
+            this._Containers.AddRange(containers);
         }
 
         public void Serialize(Stream output)
         {
-            var endian = this.Endian;
+            var endian = this._Endian;
+
+            if (this._Containers.Count > ushort.MaxValue)
+            {
+                throw new FormatException("too many containers");
+            }
+            var containerCount = (ushort)this._Containers.Count;
 
             output.WriteValueU32(0xBEEFFEED, endian);
-            output.WriteValueU16(this.Version, endian);
-            output.WriteValueU16((ushort)this.Containers.Count, endian);
-
-            for (ushort i = 0; i < (ushort)this.Containers.Count; i++)
+            output.WriteValueU16(this._Version, endian);
+            output.WriteValueU16(containerCount, endian);
+            for (ushort i = 0; i < containerCount; i++)
             {
-                this.Containers[i].Serialize(output, this.Version, endian);
+                this._Containers[i].Serialize(output, this._Version, endian);
             }
         }
     }

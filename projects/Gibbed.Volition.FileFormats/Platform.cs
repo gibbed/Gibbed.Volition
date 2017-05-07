@@ -24,10 +24,12 @@ namespace Gibbed.Volition.FileFormats
 {
     public enum Platform : ushort
     {
+        // ReSharper disable InconsistentNaming
         PC = 0, // _pc
         PS2 = 1, // _ps2
         PS3 = 2, // _ps3
         XBox = 3, // _xbox
         XBox2 = 4, // _xbox2
+        // ReSharper restore InconsistentNaming
     }
 }

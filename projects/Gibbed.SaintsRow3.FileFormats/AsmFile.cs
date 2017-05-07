@@ -31,12 +31,52 @@ namespace Gibbed.SaintsRow3.FileFormats
 {
     public class AsmFile
     {
-        public Endian Endian;
-        public ushort Version;
-        public List<Asm.TypeId> AllocatorTypes = new List<Asm.TypeId>();
-        public List<Asm.TypeId> PrimitiveTypes = new List<Asm.TypeId>();
-        public List<Asm.TypeId> ContainerTypes = new List<Asm.TypeId>();
-        public List<Asm.ContainerEntry> Containers = new List<Asm.ContainerEntry>();
+        private Endian _Endian;
+        private ushort _Version;
+        private readonly List<Asm.TypeId> _AllocatorTypes;
+        private readonly List<Asm.TypeId> _PrimitiveTypes;
+        private readonly List<Asm.TypeId> _ContainerTypes;
+        private readonly List<Asm.ContainerEntry> _Containers;
+
+        public AsmFile()
+        {
+            this._AllocatorTypes = new List<Asm.TypeId>();
+            this._PrimitiveTypes = new List<Asm.TypeId>();
+            this._ContainerTypes = new List<Asm.TypeId>();
+            this._Containers = new List<Asm.ContainerEntry>();
+        }
+
+        public Endian Endian
+        {
+            get { return this._Endian; }
+            set { this._Endian = value; }
+        }
+
+        public ushort Version
+        {
+            get { return this._Version; }
+            set { this._Version = value; }
+        }
+
+        public List<Asm.TypeId> AllocatorTypes
+        {
+            get { return this._AllocatorTypes; }
+        }
+
+        public List<Asm.TypeId> PrimitiveTypes
+        {
+            get { return this._PrimitiveTypes; }
+        }
+
+        public List<Asm.TypeId> ContainerTypes
+        {
+            get { return this._ContainerTypes; }
+        }
+
+        public List<Asm.ContainerEntry> Containers
+        {
+            get { return this._Containers; }
+        }
 
         public void Deserialize(Stream input)
         {
@@ -48,96 +88,102 @@ namespace Gibbed.SaintsRow3.FileFormats
 
             var endian = magic == 0xBEEFFEED ? Endian.Little : Endian.Big;
 
-            this.Version = input.ReadValueU16(endian);
-            if (this.Version != 11)
+            var version = input.ReadValueU16(endian);
+            if (version != 11)
             {
-                throw new FormatException("unsupported asm version " + this.Version.ToString());
+                throw new FormatException("unsupported asm version " + this._Version.ToString());
             }
 
             var containerCount = input.ReadValueU16();
 
-            this.AllocatorTypes.Clear();
-            if (this.Version >= 8)
+            var allocatorTypeCount = version < 8 ? 0 : input.ReadValueU32(endian);
+            var allocatorTypes = new Asm.TypeId[allocatorTypeCount];
+            for (uint i = 0; i < allocatorTypeCount; i++)
             {
-                var allocatorTypeCount = input.ReadValueU32(endian);
-                for (uint i = 0; i < allocatorTypeCount; i++)
-                {
-                    var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
-                    var id = input.ReadValueU8();
-                    this.AllocatorTypes.Add(new Asm.TypeId(name, id));
-                }
+                var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
+                var id = input.ReadValueU8();
+                allocatorTypes[i] = new Asm.TypeId(name, id);
             }
 
-            this.PrimitiveTypes.Clear();
-            if (this.Version >= 8)
+            var primitiveTypeCount = version < 8 ? 0 : input.ReadValueU32(endian);
+            var primitiveTypes = new Asm.TypeId[allocatorTypeCount];
+            for (uint i = 0; i < primitiveTypeCount; i++)
             {
-                var primitiveTypeCount = input.ReadValueU32(endian);
-                for (uint i = 0; i < primitiveTypeCount; i++)
-                {
-                    var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
-                    var id = input.ReadValueU8();
-                    this.PrimitiveTypes.Add(new Asm.TypeId(name, id));
-                }
+                var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
+                var id = input.ReadValueU8();
+                primitiveTypes[i] = new Asm.TypeId(name, id);
             }
 
-            this.ContainerTypes.Clear();
-            if (this.Version >= 8)
+            var containerTypeCount = version < 8 ? 0 : input.ReadValueU32(endian);
+            var containerTypes = new Asm.TypeId[allocatorTypeCount];
+            for (uint i = 0; i < containerTypeCount; i++)
             {
-                var containerTypeCount = input.ReadValueU32(endian);
-                for (uint i = 0; i < containerTypeCount; i++)
-                {
-                    var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
-                    var id = input.ReadValueU8();
-                    this.ContainerTypes.Add(new Asm.TypeId(name, id));
-                }
+                var name = input.ReadStringU16(0x40, Encoding.ASCII, endian);
+                var id = input.ReadValueU8();
+                containerTypes[i] = new Asm.TypeId(name, id);
             }
 
-            this.Containers.Clear();
+            var containers = new Asm.ContainerEntry[containerCount];
             for (ushort i = 0; i < containerCount; i++)
             {
                 var container = new Asm.ContainerEntry();
-                container.Deserialize(input, this.Version, endian);
-                this.Containers.Add(container);
+                container.Deserialize(input, this._Version, endian);
+                containers[i] = container;
             }
 
-            this.Endian = endian;
+            this._Endian = endian;
+            this._Version = version;
+            this._AllocatorTypes.Clear();
+            this._AllocatorTypes.AddRange(allocatorTypes);
+            this._PrimitiveTypes.Clear();
+            this._PrimitiveTypes.AddRange(primitiveTypes);
+            this._ContainerTypes.Clear();
+            this._ContainerTypes.AddRange(containerTypes);
+            this._Containers.Clear();
+            this._Containers.AddRange(containers);
         }
 
         public void Serialize(Stream output)
         {
-            var endian = this.Endian;
+            var endian = this._Endian;
+
+            if (this._Containers.Count > ushort.MaxValue)
+            {
+                throw new FormatException("too many containers");
+            }
+            var containerCount = (ushort)this._Containers.Count;
 
             output.WriteValueU32(0xBEEFFEED, endian);
-            output.WriteValueU16(this.Version, endian);
-            output.WriteValueU16((ushort)this.Containers.Count, endian);
+            output.WriteValueU16(this._Version, endian);
+            output.WriteValueU16(containerCount, endian);
 
-            if (this.Version >= 8)
+            if (this._Version >= 8)
             {
-                output.WriteValueU32((uint)this.AllocatorTypes.Count, endian);
-                foreach (var type in this.AllocatorTypes)
+                output.WriteValueU32((uint)this._AllocatorTypes.Count, endian);
+                foreach (var type in this._AllocatorTypes)
                 {
                     output.WriteStringU16(type.Name, 0x40, Encoding.ASCII, endian);
                     output.WriteValueU8(type.Id);
                 }
 
-                output.WriteValueU32((uint)this.PrimitiveTypes.Count, endian);
-                foreach (var type in this.PrimitiveTypes)
+                output.WriteValueU32((uint)this._PrimitiveTypes.Count, endian);
+                foreach (var type in this._PrimitiveTypes)
                 {
                     output.WriteStringU16(type.Name, 0x40, Encoding.ASCII, endian);
                     output.WriteValueU8(type.Id);
                 }
 
-                output.WriteValueU32((uint)this.ContainerTypes.Count, endian);
-                foreach (var type in this.ContainerTypes)
+                output.WriteValueU32((uint)this._ContainerTypes.Count, endian);
+                foreach (var type in this._ContainerTypes)
                 {
                     output.WriteStringU16(type.Name, 0x40, Encoding.ASCII, endian);
                     output.WriteValueU8(type.Id);
                 }
             }
 
-            for (ushort i = 0; i < (ushort)this.Containers.Count; i++)
+            for (ushort i = 0; i < containerCount; i++)
             {
-                this.Containers[i].Serialize(output, this.Version, endian);
+                this._Containers[i].Serialize(output, this._Version, endian);
             }
         }
     }

@@ -30,40 +30,71 @@ namespace Gibbed.Volition.FileFormats
 {
     public class PegFileV13
     {
-        public Endian Endian;
-        public ushort Version;
-        public Platform Platform;
-        public uint DataSize;
+        public const uint Signature = 0x564B4547; // 'VKEG'
+
+        private Endian _Endian;
+        private ushort _Version;
+        private Platform _Platform;
+        private uint _DataSize;
+        private readonly List<Peg.Texture<Peg.FrameV13>> _Textures;
+
+        public PegFileV13()
+        {
+            this._Textures = new List<Peg.Texture<Peg.FrameV13>>();
+        }
+
+        public Endian Endian
+        {
+            get { return this._Endian; }
+            set { this._Endian = value; }
+        }
+
+        public ushort Version
+        {
+            get { return this._Version; }
+            set { this._Version = value; }
+        }
+
+        public Platform Platform
+        {
+            get { return this._Platform; }
+            set { this._Platform = value; }
+        }
+
+        public uint DataSize
+        {
+            get { return this._DataSize; }
+            set { this._DataSize = value; }
+        }
+
         public List<Peg.Texture<Peg.FrameV13>> Textures
-            = new List<Peg.Texture<Peg.FrameV13>>();
+        {
+            get { return this._Textures; }
+        }
 
         public void Deserialize(Stream input)
         {
             var baseOffset = input.Position;
 
             var magic = input.ReadValueU32(Endian.Little);
-            if (magic != 0x564B4547 && // VKEG
-                magic != 0x47454B56)
+            if (magic != Signature && magic.Swap() != Signature)
             {
                 throw new FormatException("not a peg file");
             }
 
-            var endian = magic == 0x564B4547 ? Endian.Little : Endian.Big;
-            this.Endian = endian;
+            var endian = magic == Signature ? Endian.Little : Endian.Big;
 
             var version = input.ReadValueU16(endian);
             if (version != 13)
             {
                 throw new FormatException("unsupported peg version");
             }
-            this.Version = version;
 
             var platform = input.ReadValueU16(endian);
             if (Enum.IsDefined(typeof(Platform), platform) == false)
             {
                 throw new FormatException("unsupported peg platform");
             }
-            this.Platform = (Platform)platform;
 
             var headerSize = input.ReadValueU32(endian);
             if (baseOffset + headerSize > input.Length)
@@ -71,8 +102,7 @@ namespace Gibbed.Volition.FileFormats
                 throw new EndOfStreamException();
             }
 
-            this.DataSize = input.ReadValueU32(endian);
-
+            var dataSize = input.ReadValueU32(endian);
             var textureCount = input.ReadValueU16(endian);
             var unknown12 = input.ReadValueU16(endian);
             var frameCount = input.ReadValueU16(endian);
@@ -127,7 +157,12 @@ namespace Gibbed.Volition.FileFormats
                 textures[i].Name = input.ReadStringZ(Encoding.ASCII);
             }
 
-            this.Textures.AddRange(textures);
+            this._Endian = endian;
+            this._Version = version;
+            this._Platform = (Platform)platform;
+            this._DataSize = dataSize;
+            this._Textures.Clear();
+            this._Textures.AddRange(textures);
         }
 
         public void Serialize(Stream output)

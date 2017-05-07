@@ -24,16 +24,17 @@ namespace Gibbed.Volition.FileFormats.Peg
 {
     public enum PixelFormat : ushort
     {
+        // ReSharper disable InconsistentNaming
         // Supported by: SR2, RFG, RFA
         //    DX9: D3DFMT_DXT1
         //   DX10: DXGI_FORMAT_BC1_TYPELESS
         DXT1 = 400,
-        
+
         // Supported by: SR2, RFG, RFA
         //    DX9: D3DFMT_DXT3 (DX9)
         //   DX10: DXGI_FORMAT_BC2_TYPELESS
         DXT3 = 401,
-        
+
         // Supported by: SR2, RFG, RFA
         //    DX9: D3DFMT_DXT5
         //   DX10: DXGI_FORMAT_BC3_TYPELESS
@@ -75,5 +76,6 @@ namespace Gibbed.Volition.FileFormats.Peg
 
         // XBox2 format?
         Unknown_603 = 603,
+        // ReSharper restore InconsistentNaming
     }
 }

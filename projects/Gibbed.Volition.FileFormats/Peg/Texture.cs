@@ -26,8 +26,23 @@ namespace Gibbed.Volition.FileFormats.Peg
 {
     public class Texture<TFrame>
     {
-        public string Name;
+        private string _Name;
+        private readonly List<TFrame> _Frames;
+
+        public Texture()
+        {
+            this._Frames = new List<TFrame>();
+        }
+
+        public string Name
+        {
+            get { return this._Name; }
+            set { this._Name = value; }
+        }
+
         public List<TFrame> Frames
-            = new List<TFrame>();
+        {
+            get { return this._Frames; }
+        }
     }
 }
