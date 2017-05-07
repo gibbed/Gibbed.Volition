@@ -19,6 +19,7 @@ x64/
 x86/
 bld/
 [Bb]in/
+[Bb]in_*/
 [Oo]bj/
 [Ll]og/
 
