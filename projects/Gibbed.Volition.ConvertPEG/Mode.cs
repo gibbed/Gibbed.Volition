@@ -20,7 +20,7 @@
  *    distribution.
  */
 
-namespace Gibbed.Volition.ConvertPeg
+namespace Gibbed.Volition.ConvertPEG
 {
     internal enum Mode
     {

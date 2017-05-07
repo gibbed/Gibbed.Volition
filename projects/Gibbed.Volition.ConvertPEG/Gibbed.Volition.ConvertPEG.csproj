@@ -8,8 +8,8 @@
     <ProjectGuid>{98054545-BEA6-4CAB-B5FE-F970D99F15EF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gibbed.Volition.ConvertPeg</RootNamespace>
-    <AssemblyName>Gibbed.Volition.ConvertPeg</AssemblyName>
+    <RootNamespace>Gibbed.Volition.ConvertPEG</RootNamespace>
+    <AssemblyName>Gibbed.Volition.ConvertPEG</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>

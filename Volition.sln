@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.FileFormats", "projects\Gibbed.Volition.FileFormats\Gibbed.Volition.FileFormats.csproj", "{8E6E7B7E-61CF-4D1C-BBF8-9F4CB5358D24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.ConvertPeg", "projects\Gibbed.Volition.ConvertPeg\Gibbed.Volition.ConvertPeg.csproj", "{98054545-BEA6-4CAB-B5FE-F970D99F15EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Volition.ConvertPEG", "projects\Gibbed.Volition.ConvertPEG\Gibbed.Volition.ConvertPEG.csproj", "{98054545-BEA6-4CAB-B5FE-F970D99F15EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.IO", "projects\Gibbed.IO\Gibbed.IO.csproj", "{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}"
 EndProject

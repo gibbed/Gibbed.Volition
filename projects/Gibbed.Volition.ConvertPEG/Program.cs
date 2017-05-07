@@ -29,7 +29,7 @@ using Gibbed.Volition.FileFormats;
 using NDesk.Options;
 using Peg = Gibbed.Volition.FileFormats.Peg;
 
-namespace Gibbed.Volition.ConvertPeg
+namespace Gibbed.Volition.ConvertPEG
 {
     internal class Program
     {

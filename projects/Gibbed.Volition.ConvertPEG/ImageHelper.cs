@@ -26,7 +26,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Peg = Gibbed.Volition.FileFormats.Peg;
 
-namespace Gibbed.Volition.ConvertPeg
+namespace Gibbed.Volition.ConvertPEG
 {
     internal static class ImageHelper
     {
