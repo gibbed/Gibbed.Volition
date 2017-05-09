@@ -44,14 +44,14 @@ namespace Gibbed.RedFaction2.ConvertPEG
 
         public static void Main(string[] args)
         {
-            var oneBitAlpha = false;
+            var fullAlpha = false;
             var showHelp = false;
             var mode = Mode.Unknown;
 
             var options = new OptionSet()
             {
                 // ReSharper disable AccessToModifiedClosure
-                { "1-bit-alpha", "when decoding textures, force 1-bit alpha", v => oneBitAlpha = v != null },
+                { "full-alpha", "when decoding textures, don't force 1-bit alpha", v => fullAlpha = v != null },
                 { "a|assemble", "assemble PEG file", v => mode = v != null ? Mode.Assemble : mode },
                 { "d|disassemble", "disassemble PEG file", v => mode = v != null ? Mode.Disassemble : mode },
                 { "h|help", "show this message and exit", v => showHelp = v != null },
@@ -158,7 +158,7 @@ namespace Gibbed.RedFaction2.ConvertPEG
                             textureInfo.Path = texture.Name + ".png";
                             var outputPath = Path.Combine(outputBasePath, textureInfo.Path);
                             var bytes = input.ReadBytes(textureSize);
-                            using (var bitmap = ExportTexture(texture, bytes, oneBitAlpha))
+                            using (var bitmap = ExportTexture(texture, bytes, fullAlpha == false))
                             {
                                 bitmap.Save(outputPath, ImageFormat.Png);
                             }
@@ -172,7 +172,7 @@ namespace Gibbed.RedFaction2.ConvertPEG
                                 textureInfo.FramePaths.Add(texturePath);
                                 var outputPath = Path.Combine(outputBasePath, texturePath);
                                 var bytes = input.ReadBytes(frameSize);
-                                using (var bitmap = ExportTexture(texture, bytes, oneBitAlpha))
+                                using (var bitmap = ExportTexture(texture, bytes, fullAlpha == false))
                                 {
                                     bitmap.Save(outputPath, ImageFormat.Png);
                                 }
