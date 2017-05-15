@@ -209,7 +209,7 @@ namespace Gibbed.Volition.FileFormats
                 }
 
                 var name = strings.ReadString(input, endian);
-                var autoload = this._Version >= 2 ? input.ReadValueB8() : false;
+                var autoload = this._Version >= 2 && input.ReadValueB8() == true;
 
                 if (autoload == true &&
                     type != Interface.CriticalResourceType.Peg)

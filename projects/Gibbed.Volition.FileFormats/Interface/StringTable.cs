@@ -30,48 +30,52 @@ namespace Gibbed.Volition.FileFormats.Interface
 {
     public class StringTable
     {
-        private List<string> Strings
-            = new List<string>();
+        private readonly List<string> _Strings;
+
+        public StringTable()
+        {
+            this._Strings = new List<string>();
+        }
 
         public string ReadString(int index)
         {
-            if (index < 0 || index >= this.Strings.Count)
+            if (index < 0 || index >= this._Strings.Count)
             {
                 throw new IndexOutOfRangeException();
             }
 
-            return this.Strings[index];
+            return this._Strings[index];
         }
 
         public string ReadString(Stream input, Endian endian)
         {
             var index = input.ReadValueS32(endian);
-            if (index < 0 || index >= this.Strings.Count)
+            if (index < 0 || index >= this._Strings.Count)
             {
                 throw new IndexOutOfRangeException();
             }
 
-            return this.Strings[index];
+            return this._Strings[index];
         }
 
         public int WriteIndex(string value)
         {
-            if (this.Strings.Contains(value) == false)
+            if (this._Strings.Contains(value) == false)
             {
-                this.Strings.Add(value);
+                this._Strings.Add(value);
             }
 
-            return this.Strings.IndexOf(value);
+            return this._Strings.IndexOf(value);
         }
 
         public void WriteIndex(Stream output, Endian endian, string value)
         {
-            if (this.Strings.Contains(value) == false)
+            if (this._Strings.Contains(value) == false)
             {
-                this.Strings.Add(value);
+                this._Strings.Add(value);
             }
 
-            output.WriteValueS32(this.Strings.IndexOf(value), endian);
+            output.WriteValueS32(this._Strings.IndexOf(value), endian);
         }
 
         public void Serialize(Stream output, Endian endian)
@@ -92,13 +96,13 @@ namespace Gibbed.Volition.FileFormats.Interface
 
             var encoding = Encoding.GetEncoding(1252);
 
-            this.Strings.Clear();
+            this._Strings.Clear();
             using (var data = input.ReadToMemoryStream(size))
             {
                 for (uint i = 0; i < count; i++)
                 {
                     data.Seek(offsets[i], SeekOrigin.Begin);
-                    this.Strings.Add(data.ReadStringZ(encoding));
+                    this._Strings.Add(data.ReadStringZ(encoding));
                 }
             }
         }

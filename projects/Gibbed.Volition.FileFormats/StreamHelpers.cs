@@ -20,10 +20,9 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
-using Gibbed.IO;
 using System.Text;
+using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats
 {

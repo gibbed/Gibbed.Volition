@@ -98,7 +98,9 @@
     <Compile Include="PackageFileV3.cs" />
     <Compile Include="PegFileV10.cs" />
     <Compile Include="PegFileV13.cs" />
+    <Compile Include="PegFileV8.cs" />
     <Compile Include="Peg\FrameV13.cs" />
+    <Compile Include="Peg\FrameV8.cs" />
     <Compile Include="Peg\TextureFlags.cs" />
     <Compile Include="Peg\PixelFormat.cs" />
     <Compile Include="Peg\FrameV10.cs" />

@@ -31,11 +31,13 @@ namespace Gibbed.Volition.ConvertPEG
     internal static class ImageHelper
     {
         public static Bitmap ExportA8R8G8B8(
-            int width, int height,
+            int width,
+            int height,
             byte[] buffer)
         {
             var bitmap = new Bitmap(
-                width, height,
+                width,
+                height,
                 PixelFormat.Format32bppArgb);
 
             /*
@@ -56,11 +58,12 @@ namespace Gibbed.Volition.ConvertPEG
 
         public static Bitmap ExportDXT(
             Peg.PixelFormat format,
-            int width, int height,
+            int width,
+            int height,
             byte[] buffer)
         {
             var flags = Squish.Native.Flags.None;
-            
+
             switch (format)
             {
                 case Peg.PixelFormat.DXT1:
@@ -88,10 +91,14 @@ namespace Gibbed.Volition.ConvertPEG
             }
 
             buffer = Squish.Native.DecompressImage(
-                buffer, width, height, flags);
+                buffer,
+                width,
+                height,
+                flags);
 
             var bitmap = new Bitmap(
-                width, height,
+                width,
+                height,
                 PixelFormat.Format32bppArgb);
 
             for (uint i = 0; i < width * height * 4; i += 4)

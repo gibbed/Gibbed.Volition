@@ -37,7 +37,7 @@ using Gibbed.IO;
 
 namespace Gibbed.Volition.FileFormats
 {
-    public class PackageFileV6 : IPackageFile, IPackageFile<Package.Entry>
+    public class PackageFileV6 : IPackageFile<Package.Entry>
     {
         public Endian Endian { get; set; }
         public Package.HeaderFlags Flags { get; set; }
@@ -47,9 +47,8 @@ namespace Gibbed.Volition.FileFormats
         {
             get
             {
-                return
-                    Package.HeaderFlags.Compressed |
-                    Package.HeaderFlags.Condensed;
+                return Package.HeaderFlags.Compressed |
+                       Package.HeaderFlags.Condensed;
             }
         }
 
@@ -57,6 +56,7 @@ namespace Gibbed.Volition.FileFormats
         public uint UncompressedSize { get; set; }
         public uint CompressedSize { get; set; }
         public List<Package.Entry> Entries { get; private set; }
+
         public IEnumerable<IPackageEntry> Directory
         {
             get { return this.Entries; }
@@ -131,24 +131,25 @@ namespace Gibbed.Volition.FileFormats
                 names.WriteStringZ(entry.Name, Encoding.ASCII);
             }
 
-            var header = new Package.HeaderV6();
-            header.Name = "         Created using      Gibbed's     Volition Tools ";
-            header.Path = "           Read the       Foundation     Novels from       Asimov.       I liked them. ";
-
-            header.Flags = ConvertFlags(this.Flags);
+            var header = new Package.HeaderV6()
+            {
+                Name = "         Created using      Gibbed's     Volition Tools ",
+                Path = "           Read the       Foundation     Novels from       Asimov.       I liked them. ",
+                Flags = ConvertFlags(this.Flags),
+                DirectoryCount = (uint)this.Entries.Count,
+                PackageSize = this.TotalSize,
+                DirectorySize = (uint)directory.Length,
+                NamesSize = (uint)names.Length,
+                UncompressedSize = this.UncompressedSize,
+                CompressedSize = (this.Flags & Package.HeaderFlags.Compressed) != 0
+                                     ? this.CompressedSize
+                                     : 0xFFFFFFFF,
+            };
 
             if (this.ExtraFlags != 0)
             {
                 header.Flags |= (Package.HeaderFlagsV6)this.ExtraFlags;
             }
-
-            header.DirectoryCount = (uint)this.Entries.Count;
-            header.PackageSize = this.TotalSize;
-            header.DirectorySize = (uint)directory.Length;
-            header.NamesSize = (uint)names.Length;
-            header.UncompressedSize = this.UncompressedSize;
-            header.CompressedSize = (this.Flags & Package.HeaderFlags.Compressed) != 0 ?
-                this.CompressedSize : 0xFFFFFFFF;
 
             directory.Seek(0, SeekOrigin.Begin);
             directory.SetLength(directory.Length.Align(2048));
@@ -158,7 +159,7 @@ namespace Gibbed.Volition.FileFormats
 
             output.WriteValueU32(0x51890ACE, endian);
             output.WriteValueU32(6, endian);
-            
+
             header.Serialize(output, endian);
             output.Seek(2048, SeekOrigin.Begin);
             output.WriteFromStream(directory, directory.Length);
@@ -208,12 +209,12 @@ namespace Gibbed.Volition.FileFormats
                         var name = names.ReadStringZ(Encoding.ASCII);
 
                         this.Entries.Add(new Package.Entry()
-                            {
-                                Name = name,
-                                Offset = offset,
-                                UncompressedSize = uncompressedSize,
-                                CompressedSize = compressedSize,
-                            });
+                        {
+                            Name = name,
+                            Offset = offset,
+                            UncompressedSize = uncompressedSize,
+                            CompressedSize = compressedSize,
+                        });
                     }
                 }
             }

@@ -68,7 +68,7 @@ namespace Gibbed.RedFaction3.FileFormats
             var version = input.ReadValueU16(endian);
             if (version != 5)
             {
-                throw new FormatException("unsupported asm version " + this._Version.ToString());
+                throw new FormatException("unsupported asm version " + this._Version);
             }
 
             var containerCount = input.ReadValueU16();

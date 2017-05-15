@@ -20,6 +20,7 @@
  *    distribution.
  */
 
+using System.Globalization;
 using System.IO;
 using Gibbed.IO;
 
@@ -38,10 +39,9 @@ namespace Gibbed.Volition.FileFormats.Interface
 
         public override string ToString()
         {
-            return
-                this.R.ToString() + "," +
-                this.G.ToString() + "," +
-                this.B.ToString();
+            return this.R.ToString(CultureInfo.InvariantCulture) + "," +
+                   this.G.ToString(CultureInfo.InvariantCulture) + "," +
+                   this.B.ToString(CultureInfo.InvariantCulture);
         }
 
         public void Serialize(Stream output, Endian endian, StringTable strings)

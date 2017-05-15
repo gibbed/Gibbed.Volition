@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using Gibbed.IO;
@@ -46,26 +47,10 @@ namespace Gibbed.Volition.ConvertPEG
 
             OptionSet options = new OptionSet()
             {
-                {
-                    "o|overwrite",
-                    "overwrite files if they already exist", 
-                    v => overwriteFiles = v != null
-                },
-                {
-                    "a|assemble",
-                    "assemble peg file",
-                    v => mode = v != null ? Mode.Assemble : mode
-                },
-                {
-                    "d|disassemble",
-                    "disassemble peg file",
-                    v => mode = v != null ? Mode.Disassemble : mode
-                },
-                {
-                    "h|help",
-                    "show this message and exit", 
-                    v => showHelp = v != null
-                },
+                { "o|overwrite", "overwrite files if they already exist", v => overwriteFiles = v != null },
+                { "a|assemble", "assemble peg file", v => mode = v != null ? Mode.Assemble : mode },
+                { "d|disassemble", "disassemble peg file", v => mode = v != null ? Mode.Disassemble : mode },
+                { "h|help", "show this message and exit", v => showHelp = v != null },
             };
 
             List<string> extra;
@@ -167,7 +152,7 @@ namespace Gibbed.Volition.ConvertPEG
                             {
                                 xml.WriteStartDocument();
                                 xml.WriteStartElement("peg");
-                                xml.WriteAttributeString("version", peg.Version.ToString());
+                                xml.WriteAttributeString("version", peg.Version.ToString(CultureInfo.InvariantCulture));
                                 xml.WriteAttributeString("platform", peg.Platform.ToString());
                                 xml.WriteAttributeString("little_endian", peg.Endian.ToString());
 
@@ -184,9 +169,14 @@ namespace Gibbed.Volition.ConvertPEG
                                             texture.Frames.Count > 0)
                                         {
                                             var counter = 0;
-                                            var countLength = texture.Frames.Count.ToString().Length;
+                                            var countLength =
+                                                texture.Frames.Count.ToString(CultureInfo.InvariantCulture).Length;
 
                                             var baseName = Path.GetFileNameWithoutExtension(texture.Name);
+                                            if (string.IsNullOrEmpty(baseName) == true)
+                                            {
+                                                throw new InvalidOperationException();
+                                            }
                                             var basePath = Path.Combine(outputPath, baseName);
 
                                             xml.WriteStartElement("frames");
@@ -194,15 +184,29 @@ namespace Gibbed.Volition.ConvertPEG
                                             foreach (var frame in texture.Frames)
                                             {
                                                 xml.WriteStartElement("frame");
-                                                xml.WriteAttributeString("width", frame.Width.ToString());
-                                                xml.WriteAttributeString("height", frame.Height.ToString());
+                                                xml.WriteAttributeString("width",
+                                                                         frame.Width.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("height",
+                                                                         frame.Height.ToString(
+                                                                             CultureInfo.InvariantCulture));
                                                 xml.WriteAttributeString("format", frame.Format.ToString());
                                                 xml.WriteAttributeString("flags", frame.Flags.ToString());
-                                                xml.WriteAttributeString("levels", frame.Levels.ToString());
-                                                xml.WriteAttributeString("animation_delay", frame.Delay.ToString());
-                                                xml.WriteAttributeString("u0A", frame.Unknown0A.ToString());
-                                                xml.WriteAttributeString("u0C", frame.Unknown0C.ToString());
-                                                xml.WriteAttributeString("u18", frame.Unknown18.ToString());
+                                                xml.WriteAttributeString("levels",
+                                                                         frame.Levels.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("animation_delay",
+                                                                         frame.Delay.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("u0A",
+                                                                         frame.Unknown0A.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("u0C",
+                                                                         frame.Unknown0C.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("u18",
+                                                                         frame.Unknown18.ToString(
+                                                                             CultureInfo.InvariantCulture));
 
                                                 data.Seek(frame.DataOffset, SeekOrigin.Begin);
                                                 var buffer = new byte[frame.DataSize];
@@ -213,11 +217,18 @@ namespace Gibbed.Volition.ConvertPEG
 
                                                 if (texture.Frames.Count != 1)
                                                 {
-                                                    framePath += "_" + counter.ToString().PadLeft(countLength, '0');
+                                                    framePath += "_" +
+                                                                 counter.ToString(CultureInfo.InvariantCulture)
+                                                                        .PadLeft(countLength, '0');
                                                 }
 
                                                 string actualPath;
-                                                if (SaveFrameV10(peg, frame, buffer, framePath, out actualPath, out dataType) == false)
+                                                if (SaveFrameV10(peg,
+                                                                 frame,
+                                                                 buffer,
+                                                                 framePath,
+                                                                 out actualPath,
+                                                                 out dataType) == false)
                                                 {
                                                     actualPath = Path.ChangeExtension(framePath, ".raw");
                                                     dataType = "raw";
@@ -278,7 +289,7 @@ namespace Gibbed.Volition.ConvertPEG
                             {
                                 xml.WriteStartDocument();
                                 xml.WriteStartElement("peg");
-                                xml.WriteAttributeString("version", peg.Version.ToString());
+                                xml.WriteAttributeString("version", peg.Version.ToString(CultureInfo.InvariantCulture));
                                 xml.WriteAttributeString("platform", peg.Platform.ToString());
                                 xml.WriteAttributeString("little_endian", peg.Endian.ToString());
 
@@ -295,9 +306,14 @@ namespace Gibbed.Volition.ConvertPEG
                                             texture.Frames.Count > 0)
                                         {
                                             var counter = 0;
-                                            var countLength = texture.Frames.Count.ToString().Length;
+                                            var countLength =
+                                                texture.Frames.Count.ToString(CultureInfo.InvariantCulture).Length;
 
                                             var baseName = Path.GetFileNameWithoutExtension(texture.Name);
+                                            if (string.IsNullOrEmpty(baseName) == true)
+                                            {
+                                                throw new InvalidOperationException();
+                                            }
                                             var basePath = Path.Combine(outputPath, baseName);
 
                                             xml.WriteStartElement("frames");
@@ -305,16 +321,32 @@ namespace Gibbed.Volition.ConvertPEG
                                             foreach (var frame in texture.Frames)
                                             {
                                                 xml.WriteStartElement("frame");
-                                                xml.WriteAttributeString("u04", frame.Unknown04.ToString());
-                                                xml.WriteAttributeString("width", frame.Width.ToString());
-                                                xml.WriteAttributeString("height", frame.Height.ToString());
+                                                xml.WriteAttributeString("u04",
+                                                                         frame.Unknown04.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("width",
+                                                                         frame.Width.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("height",
+                                                                         frame.Height.ToString(
+                                                                             CultureInfo.InvariantCulture));
                                                 xml.WriteAttributeString("format", frame.Format.ToString());
                                                 xml.WriteAttributeString("flags", frame.Flags.ToString());
-                                                xml.WriteAttributeString("levels", frame.Levels.ToString());
-                                                xml.WriteAttributeString("animation_delay", frame.Delay.ToString());
-                                                xml.WriteAttributeString("u0E", frame.Unknown0E.ToString());
-                                                xml.WriteAttributeString("u10", frame.Unknown10.ToString());
-                                                xml.WriteAttributeString("u12", frame.Unknown12.ToString());
+                                                xml.WriteAttributeString("levels",
+                                                                         frame.Levels.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("animation_delay",
+                                                                         frame.Delay.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("u0E",
+                                                                         frame.Unknown0E.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("u10",
+                                                                         frame.Unknown10.ToString(
+                                                                             CultureInfo.InvariantCulture));
+                                                xml.WriteAttributeString("u12",
+                                                                         frame.Unknown12.ToString(
+                                                                             CultureInfo.InvariantCulture));
 
                                                 data.Seek(frame.DataOffset, SeekOrigin.Begin);
                                                 var buffer = new byte[frame.DataSize];
@@ -325,11 +357,18 @@ namespace Gibbed.Volition.ConvertPEG
 
                                                 if (texture.Frames.Count != 1)
                                                 {
-                                                    framePath += "_" + counter.ToString().PadLeft(countLength, '0');
+                                                    framePath += "_" +
+                                                                 counter.ToString(CultureInfo.InvariantCulture)
+                                                                        .PadLeft(countLength, '0');
                                                 }
 
                                                 string actualPath;
-                                                if (SaveFrameV16(peg, frame, buffer, framePath, out actualPath, out dataType) == false)
+                                                if (SaveFrameV16(peg,
+                                                                 frame,
+                                                                 buffer,
+                                                                 framePath,
+                                                                 out actualPath,
+                                                                 out dataType) == false)
                                                 {
                                                     actualPath = Path.ChangeExtension(framePath, ".raw");
                                                     dataType = "raw";
@@ -379,10 +418,9 @@ namespace Gibbed.Volition.ConvertPEG
                 return false;
             }
 
-            return
-                extension.StartsWith(".peg_") ||
-                extension.StartsWith(".cpeg_") ||
-                extension.StartsWith(".cvbm_");
+            return extension.StartsWith(".peg_") ||
+                   extension.StartsWith(".cpeg_") ||
+                   extension.StartsWith(".cvbm_");
         }
 
         private static string GetDataPath(string headerPath)
@@ -391,6 +429,11 @@ namespace Gibbed.Volition.ConvertPEG
             string suffix = null;
 
             var extension = Path.GetExtension(headerPath);
+            if (string.IsNullOrEmpty(extension) == true)
+            {
+                throw new InvalidOperationException();
+            }
+
             if (extension.StartsWith(".peg_") == true)
             {
                 prefix = ".g_peg_";
@@ -407,9 +450,7 @@ namespace Gibbed.Volition.ConvertPEG
                 suffix = extension.Substring(6);
             }
 
-            string dataPath;
-
-            dataPath = Path.ChangeExtension(headerPath, prefix + suffix);
+            var dataPath = Path.ChangeExtension(headerPath, prefix + suffix);
             if (File.Exists(dataPath) == true)
             {
                 return dataPath;
@@ -433,11 +474,8 @@ namespace Gibbed.Volition.ConvertPEG
             {
                 case Peg.PixelFormat.A8R8G8B8:
                 {
-                    var bitmap = ImageHelper.ExportA8R8G8B8(
-                        frame.Width, frame.Height,
-                        buffer);
-                    bitmap.Save(
-                        finalPath, System.Drawing.Imaging.ImageFormat.Png);
+                    var bitmap = ImageHelper.ExportA8R8G8B8(frame.Width, frame.Height, buffer);
+                    bitmap.Save(finalPath, System.Drawing.Imaging.ImageFormat.Png);
                     return true;
                 }
 
@@ -445,12 +483,8 @@ namespace Gibbed.Volition.ConvertPEG
                 case Peg.PixelFormat.DXT3:
                 case Peg.PixelFormat.DXT5:
                 {
-                    var bitmap = ImageHelper.ExportDXT(
-                        frame.Format,
-                        frame.Width, frame.Height,
-                        buffer);
-                    bitmap.Save(
-                        finalPath, System.Drawing.Imaging.ImageFormat.Png);
+                    var bitmap = ImageHelper.ExportDXT(frame.Format, frame.Width, frame.Height, buffer);
+                    bitmap.Save(finalPath, System.Drawing.Imaging.ImageFormat.Png);
                     return true;
                 }
             }
@@ -473,11 +507,8 @@ namespace Gibbed.Volition.ConvertPEG
             {
                 case Peg.PixelFormat.A8R8G8B8:
                 {
-                    var bitmap = ImageHelper.ExportA8R8G8B8(
-                        frame.Width, frame.Height,
-                        buffer);
-                    bitmap.Save(
-                        finalPath, System.Drawing.Imaging.ImageFormat.Png);
+                    var bitmap = ImageHelper.ExportA8R8G8B8(frame.Width, frame.Height, buffer);
+                    bitmap.Save(finalPath, System.Drawing.Imaging.ImageFormat.Png);
                     return true;
                 }
 
@@ -485,12 +516,8 @@ namespace Gibbed.Volition.ConvertPEG
                 case Peg.PixelFormat.DXT3:
                 case Peg.PixelFormat.DXT5:
                 {
-                    var bitmap = ImageHelper.ExportDXT(
-                        frame.Format,
-                        frame.Width, frame.Height,
-                        buffer);
-                    bitmap.Save(
-                        finalPath, System.Drawing.Imaging.ImageFormat.Png);
+                    var bitmap = ImageHelper.ExportDXT(frame.Format, frame.Width, frame.Height, buffer);
+                    bitmap.Save(finalPath, System.Drawing.Imaging.ImageFormat.Png);
                     return true;
                 }
             }

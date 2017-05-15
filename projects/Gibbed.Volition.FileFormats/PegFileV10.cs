@@ -81,7 +81,6 @@ namespace Gibbed.Volition.FileFormats
             {
                 throw new FormatException("not a peg file");
             }
-
             var endian = magic == Signature ? Endian.Little : Endian.Big;
 
             var version = input.ReadValueU16(endian);
@@ -168,9 +167,9 @@ namespace Gibbed.Volition.FileFormats
                 throw new FormatException("did not read correct amount of frames");
             }
 
-            for (int i = 0; i < textures.Length; i++)
+            foreach (var texture in textures)
             {
-                textures[i].Name = input.ReadStringZ(Encoding.ASCII);
+                texture.Name = input.ReadStringZ(Encoding.ASCII);
             }
 
             this._Endian = endian;

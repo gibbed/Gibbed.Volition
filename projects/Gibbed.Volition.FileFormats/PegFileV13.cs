@@ -152,9 +152,9 @@ namespace Gibbed.Volition.FileFormats
                 throw new FormatException("did not read correct amount of frames");
             }
 
-            for (int i = 0; i < textures.Length; i++)
+            foreach (var texture in textures)
             {
-                textures[i].Name = input.ReadStringZ(Encoding.ASCII);
+                texture.Name = input.ReadStringZ(Encoding.ASCII);
             }
 
             this._Endian = endian;
