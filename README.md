@@ -1,0 +1,1 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/ph7w8pv6bo2qx3je?svg=true)](https://ci.appveyor.com/project/gibbed/gibbed-volition)
