@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,10 +44,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Level\ArrayElement.cs" />
+    <Compile Include="Level\Color.cs" />
+    <Compile Include="Level\Data\RawElement.cs" />
+    <Compile Include="Level\ElementFactory.cs" />
+    <Compile Include="Level\ElementType.cs" />
+    <Compile Include="LevelFile.cs" />
+    <Compile Include="Level\MetadataFactory.cs" />
+    <Compile Include="Level\MetadataType.cs" />
+    <Compile Include="Level\IElement.cs" />
+    <Compile Include="Level\Metadata\DataElement.cs" />
+    <Compile Include="Level\Metadata\RequiredAnimationArrayElement.cs" />
+    <Compile Include="Level\Metadata\RequiredClothModelArrayElement.cs" />
+    <Compile Include="Level\Metadata\RequiredEffectArrayElement.cs" />
+    <Compile Include="Level\Metadata\RequiredModelArrayElement.cs" />
+    <Compile Include="Level\Metadata\ResourceArrayElement.cs" />
+    <Compile Include="Level\Metadata\RequiredSpawnTextureArrayElement.cs" />
+    <Compile Include="Level\Metadata\RequiredTextureArrayElement.cs" />
+    <Compile Include="Level\Metadata\SettingsElement.cs" />
+    <Compile Include="Level\StringArrayElement.cs" />
+    <Compile Include="Level\Vector3.cs" />
     <Compile Include="PegFile.cs" />
     <Compile Include="Peg\Texture.cs" />
     <Compile Include="Peg\TextureFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamHelpers.cs" />
     <Compile Include="TableOfContentsGroupFile.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +77,10 @@
       <Name>Gibbed.IO</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
