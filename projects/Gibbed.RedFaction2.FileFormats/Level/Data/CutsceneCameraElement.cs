@@ -20,32 +20,22 @@
  *    distribution.
  */
 
-using System;
-using System.IO;
-using System.Text;
-using Gibbed.IO;
-
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class CameraElement : ISerializableElement
+    public class CutsceneCameraElement : ObjectElement
     {
-        public class ArrayElement : SerializableArrayElement<CameraElement>
+        protected override ushort Unknown1MaximumLength
         {
+            get { return 128; }
         }
 
-        public void Read(Stream input, uint version, Endian endian)
+        protected override ushort ScriptNameMaximumLength
         {
-            var unknown0 = input.ReadValueU32(endian);
-            var unknown1 = input.ReadStringU16(128, Encoding.ASCII, endian);
-            var unknown2 = Vector3.Read(input, endian);
-            var unknown3 = Transform.Read(input, endian);
-            var unknown4 = input.ReadStringU16(128, Encoding.ASCII, endian);
-            var unknown5 = input.ReadValueB8();
+            get { return 128; }
         }
 
-        public void Write(Stream output, uint version, Endian endian)
+        public class ArrayElement : SerializableArrayElement<CutsceneCameraElement>
         {
-            throw new NotImplementedException();
         }
     }
 }
