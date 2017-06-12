@@ -25,36 +25,19 @@ using Gibbed.IO;
 
 namespace Gibbed.RedFaction2.FileFormats.Level
 {
-    public struct Vector3
+    public class SerializableArrayElement<T> : ArrayElement<T>
+        where T: ISerializableElement, new()
     {
-        public float X;
-        public float Y;
-        public float Z;
-
-        public static Vector3 Read(Stream input, Endian endian)
+        protected override T ReadItem(Stream input, uint version, Endian endian)
         {
-            Vector3 instance;
-            instance.X = input.ReadValueF32(endian);
-            instance.Y = input.ReadValueF32(endian);
-            instance.Z = input.ReadValueF32(endian);
+            var instance = new T();
+            instance.Read(input, version, endian);
             return instance;
         }
 
-        public static void Write(Stream output, Vector3 instance, Endian endian)
+        protected override void WriteItem(Stream output, T instance, uint version, Endian endian)
         {
-            output.WriteValueF32(instance.X, endian);
-            output.WriteValueF32(instance.Y, endian);
-            output.WriteValueF32(instance.Z, endian);
-        }
-
-        public void Write(Stream output, Endian endian)
-        {
-            Write(output, this, endian);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0},{1},{2}", this.X, this.Y, this.Z);
+            instance.Write(output, version, endian);
         }
     }
 }

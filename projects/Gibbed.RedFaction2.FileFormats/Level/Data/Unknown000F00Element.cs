@@ -20,41 +20,33 @@
  *    distribution.
  */
 
+using System;
 using System.IO;
+using System.Text;
 using Gibbed.IO;
 
-namespace Gibbed.RedFaction2.FileFormats.Level
+namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public struct Vector3
+    public class Unknown000F00Element : ISerializableElement
     {
-        public float X;
-        public float Y;
-        public float Z;
-
-        public static Vector3 Read(Stream input, Endian endian)
+        public class ArrayElement : SerializableArrayElement<Unknown000F00Element>
         {
-            Vector3 instance;
-            instance.X = input.ReadValueF32(endian);
-            instance.Y = input.ReadValueF32(endian);
-            instance.Z = input.ReadValueF32(endian);
-            return instance;
         }
 
-        public static void Write(Stream output, Vector3 instance, Endian endian)
+        public void Read(Stream input, uint version, Endian endian)
         {
-            output.WriteValueF32(instance.X, endian);
-            output.WriteValueF32(instance.Y, endian);
-            output.WriteValueF32(instance.Z, endian);
+            var unknown0 = input.ReadValueU32(endian);
+            var unknown1 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
+            var unknown2 = Vector3.Read(input, endian);
+            var unknown3 = Transform.Read(input, endian);
+            var unknown4 = input.ReadStringU16(128, Encoding.ASCII, endian);
+            var unknown5 = input.ReadValueB8();
+            throw new NotImplementedException();
         }
 
-        public void Write(Stream output, Endian endian)
+        public void Write(Stream output, uint version, Endian endian)
         {
-            Write(output, this, endian);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0},{1},{2}", this.X, this.Y, this.Z);
+            throw new NotImplementedException();
         }
     }
 }

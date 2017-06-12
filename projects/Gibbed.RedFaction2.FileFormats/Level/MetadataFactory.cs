@@ -34,7 +34,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         {
             _Instantiators = new Dictionary<MetadataType, Func<IElement>>()
             {
-                { MetadataType.Data, () => new DataElement() },
+                { MetadataType.Data, () => new RootElement() },
                 { MetadataType.RequiredAnimations, () => new RequiredAnimationArrayElement() },
                 { MetadataType.RequiredClothModels, () => new RequiredClothModelArrayElement() },
                 { MetadataType.RequiredEffects, () => new RequiredEffectArrayElement() },

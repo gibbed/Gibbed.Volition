@@ -20,41 +20,50 @@
  *    distribution.
  */
 
+using System;
 using System.IO;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
-namespace Gibbed.RedFaction2.FileFormats.Level
+namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public struct Vector3
+    public class Unknown070000Element : IElement
     {
-        public float X;
-        public float Y;
-        public float Z;
+        private Vector3 _Unknown0;
+        private Transform _Unknown1;
 
-        public static Vector3 Read(Stream input, Endian endian)
+        public Vector3 Unknown0
         {
-            Vector3 instance;
-            instance.X = input.ReadValueF32(endian);
-            instance.Y = input.ReadValueF32(endian);
-            instance.Z = input.ReadValueF32(endian);
-            return instance;
+            get { return this._Unknown0; }
+            set { this._Unknown0 = value; }
         }
 
-        public static void Write(Stream output, Vector3 instance, Endian endian)
+        public Transform Unknown1
         {
-            output.WriteValueF32(instance.X, endian);
-            output.WriteValueF32(instance.Y, endian);
-            output.WriteValueF32(instance.Z, endian);
+            get { return this._Unknown1; }
+            set { this._Unknown1 = value; }
         }
 
-        public void Write(Stream output, Endian endian)
+        public void Read(Stream input, uint version, Endian endian)
         {
-            Write(output, this, endian);
+            this._Unknown0 = Vector3.Read(input, endian);
+            this._Unknown1 = Transform.Read(input, endian);
         }
 
-        public override string ToString()
+        public void Write(Stream output, uint version, Endian endian)
         {
-            return string.Format("{0},{1},{2}", this.X, this.Y, this.Z);
+            Vector3.Write(output, this._Unknown0, endian);
+            Transform.Write(output, this._Unknown1, endian);
+        }
+
+        public void ImportJson(JsonReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExportJson(JsonWriter writer)
+        {
+            throw new NotImplementedException();
         }
     }
 }

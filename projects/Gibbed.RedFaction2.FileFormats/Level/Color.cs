@@ -27,10 +27,20 @@ namespace Gibbed.RedFaction2.FileFormats.Level
 {
     public struct Color
     {
+        public static readonly Color White = new Color(0xFF, 0xFF, 0xFF, 0xFF);
+
         public byte R;
         public byte G;
         public byte B;
         public byte A;
+
+        public Color(byte r, byte g, byte b, byte a)
+        {
+            this.R = r;
+            this.G = g;
+            this.B = b;
+            this.A = a;
+        }
 
         public static Color Read(Stream input)
         {

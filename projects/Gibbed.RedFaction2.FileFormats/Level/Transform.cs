@@ -25,26 +25,26 @@ using Gibbed.IO;
 
 namespace Gibbed.RedFaction2.FileFormats.Level
 {
-    public struct Vector3
+    public struct Transform
     {
-        public float X;
-        public float Y;
-        public float Z;
+        public Vector3 V1;
+        public Vector3 V2;
+        public Vector3 V3;
 
-        public static Vector3 Read(Stream input, Endian endian)
+        public static Transform Read(Stream input, Endian endian)
         {
-            Vector3 instance;
-            instance.X = input.ReadValueF32(endian);
-            instance.Y = input.ReadValueF32(endian);
-            instance.Z = input.ReadValueF32(endian);
+            Transform instance;
+            instance.V3 = Vector3.Read(input, endian);
+            instance.V1 = Vector3.Read(input, endian);
+            instance.V2 = Vector3.Read(input, endian);
             return instance;
         }
 
-        public static void Write(Stream output, Vector3 instance, Endian endian)
+        public static void Write(Stream output, Transform instance, Endian endian)
         {
-            output.WriteValueF32(instance.X, endian);
-            output.WriteValueF32(instance.Y, endian);
-            output.WriteValueF32(instance.Z, endian);
+            Vector3.Write(output, instance.V3, endian);
+            Vector3.Write(output, instance.V1, endian);
+            Vector3.Write(output, instance.V2, endian);
         }
 
         public void Write(Stream output, Endian endian)
@@ -54,7 +54,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
 
         public override string ToString()
         {
-            return string.Format("{0},{1},{2}", this.X, this.Y, this.Z);
+            return string.Format("[{0}],[{1}],[{2}]", this.V1, this.V2, this.V3);
         }
     }
 }

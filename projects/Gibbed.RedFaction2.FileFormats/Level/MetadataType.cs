@@ -27,7 +27,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         None = 0,
         Data = 0x100,
         Settings = 0x900,
-        Unknown1300 = 0x1300,
+        Unknown1300 = 0x1300, // string array, not found in any retail RF2 levels
         RequiredSpawnTextures = 0x7000,
         RequiredClothModels = 0x7001,
         RequiredAnimations = 0x7002,

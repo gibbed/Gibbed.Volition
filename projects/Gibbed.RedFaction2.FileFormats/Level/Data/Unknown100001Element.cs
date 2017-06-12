@@ -20,41 +20,39 @@
  *    distribution.
  */
 
+using System;
 using System.IO;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
-namespace Gibbed.RedFaction2.FileFormats.Level
+namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public struct Vector3
+    public class Unknown100001Element : IElement
     {
-        public float X;
-        public float Y;
-        public float Z;
+        private uint _Unknown0;
+        private uint _Unknown1;
+        private bool _Unknown2;
 
-        public static Vector3 Read(Stream input, Endian endian)
+        public void Read(Stream input, uint version, Endian endian)
         {
-            Vector3 instance;
-            instance.X = input.ReadValueF32(endian);
-            instance.Y = input.ReadValueF32(endian);
-            instance.Z = input.ReadValueF32(endian);
-            return instance;
+            this._Unknown0 = input.ReadValueU32(endian);
+            this._Unknown1 = input.ReadValueU32(endian);
+            this._Unknown2 = version >= 285 ? input.ReadValueB8() : false;
         }
 
-        public static void Write(Stream output, Vector3 instance, Endian endian)
+        public void Write(Stream output, uint version, Endian endian)
         {
-            output.WriteValueF32(instance.X, endian);
-            output.WriteValueF32(instance.Y, endian);
-            output.WriteValueF32(instance.Z, endian);
+            throw new NotImplementedException();
         }
 
-        public void Write(Stream output, Endian endian)
+        public void ImportJson(JsonReader reader)
         {
-            Write(output, this, endian);
+            throw new NotImplementedException();
         }
 
-        public override string ToString()
+        public void ExportJson(JsonWriter writer)
         {
-            return string.Format("{0},{1},{2}", this.X, this.Y, this.Z);
+            throw new NotImplementedException();
         }
     }
 }

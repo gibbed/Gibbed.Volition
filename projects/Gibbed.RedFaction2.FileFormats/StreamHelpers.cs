@@ -40,7 +40,7 @@ namespace Gibbed.RedFaction2.FileFormats
             if (length >= maximumLength)
             {
                 length = maximumLength;
-                length--;
+                //length--;
             }
 
             return input.ReadString(length, true, encoding);
@@ -74,6 +74,19 @@ namespace Gibbed.RedFaction2.FileFormats
             {
                 output.Write(bytes, 0, length);
             }
+        }
+
+        public static byte[] ReadBytesU16(this Stream input, ushort maximumLength, Endian endian)
+        {
+            var length = input.ReadValueU16(endian);
+
+            if (length >= maximumLength)
+            {
+                length = maximumLength;
+                length--;
+            }
+
+            return input.ReadBytes(length);
         }
     }
 }

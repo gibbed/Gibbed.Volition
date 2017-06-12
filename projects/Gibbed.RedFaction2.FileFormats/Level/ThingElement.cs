@@ -26,9 +26,9 @@ using System.Text;
 using Gibbed.IO;
 using Newtonsoft.Json;
 
-namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
+namespace Gibbed.RedFaction2.FileFormats.Level
 {
-    public class DataElement : IElement
+    public class ThingElement : ISerializableElement
     {
         // TODO(gibbed): fields
         private string _Unknown1;
@@ -490,23 +490,25 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
 
             if (version < 212)
             {
-                throw new NotImplementedException();
+                var count12 = input.ReadValueU32(endian);
+                for (uint i = 0; i < count12; i++)
+                {
+                    // string array
+                    throw new NotImplementedException();
+                }
             }
 
-            throw new NotImplementedException();
+            if (version < 295 && (version > 200 && version < 234 || version >= 251))
+            {
+                var count13 = version >= 94 ? input.ReadValueU32(endian) : 0;
+                for (uint i = 0; i < count13; i++)
+                {
+                    input.Seek(4 + 4 + 4, SeekOrigin.Current); // uint, float, float
+                }
+            }
         }
 
         public void Write(Stream output, uint version, Endian endian)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ImportJson(JsonReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExportJson(JsonWriter writer)
         {
             throw new NotImplementedException();
         }

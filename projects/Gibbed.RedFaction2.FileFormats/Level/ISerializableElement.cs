@@ -25,36 +25,9 @@ using Gibbed.IO;
 
 namespace Gibbed.RedFaction2.FileFormats.Level
 {
-    public struct Vector3
+    public interface ISerializableElement
     {
-        public float X;
-        public float Y;
-        public float Z;
-
-        public static Vector3 Read(Stream input, Endian endian)
-        {
-            Vector3 instance;
-            instance.X = input.ReadValueF32(endian);
-            instance.Y = input.ReadValueF32(endian);
-            instance.Z = input.ReadValueF32(endian);
-            return instance;
-        }
-
-        public static void Write(Stream output, Vector3 instance, Endian endian)
-        {
-            output.WriteValueF32(instance.X, endian);
-            output.WriteValueF32(instance.Y, endian);
-            output.WriteValueF32(instance.Z, endian);
-        }
-
-        public void Write(Stream output, Endian endian)
-        {
-            Write(output, this, endian);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0},{1},{2}", this.X, this.Y, this.Z);
-        }
+        void Read(Stream input, uint version, Endian endian);
+        void Write(Stream output, uint version, Endian endian);
     }
 }

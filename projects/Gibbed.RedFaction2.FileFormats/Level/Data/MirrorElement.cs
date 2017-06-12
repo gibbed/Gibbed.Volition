@@ -20,29 +20,37 @@
  *    distribution.
  */
 
+using System;
 using System.IO;
 using System.Text;
 using Gibbed.IO;
 
-namespace Gibbed.RedFaction2.FileFormats.Level
+namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class StringArrayElement : ArrayElement<string>
+    public class MirrorElement : ISerializableElement
     {
-        private readonly ushort _MaximumLength;
-
-        public StringArrayElement(ushort maximumLength)
+        public class ArrayElement : SerializableArrayElement<MirrorElement>
         {
-            this._MaximumLength = maximumLength;
         }
 
-        protected override string ReadItem(Stream input, uint version, Endian endian)
+        public void Read(Stream input, uint version, Endian endian)
         {
-            return input.ReadStringU16(this._MaximumLength, Encoding.ASCII, endian);
+            var unknown0 = input.ReadValueU32(endian);
+            var unknown1 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
+            var unknown2 = Vector3.Read(input, endian);
+            var unknown3 = Transform.Read(input, endian);
+            var unknown4 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
+            var unknown5 = input.ReadValueB8();
+            var unknown6 = Vector3.Read(input, endian);
+            var unknown7 = input.ReadValueF32(endian);
+            var unknown8 = input.ReadValueU8(); // value * 0.0078125f
+            var unknown9 = input.ReadValueF32(endian);
+            var unknown10 = input.ReadValueB8();
         }
 
-        protected override void WriteItem(Stream output, string instance, uint version, Endian endian)
+        public void Write(Stream output, uint version, Endian endian)
         {
-            output.WriteStringU16(instance, this._MaximumLength, Encoding.ASCII, endian);
+            throw new NotImplementedException();
         }
     }
 }

@@ -20,16 +20,12 @@
  *    distribution.
  */
 
-using System.IO;
-using Gibbed.IO;
 using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level
 {
-    public interface IElement
+    public interface IElement : ISerializableElement
     {
-        void Read(Stream input, uint version, Endian endian);
-        void Write(Stream output, uint version, Endian endian);
         void ImportJson(JsonReader reader);
         void ExportJson(JsonWriter writer);
     }

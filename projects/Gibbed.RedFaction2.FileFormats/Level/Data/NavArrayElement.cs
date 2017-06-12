@@ -20,41 +20,48 @@
  *    distribution.
  */
 
+using System;
 using System.IO;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
-namespace Gibbed.RedFaction2.FileFormats.Level
+namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public struct Vector3
+    public class NavArrayElement : IElement
     {
-        public float X;
-        public float Y;
-        public float Z;
-
-        public static Vector3 Read(Stream input, Endian endian)
+        public void Read(Stream input, uint version, Endian endian)
         {
-            Vector3 instance;
-            instance.X = input.ReadValueF32(endian);
-            instance.Y = input.ReadValueF32(endian);
-            instance.Z = input.ReadValueF32(endian);
-            return instance;
+            var count = input.ReadValueU32(endian);
+
+            for (int i = 0; i < count; i++)
+            {
+                var instance = new NavElement();
+                instance.Read(input, version, endian);
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                var unknown11 = input.ReadValueU8();
+                for (uint j = 0; j < unknown11; j++)
+                {
+                    var unknown12 = input.ReadValueU32(endian);
+                }
+            }
         }
 
-        public static void Write(Stream output, Vector3 instance, Endian endian)
+        public void Write(Stream output, uint version, Endian endian)
         {
-            output.WriteValueF32(instance.X, endian);
-            output.WriteValueF32(instance.Y, endian);
-            output.WriteValueF32(instance.Z, endian);
+            throw new NotImplementedException();
         }
 
-        public void Write(Stream output, Endian endian)
+        public void ImportJson(JsonReader reader)
         {
-            Write(output, this, endian);
+            throw new NotImplementedException();
         }
 
-        public override string ToString()
+        public void ExportJson(JsonWriter writer)
         {
-            return string.Format("{0},{1},{2}", this.X, this.Y, this.Z);
+            throw new NotImplementedException();
         }
     }
 }
