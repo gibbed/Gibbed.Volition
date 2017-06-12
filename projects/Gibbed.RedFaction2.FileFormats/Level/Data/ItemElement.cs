@@ -22,36 +22,88 @@
 
 using System;
 using System.IO;
-using System.Text;
 using Gibbed.IO;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class ItemElement : ISerializableElement
+    public class ItemElement : ObjectElement
     {
+        #region Fields
+        private int _Count;
+        private int _RespawnTime;
+        private int _TeamId;
+        private int _Unknown9;
+        private bool _Unknown10;
+        private bool _Unknown11;
+        #endregion
+
+        #region Properties
+        public int Count
+        {
+            get { return this._Count; }
+            set { this._Count = value; }
+        }
+
+        public int RespawnTime
+        {
+            get { return this._RespawnTime; }
+            set { this._RespawnTime = value; }
+        }
+
+        public int TeamId
+        {
+            get { return this._TeamId; }
+            set { this._TeamId = value; }
+        }
+
+        public int Unknown9
+        {
+            get { return this._Unknown9; }
+            set { this._Unknown9 = value; }
+        }
+
+        public bool Unknown10
+        {
+            get { return this._Unknown10; }
+            set { this._Unknown10 = value; }
+        }
+
+        public bool Unknown11
+        {
+            get { return this._Unknown11; }
+            set { this._Unknown11 = value; }
+        }
+        #endregion
+
+        protected override ushort Unknown1MaximumLength
+        {
+            get { return 32; }
+        }
+
+        protected override ushort ScriptNameMaximumLength
+        {
+            get { return 32; }
+        }
+
+        public override void Read(Stream input, uint version, Endian endian)
+        {
+            base.Read(input, version, endian);
+            this._Count = input.ReadValueS32(endian);
+            this._RespawnTime = input.ReadValueS32(endian);
+            this._TeamId = input.ReadValueS32(endian);
+            this._Unknown9 = version >= 222 ? input.ReadValueS32(endian) : -1;
+            this._Unknown10 = version >= 279 && input.ReadValueB8() == true;
+            this._Unknown11 = version >= 293 && input.ReadValueB8() == true;
+        }
+
+        public override void Write(Stream output, uint version, Endian endian)
+        {
+            base.Write(output, version, endian);
+            throw new NotImplementedException();
+        }
+
         public class ArrayElement : SerializableArrayElement<ItemElement>
         {
-        }
-
-        public void Read(Stream input, uint version, Endian endian)
-        {
-            var unknown0 = input.ReadValueU32(endian);
-            var unknown1 = input.ReadStringU16(32, Encoding.ASCII, endian);
-            var unknown2 = Vector3.Read(input, endian);
-            var unknown3 = Transform.Read(input, endian);
-            var unknown4 = input.ReadStringU16(32, Encoding.ASCII, endian);
-            var unknown5 = input.ReadValueB8();
-            var unknown6 = input.ReadValueU32(endian);
-            var unknown7 = input.ReadValueU32(endian);
-            var unknown8 = input.ReadValueU32(endian);
-            var unknown9 = version >= 222 ? input.ReadValueS32(endian) : -1;
-            var unknown10 = version >= 279 ? input.ReadValueB8() : false;
-            var unknown11 = version >= 293 ? input.ReadValueB8() : false;
-        }
-
-        public void Write(Stream output, uint version, Endian endian)
-        {
-            throw new NotImplementedException();
         }
     }
 }
