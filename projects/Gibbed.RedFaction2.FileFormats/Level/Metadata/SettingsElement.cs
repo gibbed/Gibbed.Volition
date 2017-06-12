@@ -29,25 +29,32 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
 {
     public class SettingsElement : IElement
     {
-        private string _Unknown1;
-        private Color _Unknown2;
+        private string _DefaultTexture;
+        private int _Hardness;
+        private Color _AmbientLightColor;
         private bool _Unknown3;
-        private Color _Unknown4;
-        private float _Unknown5;
-        private float _Unknown6;
+        private Color _DistanceBasedFogColor;
+        private float _DistanceBasedFogNearClipPlane;
+        private float _DistanceBasedFogFarClipPlane;
         private Color _Unknown7;
         private byte _Unknown8;
 
-        public string Unknown1
+        public string DefaultTexture
         {
-            get { return this._Unknown1; }
-            set { this._Unknown1 = value; }
+            get { return this._DefaultTexture; }
+            set { this._DefaultTexture = value; }
         }
 
-        public Color Unknown2
+        public int Hardness
         {
-            get { return this._Unknown2; }
-            set { this._Unknown2 = value; }
+            get { return this._Hardness; }
+            set { this._Hardness = value; }
+        }
+
+        public Color AmbientLightColor
+        {
+            get { return this._AmbientLightColor; }
+            set { this._AmbientLightColor = value; }
         }
 
         public bool Unknown3
@@ -56,22 +63,22 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
             set { this._Unknown3 = value; }
         }
 
-        public Color Unknown4
+        public Color DistanceBasedFogColor
         {
-            get { return this._Unknown4; }
-            set { this._Unknown4 = value; }
+            get { return this._DistanceBasedFogColor; }
+            set { this._DistanceBasedFogColor = value; }
         }
 
-        public float Unknown5
+        public float DistanceBasedFogNearClipPlane
         {
-            get { return this._Unknown5; }
-            set { this._Unknown5 = value; }
+            get { return this._DistanceBasedFogNearClipPlane; }
+            set { this._DistanceBasedFogNearClipPlane = value; }
         }
 
-        public float Unknown6
+        public float DistanceBasedFogFarClipPlane
         {
-            get { return this._Unknown6; }
-            set { this._Unknown6 = value; }
+            get { return this._DistanceBasedFogFarClipPlane; }
+            set { this._DistanceBasedFogFarClipPlane = value; }
         }
 
         public Color Unknown7
@@ -88,13 +95,13 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
 
         public void Read(Stream input, uint version, Endian endian)
         {
-            this._Unknown1 = input.ReadStringU16(40, Encoding.ASCII, endian);
-            input.Seek(4, SeekOrigin.Current);
-            this._Unknown2 = Color.Read(input);
+            this._DefaultTexture = input.ReadStringU16(40, Encoding.ASCII, endian);
+            this._Hardness = input.ReadValueS32(endian);
+            this._AmbientLightColor = Color.Read(input);
             this._Unknown3 = input.ReadValueB8();
-            this._Unknown4 = Color.Read(input);
-            this._Unknown5 = input.ReadValueF32(endian);
-            this._Unknown6 = input.ReadValueF32(endian);
+            this._DistanceBasedFogColor = Color.Read(input);
+            this._DistanceBasedFogNearClipPlane = input.ReadValueF32(endian);
+            this._DistanceBasedFogFarClipPlane = input.ReadValueF32(endian);
 
             if (version >= 247)
             {
@@ -127,13 +134,13 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
 
         public void Write(Stream output, uint version, Endian endian)
         {
-            output.WriteStringU16(this._Unknown1, 40, Encoding.ASCII, endian);
-            output.WriteValueU32(0, endian);
-            Color.Write(output, this._Unknown2);
+            output.WriteStringU16(this._DefaultTexture, 40, Encoding.ASCII, endian);
+            output.WriteValueS32(this._Hardness, endian);
+            Color.Write(output, this._AmbientLightColor);
             output.WriteValueB8(this._Unknown3);
-            Color.Write(output, this._Unknown4);
-            output.WriteValueF32(this._Unknown5, endian);
-            output.WriteValueF32(this._Unknown6, endian);
+            Color.Write(output, this._DistanceBasedFogColor);
+            output.WriteValueF32(this._DistanceBasedFogNearClipPlane, endian);
+            output.WriteValueF32(this._DistanceBasedFogFarClipPlane, endian);
 
             if (version >= 247)
             {
@@ -168,12 +175,12 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
         {
             var serializer = new JsonSerializer();
             var item = serializer.Deserialize<Item>(reader);
-            this._Unknown1 = item.Unknown1;
-            this._Unknown2 = item.Unknown2;
+            this._DefaultTexture = item.Unknown1;
+            this._AmbientLightColor = item.Unknown2;
             this._Unknown3 = item.Unknown3;
-            this._Unknown4 = item.Unknown4;
-            this._Unknown5 = item.Unknown5;
-            this._Unknown6 = item.Unknown6;
+            this._DistanceBasedFogColor = item.Unknown4;
+            this._DistanceBasedFogNearClipPlane = item.Unknown5;
+            this._DistanceBasedFogFarClipPlane = item.Unknown6;
             this._Unknown7 = item.Unknown7;
             this._Unknown8 = item.Unknown8;
         }
@@ -181,12 +188,12 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
         public void ExportJson(JsonWriter writer)
         {
             Item item;
-            item.Unknown1 = this._Unknown1;
-            item.Unknown2 = this._Unknown2;
+            item.Unknown1 = this._DefaultTexture;
+            item.Unknown2 = this._AmbientLightColor;
             item.Unknown3 = this._Unknown3;
-            item.Unknown4 = this._Unknown4;
-            item.Unknown5 = this._Unknown5;
-            item.Unknown6 = this._Unknown6;
+            item.Unknown4 = this._DistanceBasedFogColor;
+            item.Unknown5 = this._DistanceBasedFogNearClipPlane;
+            item.Unknown6 = this._DistanceBasedFogFarClipPlane;
             item.Unknown7 = this._Unknown7;
             item.Unknown8 = this._Unknown8;
             var serializer = new JsonSerializer();
