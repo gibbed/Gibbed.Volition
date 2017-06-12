@@ -64,5 +64,10 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         {
             Write(output, this);
         }
+
+        public override string ToString()
+        {
+            return string.Format("#{3:X2}{0:X2}{1:X2}{2:X2}", this.R, this.G, this.B, this.A);
+        }
     }
 }
