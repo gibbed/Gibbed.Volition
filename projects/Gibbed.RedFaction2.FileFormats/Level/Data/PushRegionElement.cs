@@ -27,42 +27,67 @@ using Gibbed.IO;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class PushRegionElement : ISerializableElement
+    public class PushRegionElement : ObjectElement
     {
+        private PushRegionShapeType _Shape;
+        private float _SphereSize;
+        private Vector3 _BoxSize;
+        private float _Strength;
+        private PushRegionFlags _Flags;
+        private PushRegionIntensityType _Intensity;
+        private byte _Turbulence;
+
+        protected override ushort Unknown1MaximumLength
+        {
+            get { return ushort.MaxValue; }
+        }
+
+        protected override ushort ScriptNameMaximumLength
+        {
+            get { return ushort.MaxValue; }
+        }
+
+        public override void Read(Stream input, uint version, Endian endian)
+        {
+            base.Read(input, version, endian);
+
+            this._Shape = (PushRegionShapeType)input.ReadValueU32(endian);
+
+            if (this._Shape == PushRegionShapeType.Sphere)
+            {
+                this._SphereSize = input.ReadValueF32(endian);
+            }
+            else if (this._Shape == PushRegionShapeType.AxisAlignedBoundingBox ||
+                     this._Shape == PushRegionShapeType.OrientedBoundingBox)
+            {
+                this._BoxSize = Vector3.Read(input, endian);
+            }
+            else
+            {
+                throw new FormatException();
+            }
+
+            this._Strength = input.ReadValueF32(endian);
+
+            var flags = input.ReadValueU32(endian);
+            if ((flags & ~0xF007Fu) != 0)
+            {
+                throw new FormatException();
+            }
+
+            this._Flags = (PushRegionFlags)(flags & ~(0xFu << 16));
+            this._Intensity = (PushRegionIntensityType)((flags >> 2) & 0x3u);
+            this._Turbulence = (byte)((flags >> 16) & 0xFu);
+        }
+
+        public override void Write(Stream output, uint version, Endian endian)
+        {
+            base.Write(output, version, endian);
+            throw new NotImplementedException();
+        }
+
         public class ArrayElement : SerializableArrayElement<PushRegionElement>
         {
-        }
-
-        public void Read(Stream input, uint version, Endian endian)
-        {
-            var unknown0 = input.ReadValueU32(endian);
-            var unknown1 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-            var unknown2 = Vector3.Read(input, endian);
-            var unknown3 = Transform.Read(input, endian);
-            var unknown4 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-            var unknown5 = input.ReadValueB8();
-            var unknown6 = input.ReadValueU32(endian);
-
-            if (unknown6 == 1)
-            {
-                var unknown7 = input.ReadValueF32(endian);
-            }
-            else if (unknown6 == 2)
-            {
-                var unknown7 = Vector3.Read(input, endian);
-            }
-            else if (unknown6 == 3)
-            {
-                var unknown7 = Vector3.Read(input, endian);
-            }
-
-            var unknown8 = input.ReadValueF32(endian);
-            var unknown9 = input.ReadValueU32(endian);
-        }
-
-        public void Write(Stream output, uint version, Endian endian)
-        {
-            throw new NotImplementedException();
         }
     }
 }
