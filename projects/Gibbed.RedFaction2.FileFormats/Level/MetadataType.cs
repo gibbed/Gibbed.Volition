@@ -25,8 +25,9 @@ namespace Gibbed.RedFaction2.FileFormats.Level
     public enum MetadataType : uint
     {
         None = 0,
-        Data = 0x100,
+        RootThing = 0x100,
         Settings = 0x900,
+        Unknown1200 = 0x1200, // ???
         Unknown1300 = 0x1300, // string array, not found in any retail RF2 levels
         RequiredSpawnTextures = 0x7000,
         RequiredClothModels = 0x7001,

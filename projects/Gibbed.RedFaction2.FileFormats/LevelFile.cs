@@ -123,7 +123,11 @@ namespace Gibbed.RedFaction2.FileFormats
             var endian = magic == Signature ? Endian.Little : Endian.Big;
 
             var version = input.ReadValueU32(endian);
+#if !RF1_HACK
             if (version < 201)
+#else
+            if (version < 200)
+#endif
             {
                 throw new NotSupportedException("level version is too old");
             }
@@ -138,6 +142,9 @@ namespace Gibbed.RedFaction2.FileFormats
             var unknown4 = version >= 160 ? input.ReadValueU32(endian) : 35;
             var unknown5 = version >= 160 ? input.ReadValueU32(endian) : 0;
             var name = version >= 170 ? input.ReadStringU16(256, Encoding.ASCII, endian) : "<untitled>";
+#if RF1_HACK
+            var mod = version < 201 && version >= 178 ? input.ReadStringU16(31, Encoding.ASCII, endian) : "";
+#endif
             var metadatas = new Dictionary<MetadataType, IElement>();
             var elements = new Dictionary<ElementType, IElement>();
 
@@ -152,8 +159,8 @@ namespace Gibbed.RedFaction2.FileFormats
                     break;
                 }
 
-                var element = MetadataFactory.Create(dataType);
                 var dataPosition = input.Position;
+                var element = MetadataFactory.Create(dataType);
                 using (var data = input.ReadToMemoryStream(dataLength))
                 {
                     element.Read(data, version, endian);
@@ -164,7 +171,7 @@ namespace Gibbed.RedFaction2.FileFormats
                 }
                 metadatas.Add(dataType, element);
 
-                if (dataType == MetadataType.Data)
+                if (dataType == MetadataType.RootThing)
                 {
                     hasData = true;
                     break;
@@ -183,8 +190,8 @@ namespace Gibbed.RedFaction2.FileFormats
                         break;
                     }
 
-                    var element = ElementFactory.Create(dataType);
                     var dataPosition = input.Position;
+                    var element = ElementFactory.Create(dataType);
                     using (var data = input.ReadToMemoryStream(dataLength))
                     {
                         element.Read(data, version, endian);

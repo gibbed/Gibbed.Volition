@@ -34,17 +34,17 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         {
             _Instantiators = new Dictionary<ElementType, Func<IElement>>()
             {
-                 { ElementType.Unknown200, () => new RawElement() }, // string array
-                 { ElementType.Unknown300, () => new RawElement() }, // string array
-                 { ElementType.Cameras, () => new CameraElement.ArrayElement() },
+                 { ElementType.GeoRegions, () => new RawElement() }, // string array
+                 { ElementType.Lights, () => new RawElement() }, // string array
+                 { ElementType.CutsceneCameras, () => new CutsceneCameraElement.ArrayElement() },
                  { ElementType.AmbientSounds, () => new AmbientSoundElement.ArrayElement() },
                  { ElementType.Events, () => new EventElement.ArrayElement() },
-                 { ElementType.SpawnPoints, () => new SpawnPointElement.ArrayElement() },
+                 { ElementType.SpawnPoints, () => new MultiplayerSpawnPointElement.ArrayElement() },
                  { ElementType.Unknown800, () => new RawElement() }, // string array
-                 { ElementType.UnknownC00, () => new RawElement() }, // string array
+                 { ElementType.RoomEffects, () => new RawElement() }, // string array
                  { ElementType.ClimbingRegions, () => new ClimbingRegionElement.ArrayElement() },
-                 { ElementType.Emitters, () => new EmitterElement.ArrayElement() },
-                 { ElementType.UnknownF00, () => new Unknown000F00Element.ArrayElement() },
+                 { ElementType.BoltEmitters, () => new BoltEmitterElement.ArrayElement() },
+                 { ElementType.Targets, () => new TargetElement.ArrayElement() },
                  { ElementType.Decals, () => new DecalElement.ArrayElement() },
                  { ElementType.PushRegions, () => new PushRegionElement.ArrayElement() },
                  { ElementType.Unknown2000, () => new Unknown002000Element.ArrayElement() },
@@ -62,7 +62,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                  { ElementType.Unknown7900, () => new Unknown007900Element() },
                  { ElementType.Unknown7901, () => new Unknown007901Element() },
                  { ElementType.Unknown10000, () => new Unknown010000Element.ArrayElement() },
-                 { ElementType.Navs, () => new NavArrayElement() },
+                 { ElementType.NavPoints, () => new NavPointArrayElement() },
                  { ElementType.Entities, () => new EntityElement.ArrayElement() },
                  { ElementType.Items, () => new ItemElement.ArrayElement() },
                  { ElementType.Clutters, () => new ClutterElement.ArrayElement() },
@@ -71,7 +71,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                  { ElementType.Unknown1000000, () => new RawElement() },
                  { ElementType.Unknown1000001, () => new Unknown100001Element() },
                  { ElementType.Unknown2000000, () => new RawElement() },
-                 { ElementType.Unknown3000000, () => new RawElement() },
+                 { ElementType.UserDefinedGroups, () => new RawElement() },
             };
         }
 

@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -47,14 +47,21 @@
     <Compile Include="Level\ArrayElement.cs" />
     <Compile Include="Level\Color.cs" />
     <Compile Include="Level\Data\AmbientSoundElement.cs" />
-    <Compile Include="Level\Data\CameraElement.cs" />
+    <Compile Include="Level\Data\BoltEmitterFlags.cs" />
+    <Compile Include="Level\Data\CutsceneCameraElement.cs" />
+    <Compile Include="Level\Data\DecalTileMode.cs" />
     <Compile Include="Level\Data\EventElement.cs" />
-    <Compile Include="Level\Data\NavElement.cs" />
+    <Compile Include="Level\Data\NavPointElement.cs" />
+    <Compile Include="Level\Data\NavPointFlags.cs" />
+    <Compile Include="Level\Data\ObjectElement.cs" />
+    <Compile Include="Level\Data\PushRegionFlags.cs" />
+    <Compile Include="Level\Data\PushRegionIntensityType.cs" />
+    <Compile Include="Level\Data\PushRegionShapeType.cs" />
     <Compile Include="Level\Data\RawElement.cs" />
     <Compile Include="Level\Data\DecalElement.cs" />
     <Compile Include="Level\Data\PushRegionElement.cs" />
     <Compile Include="Level\Data\Unknown010000Element.cs" />
-    <Compile Include="Level\Data\NavArrayElement.cs" />
+    <Compile Include="Level\Data\NavPointArrayElement.cs" />
     <Compile Include="Level\Data\Unknown002000Element.cs" />
     <Compile Include="Level\Data\DoorElement.cs" />
     <Compile Include="Level\Data\EntityElement.cs" />
@@ -64,9 +71,9 @@
     <Compile Include="Level\Data\ClutterElement.cs" />
     <Compile Include="Level\Data\TriggerElement.cs" />
     <Compile Include="Level\Data\Unknown070000Element.cs" />
-    <Compile Include="Level\Data\SpawnPointElement.cs" />
+    <Compile Include="Level\Data\MultiplayerSpawnPointElement.cs" />
     <Compile Include="Level\Data\ClimbingRegionElement.cs" />
-    <Compile Include="Level\Data\EmitterElement.cs" />
+    <Compile Include="Level\Data\BoltEmitterElement.cs" />
     <Compile Include="Level\Data\MirrorElement.cs" />
     <Compile Include="Level\Data\GlareElement.cs" />
     <Compile Include="Level\Data\Unknown007680Element.cs" />
@@ -77,7 +84,7 @@
     <Compile Include="Level\Data\SplinePathElement.cs" />
     <Compile Include="Level\Data\Unknown007900Element.cs" />
     <Compile Include="Level\Data\Unknown007901Element.cs" />
-    <Compile Include="Level\Data\Unknown000F00Element.cs" />
+    <Compile Include="Level\Data\TargetElement.cs" />
     <Compile Include="Level\Data\Unknown100001Element.cs" />
     <Compile Include="Level\SerializableArrayElement.cs" />
     <Compile Include="Level\ElementFactory.cs" />

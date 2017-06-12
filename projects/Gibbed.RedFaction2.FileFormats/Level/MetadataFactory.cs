@@ -34,14 +34,19 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         {
             _Instantiators = new Dictionary<MetadataType, Func<IElement>>()
             {
-                { MetadataType.Data, () => new RootElement() },
+                { MetadataType.RootThing, () => new RootElement() },
                 { MetadataType.RequiredAnimations, () => new RequiredAnimationArrayElement() },
+#if !RF1_HACK
                 { MetadataType.RequiredClothModels, () => new RequiredClothModelArrayElement() },
+#else
+                { MetadataType.RequiredClothModels, () => new Data.RawElement() },
+#endif
                 { MetadataType.RequiredEffects, () => new RequiredEffectArrayElement() },
                 { MetadataType.RequiredModels, () => new RequiredModelArrayElement() },
                 { MetadataType.RequiredSpawnTextures, () => new RequiredSpawnTextureArrayElement() },
                 { MetadataType.RequiredTextures, () => new RequiredTextureArrayElement() },
                 { MetadataType.Settings, () => new SettingsElement() },
+                { MetadataType.Unknown1200, () => new Data.RawElement() },
                 { MetadataType.Unknown1300, () => { throw new NotImplementedException(); } },
             };
         }

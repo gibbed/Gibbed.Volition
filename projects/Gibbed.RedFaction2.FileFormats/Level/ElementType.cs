@@ -25,22 +25,25 @@ namespace Gibbed.RedFaction2.FileFormats.Level
     public enum ElementType : uint
     {
         None = 0,
-        Unknown200 = 0x200,
-        Unknown300 = 0x300,
-        Cameras = 0x400,
+        GeoRegions = 0x200,
+        Lights = 0x300,
+        CutsceneCameras = 0x400,
         AmbientSounds = 0x500,
         Events = 0x600,
         SpawnPoints = 0x700,
         Unknown800 = 0x800,
-        UnknownC00 = 0xC00,
+        ParticleEmitters = 0xA00, // not in RF2
+        GasRegions = 0xB00, // not in RF2
+        RoomEffects = 0xC00,
         ClimbingRegions = 0xD00,
-        Emitters = 0xE00,
-        UnknownF00 = 0xF00, // not found in any retail RF2 levels
+        BoltEmitters = 0xE00,
+        Targets = 0xF00, // not found in any retail RF2 levels
         Decals = 0x1000,
         PushRegions = 0x1100,
         Unknown2000 = 0x2000,
         Doors = 0x3000,
         Unknown4000 = 0x4000,
+        CutscenePathNodes = 0x5000, // not found in any retail RF2 levels
         Unknown6000 = 0x6000, // not found in any retail RF2 levels
         Mirrors = 0x7677,
         Glares = 0x7678,
@@ -53,8 +56,9 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         SplinePaths = 0x7779,
         Unknown7900 = 0x7900,
         Unknown7901 = 0x7901,
+        EaxEffects = 0x8000, // not in RF2
         Unknown10000 = 0x10000,
-        Navs = 0x20000,
+        NavPoints = 0x20000,
         Entities = 0x30000,
         Items = 0x40000,
         Clutters = 0x50000,
@@ -64,6 +68,6 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         Unknown1000000 = 0x1000000, // string array
         Unknown1000001 = 0x1000001,
         Unknown2000000 = 0x2000000,
-        Unknown3000000 = 0x3000000,
+        UserDefinedGroups = 0x3000000,
     }
 }

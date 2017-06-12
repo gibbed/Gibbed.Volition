@@ -44,9 +44,10 @@ namespace Gibbed.RedFaction2.FileFormats.Level
             input.Seek(4, SeekOrigin.Current); // uint
 
             var count = input.ReadValueS32(endian);
+            var unknown2 = new string[count];
             for (uint i = 0; i < count; i++)
             {
-                var unknown2 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
+                unknown2[i] = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
             }
 
             if (version == 200)
@@ -85,7 +86,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                                 var unknownx0C = Vector3.Read(input, endian);
                                 var unknownx18 = input.ReadValueU32(endian);
                                 var unknownx1C = input.ReadValueF32(endian);
-                                var unknown2 = version >= 278
+                                var unknown3 = version >= 278
                                                    ? input.ReadStringU16(32, Encoding.ASCII, endian)
                                                    : "None";
                                 var unknownx24 = version >= 278 ? input.ReadValueF32(endian) : 1.0f;
@@ -275,7 +276,10 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                         unknownx18 |= 0x8;
                     }
 
-                    input.Seek(1, SeekOrigin.Current); // bool
+                    if (version >= 83)
+                    {
+                        input.Seek(1, SeekOrigin.Current); // bool
+                    }
 
                     if (version >= 120 && input.ReadValueB8() == true)
                     {
@@ -289,14 +293,22 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                         unknownx18 |= 0x40;
                     }
 
-                    var unknownx1C = input.ReadValueF32(endian);
+                    var unknownx1C = version >= 122 ? input.ReadValueF32(endian) : -1.0f;
 
+#if RF1_HACK
+                    if (version >= 180)
+                    {
+                        input.ReadStringU16(32, Encoding.ASCII, endian);
+                    }
+#endif
+
+                    if (false)
                     {
                         input.Seek(4, SeekOrigin.Current); // float
                         var unknownx30 = Color.Read(input);
                         input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-                        input.Seek(4, SeekOrigin.Current); // uint
-                        var unknownx38 = (ushort)input.ReadValueU32(endian);
+                        input.Seek(4, SeekOrigin.Current); // float
+                        var unknownx38 = version >= 89 ? (ushort)input.ReadValueU32(endian) : 1;
 
                         if (version >= 109)
                         {
@@ -309,7 +321,6 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                             unknownx18 |= 0x10;
                         }
 
-                        {
                             if (version >= 116)
                             {
                                 input.Seek(4 + 4 + 4 + 4, SeekOrigin.Current);
@@ -320,21 +331,18 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                             version >= 116 ? input.ReadValueF32(endian) : 180.0f;
                             version >= 116 ? input.ReadValueU32(endian) : 0;
                             */
-                        }
 
                         var unknownx3C = version >= 129 ? input.ReadValueF32(endian) : 0.0f;
                         var unknownx40 = version >= 129 ? input.ReadValueF32(endian) : 0.0f;
+                    }
 
-                        if ((unknownx18 & 0x20) != 0)
+                    if ((unknownx18 & 0x20) != 0)
+                    {
+                        if (version >= 120)
                         {
                             input.Seek(4, SeekOrigin.Current);
-                            //version >= 120 && (unknown18 & 0x20) != 0 ? Color.Read(input) : new Color(0x64, 0x64, 0x64, 0xFF);
                         }
-
-                        if ((unknownx18 & (1 << 3)) != 0)
-                        {
-                            input.ReadStringU16(1024, Encoding.ASCII, endian);
-                        }
+                        //version >= 120 && (unknown18 & 0x20) != 0 ? Color.Read(input) : new Color(0x64, 0x64, 0x64, 0xFF);
                     }
                 }
 
