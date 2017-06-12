@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class NavArrayElement : IElement
+    public class NavPointArrayElement : IElement
     {
         public void Read(Stream input, uint version, Endian endian)
         {
@@ -35,7 +35,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
             for (int i = 0; i < count; i++)
             {
-                var instance = new NavElement();
+                var instance = new NavPointElement();
                 instance.Read(input, version, endian);
             }
 
