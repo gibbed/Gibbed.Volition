@@ -27,39 +27,132 @@ using Gibbed.IO;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class DecalElement : ISerializableElement
+    public class DecalElement : ObjectElement
     {
+        #region Fields
+        private Vector3 _BoxSize;
+        private string _DecalBitmap;
+        private uint _Alpha;
+        private bool _IsSelfIlluminated;
+        private bool _Unknown12;
+        private bool _Unknown13;
+        private bool _Unknown14;
+        private bool _Unknown15;
+        private DecalTileMode _Tiling;
+        private float _Scale;
+        private uint _Unknown18;
+        private Color _Unknown19;
+        #endregion
+
+        #region Properties
+        public Vector3 BoxSize
+        {
+            get { return this._BoxSize; }
+            set { this._BoxSize = value; }
+        }
+
+        public string DecalBitmap
+        {
+            get { return this._DecalBitmap; }
+            set { this._DecalBitmap = value; }
+        }
+
+        public uint Alpha
+        {
+            get { return this._Alpha; }
+            set { this._Alpha = value; }
+        }
+
+        public bool IsSelfIlluminated
+        {
+            get { return this._IsSelfIlluminated; }
+            set { this._IsSelfIlluminated = value; }
+        }
+
+        public bool Unknown12
+        {
+            get { return this._Unknown12; }
+            set { this._Unknown12 = value; }
+        }
+
+        public bool Unknown13
+        {
+            get { return this._Unknown13; }
+            set { this._Unknown13 = value; }
+        }
+
+        public bool Unknown14
+        {
+            get { return this._Unknown14; }
+            set { this._Unknown14 = value; }
+        }
+
+        public bool Unknown15
+        {
+            get { return this._Unknown15; }
+            set { this._Unknown15 = value; }
+        }
+
+        public DecalTileMode Tiling
+        {
+            get { return this._Tiling; }
+            set { this._Tiling = value; }
+        }
+
+        public float Scale
+        {
+            get { return this._Scale; }
+            set { this._Scale = value; }
+        }
+
+        public uint Unknown18
+        {
+            get { return this._Unknown18; }
+            set { this._Unknown18 = value; }
+        }
+
+        public Color Unknown19
+        {
+            get { return this._Unknown19; }
+            set { this._Unknown19 = value; }
+        }
+        #endregion
+
+        protected override ushort Unknown1MaximumLength
+        {
+            get { return ushort.MaxValue; }
+        }
+
+        protected override ushort ScriptNameMaximumLength
+        {
+            get { return ushort.MaxValue; }
+        }
+
+        public override void Read(Stream input, uint version, Endian endian)
+        {
+            base.Read(input, version, endian);
+            this._BoxSize = Vector3.Read(input, endian);
+            this._DecalBitmap = input.ReadStringU16(32, Encoding.ASCII, endian);
+            this._Alpha = input.ReadValueU32(endian);
+            this._IsSelfIlluminated = input.ReadValueB8();
+            this._Unknown12 = version >= 265 ? input.ReadValueB8() : false;
+            this._Unknown13 = version >= 294 ? input.ReadValueB8() : false;
+            this._Unknown14 = version >= 280 ? input.ReadValueB8() : true;
+            this._Unknown15 = version >= 280 ? input.ReadValueB8() : true;
+            this._Tiling = (DecalTileMode)input.ReadValueU32(endian);
+            this._Scale = input.ReadValueF32(endian);
+            this._Unknown18 = version >= 261 ? input.ReadValueU32(endian) : 0;
+            this._Unknown19 = version >= 262 ? Color.Read(input) : Color.White;
+        }
+
+        public override void Write(Stream output, uint version, Endian endian)
+        {
+            base.Write(output, version, endian);
+            throw new NotImplementedException();
+        }
+
         public class ArrayElement : SerializableArrayElement<DecalElement>
         {
-        }
-
-        public void Read(Stream input, uint version, Endian endian)
-        {
-            var unknown0 = input.ReadValueU32(endian);
-            var unknown1 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-            var unknown2 = Vector3.Read(input, endian);
-            var unknown3 = Transform.Read(input, endian);
-            var unknown4 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-            var unknown5 = input.ReadValueB8();
-            var unknown6 = input.ReadValueF32(endian);
-            var unknown7 = input.ReadValueF32(endian);
-            var unknown8 = input.ReadValueF32(endian);
-            var unknown9 = input.ReadStringU16(32, Encoding.ASCII, endian);
-            var unknown10 = input.ReadValueU32(endian);
-            var unknown11 = input.ReadValueB8();
-            var unknown12 = version >= 265 ? input.ReadValueB8() : false;
-            var unknown13 = version >= 294 ? input.ReadValueB8() : false;
-            var unknown14 = version >= 280 ? input.ReadValueB8() : true;
-            var unknown15 = version >= 280 ? input.ReadValueB8() : true;
-            var unknown16 = input.ReadValueU32(endian);
-            var unknown17 = input.ReadValueF32(endian);
-            var unknown18 = version >= 261 ? input.ReadValueU32(endian) : 0;
-            var unknown19 = version >= 262 ? Color.Read(input) : Color.White;
-        }
-
-        public void Write(Stream output, uint version, Endian endian)
-        {
-            throw new NotImplementedException();
         }
     }
 }
