@@ -22,32 +22,56 @@
 
 using System;
 using System.IO;
-using System.Text;
 using Gibbed.IO;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class ClimbingRegionElement : ISerializableElement
+    public class ClimbingRegionElement : ObjectElement
     {
+        #region Fields
+        private uint _Type;
+        private Vector3 _BoxSize;
+        #endregion
+
+        #region Properties
+        public uint Type
+        {
+            get { return this._Type; }
+            set { this._Type = value; }
+        }
+
+        public Vector3 BoxSize
+        {
+            get { return this._BoxSize; }
+            set { this._BoxSize = value; }
+        }
+        #endregion
+
+        protected override ushort Unknown1MaximumLength
+        {
+            get { return ushort.MaxValue; }
+        }
+
+        protected override ushort ScriptNameMaximumLength
+        {
+            get { return ushort.MaxValue; }
+        }
+
+        public override void Read(Stream input, uint version, Endian endian)
+        {
+            base.Read(input, version, endian);
+            this._Type = input.ReadValueU32(endian);
+            this._BoxSize = Vector3.Read(input, endian);
+        }
+
+        public override void Write(Stream output, uint version, Endian endian)
+        {
+            base.Write(output, version, endian);
+            throw new NotImplementedException();
+        }
+
         public class ArrayElement : SerializableArrayElement<ClimbingRegionElement>
         {
-        }
-
-        public void Read(Stream input, uint version, Endian endian)
-        {
-            var unknown0 = input.ReadValueU32(endian);
-            var unknown1 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-            var unknown2 = Vector3.Read(input, endian);
-            var unknown3 = Transform.Read(input, endian);
-            var unknown4 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-            var unknown5 = input.ReadValueB8();
-            var unknown6 = input.ReadValueU32(endian);
-            var unknown7 = Vector3.Read(input, endian);
-        }
-
-        public void Write(Stream output, uint version, Endian endian)
-        {
-            throw new NotImplementedException();
         }
     }
 }
