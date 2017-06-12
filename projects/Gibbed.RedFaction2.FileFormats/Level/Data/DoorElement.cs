@@ -53,7 +53,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
                 var unknown12 = input.ReadValueF32(endian);
                 var unknown13 = input.ReadValueF32(endian);
                 var unknown14 = input.ReadValueF32(endian);
-                var unknown15 = input.ReadValueU32(endian);
+                var unknown15 = input.ReadValueS32(endian);
                 input.Seek(4 + 4, SeekOrigin.Current); // uint, uint
                 var unknown16 = input.ReadValueF32(endian); // -(value * 0.017453292f)
             }
