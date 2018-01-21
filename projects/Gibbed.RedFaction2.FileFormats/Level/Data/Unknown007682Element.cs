@@ -39,7 +39,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         public void Read(Stream input, uint version, Endian endian)
         {
-            this._Bytes = input.ReadBytes((uint)input.Length);
+            this._Bytes = input.ReadBytes((int)input.Length);
         }
 
         public void Write(Stream output, uint version, Endian endian)

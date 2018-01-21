@@ -103,7 +103,7 @@ namespace Gibbed.SaintsRow3.FileFormats.Asm
                 input.ReadStringU16(0x40, Encoding.ASCII, endian) : "";
 
             var extraLength = input.ReadValueU32(endian);
-            this.Extra = input.ReadBytes(extraLength);
+            this.Extra = input.ReadBytes((int)extraLength);
 
             var oldSize = version >= 9 ? 0 : input.ReadValueU32(endian);
             this.CompressedSize = input.ReadValueU32(endian);

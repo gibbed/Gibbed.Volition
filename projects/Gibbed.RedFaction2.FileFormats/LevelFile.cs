@@ -161,7 +161,7 @@ namespace Gibbed.RedFaction2.FileFormats
 
                 var dataPosition = input.Position;
                 var element = MetadataFactory.Create(dataType);
-                using (var data = input.ReadToMemoryStream(dataLength))
+                using (var data = input.ReadToMemoryStream((int)dataLength))
                 {
                     element.Read(data, version, endian);
                     if (data.Position != data.Length)
@@ -192,7 +192,7 @@ namespace Gibbed.RedFaction2.FileFormats
 
                     var dataPosition = input.Position;
                     var element = ElementFactory.Create(dataType);
-                    using (var data = input.ReadToMemoryStream(dataLength))
+                    using (var data = input.ReadToMemoryStream((int)dataLength))
                     {
                         element.Read(data, version, endian);
                         if (data.Position != data.Length)

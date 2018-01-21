@@ -195,7 +195,7 @@ namespace Gibbed.Volition.Packing.STR2
                                     }
                                     else
                                     {
-                                        using (var temp = data.ReadToMemoryStream(entry.CompressedSize))
+                                        using (var temp = data.ReadToMemoryStream((int)entry.CompressedSize))
                                         {
                                             var zlib = new InflaterInputStream(temp);
                                             output.WriteFromStream(zlib, entry.UncompressedSize);

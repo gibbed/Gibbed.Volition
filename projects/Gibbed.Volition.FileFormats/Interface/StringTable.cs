@@ -97,7 +97,7 @@ namespace Gibbed.Volition.FileFormats.Interface
             var encoding = Encoding.GetEncoding(1252);
 
             this._Strings.Clear();
-            using (var data = input.ReadToMemoryStream(size))
+            using (var data = input.ReadToMemoryStream((int)size))
             {
                 for (uint i = 0; i < count; i++)
                 {

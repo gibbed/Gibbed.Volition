@@ -192,31 +192,29 @@ namespace Gibbed.Volition.FileFormats
             }
 
             this.Entries.Clear();
-            using (var directory = input.ReadToMemoryStream(header.DirectorySize.Align(2048)))
+            using (var directory = input.ReadToMemoryStream((int)header.DirectorySize.Align(2048)))
+            using (var names = input.ReadToMemoryStream((int)header.NamesSize.Align(2048)))
             {
-                using (var names = input.ReadToMemoryStream(header.NamesSize.Align(2048)))
+                for (int i = 0; i < header.DirectoryCount; i++)
                 {
-                    for (int i = 0; i < header.DirectoryCount; i++)
+                    var nameOffset = directory.ReadValueU32(endian);
+                    directory.Seek(4, SeekOrigin.Current); // runtime offset
+                    var offset = directory.ReadValueU32(endian);
+                    directory.Seek(4, SeekOrigin.Current); // name hash
+                    var uncompressedSize = directory.ReadValueU32(endian);
+                    var compressedSize = directory.ReadValueU32(endian);
+                    directory.Seek(4, SeekOrigin.Current); // package pointer
+
+                    names.Seek(nameOffset, SeekOrigin.Begin);
+                    var name = names.ReadStringZ(Encoding.ASCII);
+
+                    this.Entries.Add(new Package.Entry()
                     {
-                        var nameOffset = directory.ReadValueU32(endian);
-                        directory.Seek(4, SeekOrigin.Current); // runtime offset
-                        var offset = directory.ReadValueU32(endian);
-                        directory.Seek(4, SeekOrigin.Current); // name hash
-                        var uncompressedSize = directory.ReadValueU32(endian);
-                        var compressedSize = directory.ReadValueU32(endian);
-                        directory.Seek(4, SeekOrigin.Current); // package pointer
-
-                        names.Seek(nameOffset, SeekOrigin.Begin);
-                        var name = names.ReadStringZ(Encoding.ASCII);
-
-                        this.Entries.Add(new Package.Entry()
-                        {
-                            Name = name,
-                            Offset = offset,
-                            UncompressedSize = uncompressedSize,
-                            CompressedSize = compressedSize,
-                        });
-                    }
+                        Name = name,
+                        Offset = offset,
+                        UncompressedSize = uncompressedSize,
+                        CompressedSize = compressedSize,
+                    });
                 }
             }
 
