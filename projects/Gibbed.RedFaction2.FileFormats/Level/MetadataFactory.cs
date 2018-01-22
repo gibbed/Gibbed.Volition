@@ -46,7 +46,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                 { MetadataType.RequiredSpawnTextures, () => new RequiredSpawnTextureArrayElement() },
                 { MetadataType.RequiredTextures, () => new RequiredTextureArrayElement() },
                 { MetadataType.Settings, () => new SettingsElement() },
-                { MetadataType.Unknown1200, () => new Data.RawElement() },
+                { MetadataType.Unknown1200, () => new RawElement() },
                 { MetadataType.Unknown1300, () => { throw new NotImplementedException(); } },
             };
         }

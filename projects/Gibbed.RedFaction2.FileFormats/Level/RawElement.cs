@@ -20,43 +20,42 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
-using System.Text;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
-namespace Gibbed.RedFaction2.FileFormats.Level.Data
+namespace Gibbed.RedFaction2.FileFormats.Level
 {
-    public class Unknown004000Element : ISerializableElement
+    public class RawElement : IElement
     {
-        public class ArrayElement : SerializableArrayElement<Unknown004000Element>
+        private byte[] _Bytes;
+
+        public byte[] Bytes
         {
+            get { return this._Bytes; }
+            set { this._Bytes = value; }
         }
 
         public void Read(Stream input, uint version, Endian endian)
         {
-            var unknown0 = input.ReadValueU32(endian);
-            var unknown1 = input.ReadValueB8();
-            var unknown2 = input.ReadValueF32(endian);
-            var unknown3 = version >= 291 ? input.ReadStringU16(64, Encoding.ASCII, endian) : "";
-            
-            var unknown4 = input.ReadValueU32(endian);
-            for (uint i = 0; i < unknown4; i++)
-            {
-                var unknown5 = input.ReadValueU32(endian);
-                var unknown6 = input.ReadValueF32(endian);
-                var unknown7 = input.ReadValueF32(endian);
-                var unknown8 = input.ReadValueF32(endian);
-                var unknown9 = input.ReadValueS32(endian);
-                var unknown10 = input.ReadValueS32(endian);
-                var unknown11 = input.ReadValueU32(endian);
-                var unknown12 = input.ReadValueF32(endian);
-            }
+            this._Bytes = input.ReadBytes((uint)input.Length);
         }
 
         public void Write(Stream output, uint version, Endian endian)
         {
-            throw new NotImplementedException();
+            output.WriteBytes(this._Bytes);
+        }
+
+        public void ImportJson(JsonReader reader)
+        {
+            var serializer = new JsonSerializer();
+            this._Bytes = serializer.Deserialize<byte[]>(reader);
+        }
+
+        public void ExportJson(JsonWriter writer)
+        {
+            var serializer = new JsonSerializer();
+            serializer.Serialize(writer, this._Bytes);
         }
     }
 }

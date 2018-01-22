@@ -22,16 +22,25 @@
 
 using System.IO;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public struct Color
     {
         public static readonly Color White = new Color(0xFF, 0xFF, 0xFF, 0xFF);
 
+        [JsonProperty("r")]
         public byte R;
+
+        [JsonProperty("g")]
         public byte G;
+
+        [JsonProperty("b")]
         public byte B;
+
+        [JsonProperty("a")]
         public byte A;
 
         public Color(byte r, byte g, byte b, byte a)

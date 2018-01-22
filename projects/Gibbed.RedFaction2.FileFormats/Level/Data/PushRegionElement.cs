@@ -37,7 +37,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
         private PushRegionIntensityType _Intensity;
         private byte _Turbulence;
 
-        protected override ushort Unknown1MaximumLength
+        protected override ushort ClassNameMaximumLength
         {
             get { return ushort.MaxValue; }
         }

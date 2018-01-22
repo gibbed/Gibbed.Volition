@@ -31,7 +31,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
     public class AmbientSoundElement : ISerializableElement
     {
         #region Fields
-        private uint _Uid;
+        private int _Uid;
         private Vector3 _Position;
         private bool _PlayInEditor;
         private string _SoundFileName;
@@ -43,7 +43,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         #region Properties
         [JsonProperty("uid")]
-        public uint Uid
+        public int Uid
         {
             get { return this._Uid; }
             set { this._Uid = value; }
@@ -101,7 +101,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         public void Read(Stream input, uint version, Endian endian)
         {
-            this._Uid = input.ReadValueU32(endian);
+            this._Uid = input.ReadValueS32(endian);
             this._Position = Vector3.Read(input, endian);
             this._PlayInEditor = input.ReadValueB8();
             this._SoundFileName = input.ReadStringU16(32, Encoding.ASCII, endian);
@@ -113,7 +113,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         public void Write(Stream output, uint version, Endian endian)
         {
-            output.WriteValueU32(this._Uid, endian);
+            output.WriteValueS32(this._Uid, endian);
             Vector3.Write(output, this._Position, endian);
             output.WriteValueB8(this._PlayInEditor);
             output.WriteStringU16(this._SoundFileName, 32, Encoding.ASCII, endian);

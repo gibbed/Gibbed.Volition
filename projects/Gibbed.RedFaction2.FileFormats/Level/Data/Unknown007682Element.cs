@@ -31,6 +31,12 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
     {
         private byte[] _Bytes;
 
+        public byte[] Bytes
+        {
+            get { return this._Bytes; }
+            set { this._Bytes = value; }
+        }
+
         public void Read(Stream input, uint version, Endian endian)
         {
             this._Bytes = input.ReadBytes((uint)input.Length);
@@ -38,17 +44,19 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         public void Write(Stream output, uint version, Endian endian)
         {
-            throw new NotImplementedException();
+            output.WriteBytes(this._Bytes);
         }
 
         public void ImportJson(JsonReader reader)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+            this._Bytes = serializer.Deserialize<byte[]>(reader);
         }
 
         public void ExportJson(JsonWriter writer)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+            serializer.Serialize(writer, this._Bytes);
         }
     }
 }

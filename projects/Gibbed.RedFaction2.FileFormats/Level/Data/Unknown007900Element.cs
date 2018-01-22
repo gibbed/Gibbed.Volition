@@ -28,9 +28,9 @@ using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class Unknown007900Element : IElement
+    public class Unknown007900Element : BasicElement
     {
-        public void Read(Stream input, uint version, Endian endian)
+        public override void Read(Stream input, uint version, Endian endian)
         {
             var dataVersion = input.ReadValueU32();
             if (dataVersion != 5)
@@ -106,17 +106,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
             }
         }
 
-        public void Write(Stream output, uint version, Endian endian)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ImportJson(JsonReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExportJson(JsonWriter writer)
+        public override void Write(Stream output, uint version, Endian endian)
         {
             throw new NotImplementedException();
         }

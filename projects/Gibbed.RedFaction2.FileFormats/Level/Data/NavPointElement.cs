@@ -24,13 +24,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class NavPointElement : ISerializableElement
     {
         #region Fields
-        private uint _Uid;
+        private int _Uid;
         private bool _IsHidden;
         private float _Height;
         private Vector3 _Position;
@@ -40,84 +42,95 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
         private float _Unknown7;
         private float _PauseTime;
         private int _Unknown9;
-        private readonly List<uint> _LinkUids;
+        private readonly List<int> _Links;
         #endregion
 
         public NavPointElement()
         {
-            this._LinkUids = new List<uint>();
+            this._Links = new List<int>();
         }
 
         #region Properties
-        public uint Uid
+        [JsonProperty("uid")]
+        public int Uid
         {
             get { return this._Uid; }
             set { this._Uid = value; }
         }
 
+        [JsonProperty("hidden")]
         public bool IsHidden
         {
             get { return this._IsHidden; }
             set { this._IsHidden = value; }
         }
 
+        [JsonProperty("height")]
         public float Height
         {
             get { return this._Height; }
             set { this._Height = value; }
         }
 
+        [JsonProperty("pos")]
         public Vector3 Position
         {
             get { return this._Position; }
             set { this._Position = value; }
         }
 
+        [JsonProperty("radius")]
         public float Radius
         {
             get { return this._Radius; }
             set { this._Radius = value; }
         }
 
+        [JsonProperty("flags")]
         public NavPointFlags Flags
         {
             get { return this._Flags; }
             set { this._Flags = value; }
         }
 
+        [JsonProperty("transform")]
         public Transform Transform
         {
             get { return this._Transform; }
             set { this._Transform = value; }
         }
 
+        [JsonProperty("__u7")]
         public float Unknown7
         {
             get { return this._Unknown7; }
             set { this._Unknown7 = value; }
         }
 
+        [JsonProperty("pause_time")]
         public float PauseTime
         {
             get { return this._PauseTime; }
             set { this._PauseTime = value; }
         }
 
+        [JsonProperty("__u9")]
         public int Unknown9
         {
             get { return this._Unknown9; }
             set { this._Unknown9 = value; }
         }
 
-        public List<uint> LinkUids
+        [JsonProperty("links")]
+        public List<int> Links
         {
-            get { return this._LinkUids; }
+            get { return this._Links; }
         }
         #endregion
 
         public void Read(Stream input, uint version, Endian endian)
         {
-            this._Uid = input.ReadValueU32(endian);
+            this._Uid = input.ReadValueS32(endian);
             this._IsHidden = input.ReadValueB8();
             this._Height = input.ReadValueF32(endian);
             this._Position = Vector3.Read(input, endian);
@@ -195,13 +208,11 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
                 throw new FormatException();
             }
 
-            var linkUids = new uint[linkCount];
+            this._Links.Clear();
             for (uint i = 0; i < linkCount; i++)
             {
-                linkUids[i] = input.ReadValueU32(endian);
+                this._Links.Add(input.ReadValueS32(endian));
             }
-            this._LinkUids.Clear();
-            this._LinkUids.AddRange(linkUids);
 
             this._Flags = flags;
         }

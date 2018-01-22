@@ -31,6 +31,11 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
     {
         private ThingElement _Value;
 
+        public RootElement()
+        {
+            this._Value = new ThingElement();
+        }
+
         public void Read(Stream input, uint version, Endian endian)
         {
             this._Value = new ThingElement();
@@ -44,12 +49,14 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
 
         public void ImportJson(JsonReader reader)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+            this._Value = serializer.Deserialize<ThingElement>(reader);
         }
 
         public void ExportJson(JsonWriter writer)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+            serializer.Serialize(writer, this._Value);
         }
     }
 }

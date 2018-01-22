@@ -42,6 +42,13 @@ namespace Gibbed.RedFaction2.ConvertPEG
             return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
         }
 
+        private enum Mode
+        {
+            Unknown,
+            Disassemble,
+            Assemble,
+        }
+
         public static void Main(string[] args)
         {
             var fullAlpha = false;
@@ -186,7 +193,7 @@ namespace Gibbed.RedFaction2.ConvertPEG
                     using (var textWriter = new StreamWriter(output, Encoding.UTF8))
                     using (var writer = new JsonTextWriter(textWriter))
                     {
-                        writer.Formatting = Newtonsoft.Json.Formatting.Indented;
+                        writer.Formatting = Formatting.Indented;
                         writer.Indentation = 2;
                         writer.IndentChar = ' ';
 

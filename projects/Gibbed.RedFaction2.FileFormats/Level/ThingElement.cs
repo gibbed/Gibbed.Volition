@@ -25,52 +25,243 @@ using System.IO;
 using System.Text;
 using Gibbed.IO;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Gibbed.RedFaction2.FileFormats.Level
 {
+    [JsonObject(MemberSerialization.OptOut)]
     public class ThingElement : ISerializableElement
     {
-        // TODO(gibbed): fields
-        private string _Unknown1;
+        #region Fields
+        private uint _Unknown1;
+        private string _Unknown2;
+        private uint _Unknown3;
+        private readonly List<string> _Unknown4;
+        private readonly List<Tuple<int, float, float>> _Unknown5;
+        private uint _Unknown6;
+        private readonly List<Unknown7> _Unknown7;
+        private readonly List<KeyValuePair<uint, List<uint>>> _Unknown8;
+        private readonly List<KeyValuePair<uint, uint>>  _Unknown9;
+        private readonly List<Tuple<uint, uint, Vector3, Vector3>> _Unknown10;
+        private readonly List<Vector3> _Unknown11;
+        private readonly List<Unknown12> _Unknown12;
+        private readonly List<Tuple<uint, float, float>> _Unknown14;
+        #endregion
+
+        public ThingElement()
+        {
+            this._Unknown4 = new List<string>();
+            this._Unknown5 = new List<Tuple<int, float, float>>();
+            this._Unknown7 = new List<Unknown7>();
+            this._Unknown8 = new List<KeyValuePair<uint, List<uint>>>();
+            this._Unknown9 = new List<KeyValuePair<uint, uint>>();
+            this._Unknown10 = new List<Tuple<uint, uint, Vector3, Vector3>>();
+            this._Unknown11 = new List<Vector3>();
+            this._Unknown12 = new List<Unknown12>();
+            this._Unknown14 = new List<Tuple<uint, float, float>>();
+        }
+
+        #region Properties
+        public uint Unknown1
+        {
+            get { return this._Unknown1; }
+            set { this._Unknown1 = value; }
+        }
+
+        public string Unknown2
+        {
+            get { return this._Unknown2; }
+            set { this._Unknown2 = value; }
+        }
+
+        public uint Unknown3
+        {
+            get { return this._Unknown3; }
+            set { this._Unknown3 = value; }
+        }
+
+        public List<string> Unknown4
+        {
+            get { return this._Unknown4; }
+        }
+
+        public List<Tuple<int, float, float>> Unknown5
+        {
+            get { return this._Unknown5; }
+        }
+
+        public uint Unknown6
+        {
+            get { return this._Unknown6; }
+            set { this._Unknown6 = value; }
+        }
+
+        public List<Unknown7> Unknown7s
+        {
+            get { return this._Unknown7; }
+        }
+
+        public List<KeyValuePair<uint, List<uint>>> Unknown8
+        {
+            get { return this._Unknown8; }
+        }
+
+        public List<KeyValuePair<uint, uint>> Unknown9
+        {
+            get { return this._Unknown9; }
+        }
+
+        public List<Tuple<uint, uint, Vector3, Vector3>> Unknown10
+        {
+            get { return this._Unknown10; }
+        }
+
+        public List<Vector3> Unknown11
+        {
+            get { return this._Unknown11; }
+        }
+
+        public List<Unknown12> Unknown12s
+        {
+            get { return this._Unknown12; }
+        }
+
+        public List<Tuple<uint, float, float>> Unknown14
+        {
+            get { return this._Unknown14; }
+        }
+        #endregion
 
         public void Read(Stream input, uint version, Endian endian)
         {
             if (version == 200)
             {
-                input.Seek(4, SeekOrigin.Current); // uint
+                this._Unknown1 = input.ReadValueU32(endian);
             }
 
-            this._Unknown1 = input.ReadStringU16(63, Encoding.ASCII, endian);
-            input.Seek(4, SeekOrigin.Current); // uint
+            this._Unknown2 = input.ReadStringU16(63, Encoding.ASCII, endian);
+            this._Unknown3 = input.ReadValueU32(endian);
 
-            var count = input.ReadValueS32(endian);
-            var unknown2 = new string[count];
-            for (uint i = 0; i < count; i++)
+            var unknown4Count = input.ReadValueS32(endian);
+            this._Unknown4.Clear();
+            for (uint i = 0; i < unknown4Count; i++)
             {
-                unknown2[i] = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
+                this._Unknown4.Add(input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian));
             }
 
+            this._Unknown5.Clear();
             if (version == 200)
             {
-                var count2 = input.ReadValueU32(endian);
-                /*
-                for (uint i = 0; i < count2; i++)
+                var unknown5Count = input.ReadValueU32(endian);
+                for (uint i = 0; i < unknown5Count; i++)
                 {
-                    input.ReadValueU32(endian);
-                    input.ReadValueF32(endian);
-                    input.ReadValueF32(endian);
+                    var unknown5Item1 = input.ReadValueS32(endian);
+                    var unknown5Item2 = input.ReadValueF32(endian);
+                    var unknown5Item3 = input.ReadValueF32(endian);
+                    this._Unknown5.Add(new Tuple<int, float, float>(unknown5Item1, unknown5Item2, unknown5Item3));
                 }
-                */
-                input.Seek((4 + 4 + 4) * count2, SeekOrigin.Current);
             }
 
             if (version >= 201 && version <= 211)
             {
-                input.Seek(4, SeekOrigin.Current); // uint
+                this._Unknown6 = input.ReadValueU32(endian);
             }
 
-            var count3 = input.ReadValueU32(endian);
-            for (uint i = 0; i < count3; i++)
+            var unknown7Count = input.ReadValueU32(endian);
+            this._Unknown7.Clear();
+            for (uint i = 0; i < unknown7Count; i++)
+            {
+                var unknown7 = new Unknown7();
+                unknown7.Read(input, version, endian);
+                this._Unknown7.Add(unknown7);
+            }
+
+            var unknown8Count = version >= 113 ? input.ReadValueU32(endian) : 0;
+            this._Unknown8.Clear();
+            for (uint i = 0; i < unknown8Count; i++)
+            {
+                var unknown8Key = input.ReadValueU32(endian);
+                var unknown8ValueCount = input.ReadValueU32(endian);
+                var unknown8Value = new List<uint>();
+                for (uint j = 0; j < unknown8ValueCount; j++)
+                {
+                    unknown8Value.Add(input.ReadValueU32(endian));
+                }
+                this._Unknown8.Add(new KeyValuePair<uint, List<uint>>(unknown8Key, unknown8Value));
+            }
+
+            var unknown9Count = version >= 216 ? input.ReadValueU32(endian) : 0;
+            this._Unknown9.Clear();
+            for (uint i = 0; i < unknown9Count; i++)
+            {
+                var unknown9Key = input.ReadValueU32(endian);
+                var unknown9Value = input.ReadValueU32(endian);
+                this._Unknown9.Add(new KeyValuePair<uint, uint>(unknown9Key, unknown9Value));
+            }
+
+            var unknown10Count = input.ReadValueU32(endian);
+            this._Unknown10.Clear();
+            for (uint i = 0; i < unknown10Count; i++)
+            {
+                var unknown10Item1 = input.ReadValueU32(endian);
+                var unknown10Item2 = input.ReadValueU32(endian);
+                var unknown10Item3 = Vector3.Read(input, endian);
+                var unknown10Item4 = Vector3.Read(input, endian);
+                this._Unknown10.Add(new Tuple<uint, uint, Vector3, Vector3>(
+                                        unknown10Item1,
+                                        unknown10Item2,
+                                        unknown10Item3,
+                                        unknown10Item4));
+            }
+
+            var unknown11Count = input.ReadValueU32(endian);
+            this._Unknown11.Clear();
+            for (uint i = 0; i < unknown11Count; i++)
+            {
+                this._Unknown11.Add(Vector3.Read(input, endian));
+            }
+
+            var unknown12Count = input.ReadValueU32(endian);
+            this._Unknown12.Clear();
+            for (uint i = 0; i < unknown12Count; i++)
+            {
+                var unknown12 = new Unknown12();
+                unknown12.Read(input, version, endian);
+                this._Unknown12.Add(unknown12);
+            }
+
+            if (version < 212)
+            {
+                var unknown13Count = input.ReadValueU32(endian);
+                for (uint i = 0; i < unknown13Count; i++)
+                {
+                    // string array
+                    throw new NotImplementedException();
+                }
+            }
+
+            this._Unknown14.Clear();
+            if (version < 295 && (version > 200 && version < 234 || version >= 251))
+            {
+                var unknown14Count = version >= 94 ? input.ReadValueU32(endian) : 0;
+                for (uint i = 0; i < unknown14Count; i++)
+                {
+                    var unknown14Item1 = input.ReadValueU32(endian);
+                    var unknown14Item2 = input.ReadValueF32(endian);
+                    var unknown14Item3 = input.ReadValueF32(endian);
+                    this._Unknown14.Add(new Tuple<uint, float, float>(unknown14Item1, unknown14Item2, unknown14Item3));
+                }
+            }
+        }
+
+        public void Write(Stream output, uint version, Endian endian)
+        {
+            throw new NotImplementedException();
+        }
+
+        public class Unknown7 : ISerializableElement
+        {
+            public void Read(Stream input, uint version, Endian endian)
             {
                 var unknownx94 = version >= 86 ? input.ReadValueS32(endian) : -1;
 
@@ -321,16 +512,16 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                             unknownx18 |= 0x10;
                         }
 
-                            if (version >= 116)
-                            {
-                                input.Seek(4 + 4 + 4 + 4, SeekOrigin.Current);
-                            }
-                            /*
-                            version >= 116 ? input.ReadValueU32(endian) : 64;
-                            version >= 116 ? input.ReadValueU32(endian) : 64;
-                            version >= 116 ? input.ReadValueF32(endian) : 180.0f;
-                            version >= 116 ? input.ReadValueU32(endian) : 0;
-                            */
+                        if (version >= 116)
+                        {
+                            input.Seek(4 + 4 + 4 + 4, SeekOrigin.Current);
+                        }
+                        /*
+                        version >= 116 ? input.ReadValueU32(endian) : 64;
+                        version >= 116 ? input.ReadValueU32(endian) : 64;
+                        version >= 116 ? input.ReadValueF32(endian) : 180.0f;
+                        version >= 116 ? input.ReadValueU32(endian) : 0;
+                        */
 
                         var unknownx3C = version >= 129 ? input.ReadValueF32(endian) : 0.0f;
                         var unknownx40 = version >= 129 ? input.ReadValueF32(endian) : 0.0f;
@@ -353,47 +544,25 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                 }
             }
 
-            var count5 = version >= 113 ? input.ReadValueU32(endian) : 0;
-            for (uint i = 0; i < count5; i++)
+            public void Write(Stream output, uint version, Endian endian)
             {
-                var unknown3 = input.ReadValueU32(endian);
-                var count6 = input.ReadValueU32(endian);
-                for (uint j = 0; j < count6; j++)
-                {
-                    var unknown4 = input.ReadValueU32(endian);
-                }
+                throw new NotImplementedException();
             }
+        }
 
-            var count7 = version >= 216 ? input.ReadValueU32(endian) : 0;
-            for (uint i = 0; i < count7; i++)
+        public class Unknown12 : ISerializableElement
+        {
+            private Vector3 _Unknown1;
+            private float _Unknown2;
+            private uint _Unknown3;
+            private int _Unknown4;
+
+            public void Read(Stream input, uint version, Endian endian)
             {
-                var unknown5 = input.ReadValueU32(endian);
-                var unknown6 = input.ReadValueU32(endian);
-            }
-
-            var count8 = input.ReadValueU32(endian);
-            for (uint i = 0; i < count8; i++)
-            {
-                var unknown7 = input.ReadValueU32(endian);
-                var unknown8 = input.ReadValueU32(endian);
-                var unknown9 = Vector3.Read(input, endian);
-                var unknown10 = Vector3.Read(input, endian);
-            }
-
-            var count9 = input.ReadValueU32(endian);
-            for (uint i = 0; i < count9; i++)
-            {
-                var unknown11 = Vector3.Read(input, endian);
-            }
-
-            var count10 = input.ReadValueU32(endian);
-            for (uint i = 0; i < count10; i++)
-            {
-                var unknown12 = version >= 167 ? Vector3.Read(input, endian) : new Vector3();
-                var unknown13 = version >= 167 ? input.ReadValueF32(endian) : 0.0f;
-                var unknown14 = input.ReadValueU32(endian);
-
-                var unknown15 = version < 212 ? input.ReadValueS32(endian) : -1;
+                this._Unknown1 = version >= 167 ? Vector3.Read(input, endian) : new Vector3();
+                this._Unknown2 = version >= 167 ? input.ReadValueF32(endian) : 0.0f;
+                this._Unknown3 = input.ReadValueU32(endian);
+                this._Unknown4 = version < 212 ? input.ReadValueS32(endian) : -1;
 
                 if (version >= 226)
                 {
@@ -489,36 +658,17 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                     var unknown26 = version >= 212 ? input.ReadValueU8() : 0x80;
                     var unknown27 = version >= 212 ? input.ReadValueU8() : 0xFF;
 
-                    if (version < 212 && unknown15 > -1)
+                    if (version < 212 && this._Unknown4 > -1)
                     {
                         input.Seek(8, SeekOrigin.Current); // two floats
                     }
                 }
             }
 
-            if (version < 212)
+            public void Write(Stream output, uint version, Endian endian)
             {
-                var count12 = input.ReadValueU32(endian);
-                for (uint i = 0; i < count12; i++)
-                {
-                    // string array
-                    throw new NotImplementedException();
-                }
+                throw new NotImplementedException();
             }
-
-            if (version < 295 && (version > 200 && version < 234 || version >= 251))
-            {
-                var count13 = version >= 94 ? input.ReadValueU32(endian) : 0;
-                for (uint i = 0; i < count13; i++)
-                {
-                    input.Seek(4 + 4 + 4, SeekOrigin.Current); // uint, float, float
-                }
-            }
-        }
-
-        public void Write(Stream output, uint version, Endian endian)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -22,13 +22,20 @@
 
 using System.IO;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public struct Vector3
     {
+        [JsonProperty("x")]
         public float X;
+
+        [JsonProperty("y")]
         public float Y;
+
+        [JsonProperty("z")]
         public float Z;
 
         public static Vector3 Read(Stream input, Endian endian)

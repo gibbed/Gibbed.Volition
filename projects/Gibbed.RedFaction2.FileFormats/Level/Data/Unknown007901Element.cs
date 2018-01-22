@@ -20,37 +20,40 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 using Gibbed.IO;
 using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class Unknown007901Element : IElement
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Unknown007901Element : BasicElement
     {
-        public void Read(Stream input, uint version, Endian endian)
+        #region Fields
+        private bool _Unknown0;
+        #endregion
+        
+        #region Properties
+        [JsonProperty("__u0")]
+        public bool Unknown0
         {
-            var unknown0 = input.ReadValueB8();
-            if (unknown0 == true)
+            get { return this._Unknown0; }
+            set { this._Unknown0 = value; }
+        }
+        #endregion
+
+        public override void Read(Stream input, uint version, Endian endian)
+        {
+            this.Unknown0 = input.ReadValueB8();
+            if (this.Unknown0 == true)
             {
                 // "Level needs to be resaved with Calculate Fast Geometry checked"
             }
         }
 
-        public void Write(Stream output, uint version, Endian endian)
+        public override void Write(Stream output, uint version, Endian endian)
         {
-            throw new NotImplementedException();
-        }
-
-        public void ImportJson(JsonReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExportJson(JsonWriter writer)
-        {
-            throw new NotImplementedException();
+            output.WriteValueB8(this._Unknown0);
         }
     }
 }

@@ -48,8 +48,8 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                  { ElementType.Decals, () => new DecalElement.ArrayElement() },
                  { ElementType.PushRegions, () => new PushRegionElement.ArrayElement() },
                  { ElementType.Unknown2000, () => new Unknown002000Element.ArrayElement() },
-                 { ElementType.Doors, () => new DoorElement.ArrayElement() },
-                 { ElementType.Unknown4000, () => new Unknown004000Element.ArrayElement() },
+                 { ElementType.Movers, () => new MoverElement.ArrayElement() },
+                 { ElementType.Cutscenes, () => new CutsceneElement.ArrayElement() },
                  { ElementType.Unknown6000, () => new Unknown006000Element() },
                  { ElementType.Mirrors, () => new MirrorElement.ArrayElement() },
                  { ElementType.Glares, () => new GlareElement.ArrayElement() },
@@ -70,7 +70,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
                  { ElementType.Unknown70000, () => new Unknown070000Element() },
                  { ElementType.Unknown1000000, () => new RawElement() },
                  { ElementType.Unknown1000001, () => new Unknown100001Element() },
-                 { ElementType.Unknown2000000, () => new RawElement() },
+                 { ElementType.Brushes, () => new RawElement() },
                  { ElementType.UserDefinedGroups, () => new RawElement() },
             };
         }

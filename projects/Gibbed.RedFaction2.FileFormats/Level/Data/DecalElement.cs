@@ -118,7 +118,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
         }
         #endregion
 
-        protected override ushort Unknown1MaximumLength
+        protected override ushort ClassNameMaximumLength
         {
             get { return ushort.MaxValue; }
         }

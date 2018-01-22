@@ -20,39 +20,60 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 using Gibbed.IO;
 using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class Unknown100001Element : IElement
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Unknown100001Element : BasicElement
     {
+        #region Fields
         private uint _Unknown0;
         private uint _Unknown1;
         private bool _Unknown2;
+        #endregion
 
-        public void Read(Stream input, uint version, Endian endian)
+        #region Properties
+        [JsonProperty("__u0")]
+        public uint Unknown0
+        {
+            get { return this._Unknown0; }
+            set { this._Unknown0 = value; }
+        }
+
+        [JsonProperty("__u1")]
+        public uint Unknown1
+        {
+            get { return this._Unknown1; }
+            set { this._Unknown1 = value; }
+        }
+
+        [JsonProperty("__u2")]
+        public bool Unknown2
+        {
+            get { return this._Unknown2; }
+            set { this._Unknown2 = value; }
+        }
+        #endregion
+
+        public override void Read(Stream input, uint version, Endian endian)
         {
             this._Unknown0 = input.ReadValueU32(endian);
             this._Unknown1 = input.ReadValueU32(endian);
-            this._Unknown2 = version >= 285 ? input.ReadValueB8() : false;
+            this._Unknown2 = version >= 285 && input.ReadValueB8() == true;
         }
 
-        public void Write(Stream output, uint version, Endian endian)
+        public override void Write(Stream output, uint version, Endian endian)
         {
-            throw new NotImplementedException();
-        }
+            output.WriteValueU32(this._Unknown0, endian);
+            output.WriteValueU32(this._Unknown1, endian);
 
-        public void ImportJson(JsonReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExportJson(JsonWriter writer)
-        {
-            throw new NotImplementedException();
+            if (version >= 285)
+            {
+                output.WriteValueB8(this._Unknown2);
+            }
         }
     }
 }

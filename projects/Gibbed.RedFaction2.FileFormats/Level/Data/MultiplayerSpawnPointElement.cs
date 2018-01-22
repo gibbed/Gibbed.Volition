@@ -30,7 +30,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
     public class MultiplayerSpawnPointElement : ISerializableElement
     {
         #region Fields
-        private uint _Uid;
+        private int _Uid;
         private Vector3 _Position;
         private Transform _Transform;
         private string _ScriptName;
@@ -42,7 +42,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
         #endregion
 
         #region Properties
-        public uint Uid
+        public int Uid
         {
             get { return this._Uid; }
             set { this._Uid = value; }
@@ -99,7 +99,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         public void Read(Stream input, uint version, Endian endian)
         {
-            this._Uid = input.ReadValueU32(endian);
+            this._Uid = input.ReadValueS32(endian);
             this._Position = Vector3.Read(input, endian);
             this._Transform = Transform.Read(input, endian);
             this._ScriptName = input.ReadStringU16(32, Encoding.ASCII, endian);

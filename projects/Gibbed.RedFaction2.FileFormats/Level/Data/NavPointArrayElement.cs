@@ -24,29 +24,55 @@ using System;
 using System.IO;
 using Gibbed.IO;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
     public class NavPointArrayElement : IElement
     {
+        #region Fields
+        private readonly List<Item> _Items;
+        #endregion
+
+        public NavPointArrayElement()
+        {
+            this._Items = new List<Item>();
+        }
+
+        #region Properties
+        public List<Item> Items
+        {
+            get { return this._Items; }
+        }
+        #endregion
+
         public void Read(Stream input, uint version, Endian endian)
         {
             var count = input.ReadValueU32(endian);
 
+            var items = new Item[count];
+
             for (int i = 0; i < count; i++)
             {
-                var instance = new NavPointElement();
-                instance.Read(input, version, endian);
+                Item item;
+                item.Element = new NavPointElement();
+                item.Unknown11 = new List<uint>();
+                item.Element.Read(input, version, endian);
+                items[i] = item;
             }
 
             for (int i = 0; i < count; i++)
             {
-                var unknown11 = input.ReadValueU8();
-                for (uint j = 0; j < unknown11; j++)
+                var item = items[i];
+                var unknown11Count = input.ReadValueU8();
+                for (uint j = 0; j < unknown11Count; j++)
                 {
-                    var unknown12 = input.ReadValueU32(endian);
+                    item.Unknown11.Add(input.ReadValueU32(endian));
                 }
             }
+
+            this._Items.Clear();
+            this._Items.AddRange(items);
         }
 
         public void Write(Stream output, uint version, Endian endian)
@@ -56,12 +82,26 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         public void ImportJson(JsonReader reader)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+            var items = serializer.Deserialize<List<Item>>(reader);
+            this._Items.Clear();
+            this._Items.AddRange(items);
         }
 
         public void ExportJson(JsonWriter writer)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+            serializer.Serialize(writer, this._Items);
+        }
+
+        [JsonObject(MemberSerialization.OptIn)]
+        public struct Item
+        {
+            [JsonProperty("element")]
+            public NavPointElement Element;
+
+            [JsonProperty("__u11")]
+            public List<uint> Unknown11;
         }
     }
 }

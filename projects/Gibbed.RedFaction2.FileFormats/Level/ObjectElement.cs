@@ -23,14 +23,16 @@
 using System.IO;
 using System.Text;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
-namespace Gibbed.RedFaction2.FileFormats.Level.Data
+namespace Gibbed.RedFaction2.FileFormats.Level
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public abstract class ObjectElement : ISerializableElement
     {
         #region Fields
-        private uint _Uid;
-        private string _Unknown1;
+        private int _Uid;
+        private string _ClassName;
         private Vector3 _Position;
         private Transform _Transform;
         private string _ScriptName;
@@ -38,36 +40,42 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
         #endregion
 
         #region Properties
-        public uint Uid
+        [JsonProperty("uid")]
+        public int Uid
         {
             get { return this._Uid; }
             set { this._Uid = value; }
         }
 
-        public string Unknown1
+        [JsonProperty("class_name")]
+        public string ClassName
         {
-            get { return this._Unknown1; }
-            set { this._Unknown1 = value; }
+            get { return this._ClassName; }
+            set { this._ClassName = value; }
         }
 
+        [JsonProperty("pos")]
         public Vector3 Position
         {
             get { return this._Position; }
             set { this._Position = value; }
         }
 
+        [JsonProperty("transform")]
         public Transform Transform
         {
             get { return this._Transform; }
             set { this._Transform = value; }
         }
 
+        [JsonProperty("script_name")]
         public string ScriptName
         {
             get { return this._ScriptName; }
             set { this._ScriptName = value; }
         }
 
+        [JsonProperty("hidden")]
         public bool IsHidden
         {
             get { return this._IsHidden; }
@@ -75,13 +83,13 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
         }
         #endregion
 
-        protected abstract ushort Unknown1MaximumLength { get; }
+        protected abstract ushort ClassNameMaximumLength { get; }
         protected abstract ushort ScriptNameMaximumLength { get; }
 
         public virtual void Read(Stream input, uint version, Endian endian)
         {
-            this._Uid = input.ReadValueU32(endian);
-            this._Unknown1 = input.ReadStringU16(this.Unknown1MaximumLength, Encoding.ASCII, endian);
+            this._Uid = input.ReadValueS32(endian);
+            this._ClassName = input.ReadStringU16(this.ClassNameMaximumLength, Encoding.ASCII, endian);
             this._Position = Vector3.Read(input, endian);
             this._Transform = Transform.Read(input, endian);
             this._ScriptName = input.ReadStringU16(this.ScriptNameMaximumLength, Encoding.ASCII, endian);
@@ -90,8 +98,8 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 
         public virtual void Write(Stream output, uint version, Endian endian)
         {
-            output.WriteValueU32(this._Uid, endian);
-            output.WriteStringU16(this._Unknown1, this.Unknown1MaximumLength, Encoding.ASCII, endian);
+            output.WriteValueS32(this._Uid, endian);
+            output.WriteStringU16(this._ClassName, this.ClassNameMaximumLength, Encoding.ASCII, endian);
             Vector3.Write(output, this._Position, endian);
             Transform.Write(output, this._Transform, endian);
             output.WriteStringU16(this._ScriptName, this.ScriptNameMaximumLength, Encoding.ASCII, endian);

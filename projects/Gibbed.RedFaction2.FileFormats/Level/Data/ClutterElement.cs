@@ -20,55 +20,130 @@
  *    distribution.
  */
 
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Gibbed.IO;
+using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class ClutterElement : ISerializableElement
+    [JsonObject(MemberSerialization.OptIn)]
+    public class ClutterElement : ObjectElement
     {
-        public class ArrayElement : SerializableArrayElement<ClutterElement>
+        #region Fields
+        private List<KeyValuePair<string, uint>> _Unknown1;
+        private string _SkinName;
+        private uint _Unknown2;
+        private readonly List<int> _Links;
+        #endregion
+
+        public ClutterElement()
         {
+            this._Unknown1 = new List<KeyValuePair<string, uint>>();
+            this._Links = new List<int>();
         }
 
-        public void Read(Stream input, uint version, Endian endian)
+        protected override ushort ClassNameMaximumLength
         {
-            var unknown0 = input.ReadValueU32(endian);
-            var unknown1 = input.ReadStringU16(32, Encoding.ASCII, endian);
-            var unknown2 = Vector3.Read(input, endian);
-            var unknown3 = Transform.Read(input, endian);
-            var unknown4 = input.ReadStringU16(128, Encoding.ASCII, endian);
-            var unknown5 = input.ReadValueB8();
+            get { return 32; }
+        }
 
+        protected override ushort ScriptNameMaximumLength
+        {
+            get { return 128; }
+        }
+
+        #region Properties
+        [JsonProperty("__u1")]
+        public List<KeyValuePair<string, uint>> Unknown1
+        {
+            get { return this._Unknown1; }
+            set { this._Unknown1 = value; }
+        }
+
+        [JsonProperty("skin_name")]
+        public string SkinName
+        {
+            get { return this._SkinName; }
+            set { this._SkinName = value; }
+        }
+
+        [JsonProperty("__u2")]
+        public uint Unknown2
+        {
+            get { return this._Unknown2; }
+            set { this._Unknown2 = value; }
+        }
+
+        [JsonProperty("links")]
+        public List<int> Links
+        {
+            get { return this._Links; }
+        }
+        #endregion
+
+        public override void Read(Stream input, uint version, Endian endian)
+        {
+            base.Read(input, version, endian);
+
+            this._Unknown1.Clear();
             if (version < 232)
             {
-                var unknown6 = input.ReadValueU32(endian);
-                for (uint i = 0; i < unknown6; i++)
+                var unknown1Count = input.ReadValueU32(endian);
+                for (uint i = 0; i < unknown1Count; i++)
                 {
-                    var unknown7 = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
-                    var unknown8 = input.ReadValueU32(endian);
+                    var unknown1Key = input.ReadStringU16(ushort.MaxValue, Encoding.ASCII, endian);
+                    var unknown1Value = input.ReadValueU32(endian);
+                    this._Unknown1.Add(new KeyValuePair<string, uint>(unknown1Key, unknown1Value));
                 }
             }
 
-            var unknown9 = input.ReadStringU16(32, Encoding.ASCII, endian);
+            this._SkinName = input.ReadStringU16(32, Encoding.ASCII, endian);
 
             if (version >= 221 && version <= 231)
             {
-                input.Seek(4, SeekOrigin.Current);
+                this._Unknown2 = input.ReadValueU32(endian);
             }
 
-            var unknown10 = input.ReadValueU32(endian);
-            for (uint i = 0; i < unknown10; i++)
+            var linkCount = input.ReadValueU32(endian);
+            this._Links.Clear();
+            for (uint i = 0; i < linkCount; i++)
             {
-                var unknown11 = input.ReadValueU32(endian);
+                this._Links.Add(input.ReadValueS32(endian));
             }
         }
 
-        public void Write(Stream output, uint version, Endian endian)
+        public override void Write(Stream output, uint version, Endian endian)
         {
-            throw new NotImplementedException();
+            base.Write(output, version, endian);
+
+            if (version < 232)
+            {
+                output.WriteValueS32(this._Unknown1.Count, endian);
+                foreach (var kv in this._Unknown1)
+                {
+                    output.WriteStringU16(kv.Key, ushort.MaxValue, Encoding.ASCII, endian);
+                    output.WriteValueU32(kv.Value, endian);
+                }
+            }
+
+            output.WriteStringU16(this._SkinName, 32, Encoding.ASCII, endian);
+
+            if (version >= 221 && version <= 231)
+            {
+                output.WriteValueU32(this._Unknown2, endian);
+            }
+
+            output.WriteValueS32(this._Links.Count, endian);
+            foreach (var link in this._Links)
+            {
+                output.WriteValueS32(link, endian);
+            }
+        }
+
+        public class ArrayElement : SerializableArrayElement<ClutterElement>
+        {
         }
     }
 }

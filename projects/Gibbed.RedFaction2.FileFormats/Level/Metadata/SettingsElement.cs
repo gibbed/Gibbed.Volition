@@ -27,8 +27,10 @@ using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
 {
-    public class SettingsElement : IElement
+    [JsonObject(MemberSerialization.OptIn)]
+    public class SettingsElement : BasicElement
     {
+        #region Fields
         private string _DefaultTexture;
         private int _Hardness;
         private Color _AmbientLightColor;
@@ -38,62 +40,74 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
         private float _DistanceBasedFogFarClipPlane;
         private Color _Unknown7;
         private byte _Unknown8;
+        #endregion
 
+        #region Properties
+        [JsonProperty("default_texture")]
         public string DefaultTexture
         {
             get { return this._DefaultTexture; }
             set { this._DefaultTexture = value; }
         }
 
+        [JsonProperty("hardness")]
         public int Hardness
         {
             get { return this._Hardness; }
             set { this._Hardness = value; }
         }
 
+        [JsonProperty("ambient_light_color")]
         public Color AmbientLightColor
         {
             get { return this._AmbientLightColor; }
             set { this._AmbientLightColor = value; }
         }
 
+        [JsonProperty("__u3")]
         public bool Unknown3
         {
             get { return this._Unknown3; }
             set { this._Unknown3 = value; }
         }
 
+        [JsonProperty("dist_based_fog_color")]
         public Color DistanceBasedFogColor
         {
             get { return this._DistanceBasedFogColor; }
             set { this._DistanceBasedFogColor = value; }
         }
 
+        [JsonProperty("dist_based_fog_near_clip_plane")]
         public float DistanceBasedFogNearClipPlane
         {
             get { return this._DistanceBasedFogNearClipPlane; }
             set { this._DistanceBasedFogNearClipPlane = value; }
         }
 
+        [JsonProperty("dist_based_fog_far_clip_plane")]
         public float DistanceBasedFogFarClipPlane
         {
             get { return this._DistanceBasedFogFarClipPlane; }
             set { this._DistanceBasedFogFarClipPlane = value; }
         }
 
+        [JsonProperty("__u7")]
         public Color Unknown7
         {
             get { return this._Unknown7; }
             set { this._Unknown7 = value; }
         }
 
+        [JsonProperty("__u8")]
         public byte Unknown8
         {
             get { return this._Unknown8; }
             set { this._Unknown8 = value; }
         }
+        #endregion
 
-        public void Read(Stream input, uint version, Endian endian)
+        public override void Read(Stream input, uint version, Endian endian)
         {
             this._DefaultTexture = input.ReadStringU16(40, Encoding.ASCII, endian);
             this._Hardness = input.ReadValueS32(endian);
@@ -132,7 +146,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
             }
         }
 
-        public void Write(Stream output, uint version, Endian endian)
+        public override void Write(Stream output, uint version, Endian endian)
         {
             output.WriteStringU16(this._DefaultTexture, 40, Encoding.ASCII, endian);
             output.WriteValueS32(this._Hardness, endian);
@@ -169,63 +183,6 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Metadata
             {
                 output.WriteValueU32(0, endian); // float
             }
-        }
-
-        public void ImportJson(JsonReader reader)
-        {
-            var serializer = new JsonSerializer();
-            var item = serializer.Deserialize<Item>(reader);
-            this._DefaultTexture = item.Unknown1;
-            this._AmbientLightColor = item.Unknown2;
-            this._Unknown3 = item.Unknown3;
-            this._DistanceBasedFogColor = item.Unknown4;
-            this._DistanceBasedFogNearClipPlane = item.Unknown5;
-            this._DistanceBasedFogFarClipPlane = item.Unknown6;
-            this._Unknown7 = item.Unknown7;
-            this._Unknown8 = item.Unknown8;
-        }
-
-        public void ExportJson(JsonWriter writer)
-        {
-            Item item;
-            item.Unknown1 = this._DefaultTexture;
-            item.Unknown2 = this._AmbientLightColor;
-            item.Unknown3 = this._Unknown3;
-            item.Unknown4 = this._DistanceBasedFogColor;
-            item.Unknown5 = this._DistanceBasedFogNearClipPlane;
-            item.Unknown6 = this._DistanceBasedFogFarClipPlane;
-            item.Unknown7 = this._Unknown7;
-            item.Unknown8 = this._Unknown8;
-            var serializer = new JsonSerializer();
-            serializer.Serialize(writer, item);
-        }
-
-        [JsonObject(MemberSerialization.OptIn)]
-        public struct Item
-        {
-            [JsonProperty("u1")]
-            public string Unknown1;
-
-            [JsonProperty("u2")]
-            public Color Unknown2;
-
-            [JsonProperty("u3")]
-            public bool Unknown3;
-
-            [JsonProperty("u4")]
-            public Color Unknown4;
-
-            [JsonProperty("u5")]
-            public float Unknown5;
-
-            [JsonProperty("u6")]
-            public float Unknown6;
-
-            [JsonProperty("u7")]
-            public Color Unknown7;
-
-            [JsonProperty("u8")]
-            public byte Unknown8;
         }
     }
 }

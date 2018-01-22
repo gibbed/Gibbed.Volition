@@ -24,7 +24,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
     public class TargetElement : ObjectElement
     {
-        protected override ushort Unknown1MaximumLength
+        protected override ushort ClassNameMaximumLength
         {
             get { return ushort.MaxValue; }
         }

@@ -20,50 +20,42 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 using Gibbed.IO;
 using Newtonsoft.Json;
 
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class Unknown070000Element : IElement
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Unknown070000Element : BasicElement
     {
         private Vector3 _Unknown0;
         private Transform _Unknown1;
 
+        [JsonProperty("__u0")]
         public Vector3 Unknown0
         {
             get { return this._Unknown0; }
             set { this._Unknown0 = value; }
         }
 
+        [JsonProperty("__u1")]
         public Transform Unknown1
         {
             get { return this._Unknown1; }
             set { this._Unknown1 = value; }
         }
 
-        public void Read(Stream input, uint version, Endian endian)
+        public override void Read(Stream input, uint version, Endian endian)
         {
             this._Unknown0 = Vector3.Read(input, endian);
             this._Unknown1 = Transform.Read(input, endian);
         }
 
-        public void Write(Stream output, uint version, Endian endian)
+        public override void Write(Stream output, uint version, Endian endian)
         {
             Vector3.Write(output, this._Unknown0, endian);
             Transform.Write(output, this._Unknown1, endian);
-        }
-
-        public void ImportJson(JsonReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExportJson(JsonWriter writer)
-        {
-            throw new NotImplementedException();
         }
     }
 }

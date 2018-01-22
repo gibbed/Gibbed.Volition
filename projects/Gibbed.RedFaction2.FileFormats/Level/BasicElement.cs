@@ -20,12 +20,29 @@
  *    distribution.
  */
 
-namespace Gibbed.RedFaction2.ConvertPEG
+using System.IO;
+using Gibbed.IO;
+using Newtonsoft.Json;
+
+namespace Gibbed.RedFaction2.FileFormats.Level
 {
-    internal enum Mode
+    public abstract class BasicElement : IElement
     {
-        Unknown,
-        Disassemble,
-        Assemble,
+        public void ImportJson(JsonReader reader)
+        {
+            var serializer = new JsonSerializer();
+            var settings = new JsonSerializerSettings();
+            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+            serializer.Populate(reader, this);
+        }
+
+        public void ExportJson(JsonWriter writer)
+        {
+            var serializer = new JsonSerializer();
+            serializer.Serialize(writer, this);
+        }
+
+        public abstract void Read(Stream input, uint version, Endian endian);
+        public abstract void Write(Stream output, uint version, Endian endian);
     }
 }

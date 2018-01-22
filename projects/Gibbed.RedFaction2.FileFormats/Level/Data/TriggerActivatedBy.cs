@@ -20,42 +20,15 @@
  *    distribution.
  */
 
-using System.IO;
-using Gibbed.IO;
-using Newtonsoft.Json;
-
 namespace Gibbed.RedFaction2.FileFormats.Level.Data
 {
-    public class RawElement : IElement
+    public enum TriggerActivatedBy : byte
     {
-        private byte[] _Bytes;
-
-        public byte[] Bytes
-        {
-            get { return this._Bytes; }
-            set { this._Bytes = value; }
-        }
-
-        public void Read(Stream input, uint version, Endian endian)
-        {
-            this._Bytes = input.ReadBytes((uint)input.Length);
-        }
-
-        public void Write(Stream output, uint version, Endian endian)
-        {
-            output.WriteBytes(this._Bytes);
-        }
-
-        public void ImportJson(JsonReader reader)
-        {
-            var serializer = new JsonSerializer();
-            this._Bytes = serializer.Deserialize<byte[]>(reader);
-        }
-
-        public void ExportJson(JsonWriter writer)
-        {
-            var serializer = new JsonSerializer();
-            serializer.Serialize(writer, this._Bytes);
-        }
+        PlayersOnly = 0,
+        AllObjects = 1,
+        LinkedObjects = 2,
+        AIOnly = 3,
+        PlayerVehicleOnly = 4,
+        Geomods = 5,
     }
 }

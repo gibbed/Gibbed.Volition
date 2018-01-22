@@ -41,8 +41,8 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         Decals = 0x1000,
         PushRegions = 0x1100,
         Unknown2000 = 0x2000,
-        Doors = 0x3000,
-        Unknown4000 = 0x4000,
+        Movers = 0x3000,
+        Cutscenes = 0x4000,
         CutscenePathNodes = 0x5000, // not found in any retail RF2 levels
         Unknown6000 = 0x6000, // not found in any retail RF2 levels
         Mirrors = 0x7677,
@@ -67,7 +67,7 @@ namespace Gibbed.RedFaction2.FileFormats.Level
         Unknown80000 = 0x80000, // not found in any retail RF2 levels
         Unknown1000000 = 0x1000000, // string array
         Unknown1000001 = 0x1000001,
-        Unknown2000000 = 0x2000000,
+        Brushes = 0x2000000,
         UserDefinedGroups = 0x3000000,
     }
 }
