@@ -284,7 +284,7 @@ namespace Gibbed.RedFaction2.ConvertPEG
         private static int MungePaletteIndex(int value)
         {
             // zzzabzzz -> zzzbazzz
-            // I'd really like to know WTF.
+            // http://ps2-edu.tensioncore.com/old/palt/palt.html
             return (value >> 1) & 0x08 |
                    (value << 1) & 0x10 |
                    (value & 0xE7);
