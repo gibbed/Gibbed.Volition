@@ -36,8 +36,8 @@ before_build:
 after_build:
   - set TZ=GMT
   - git log . > git-log.txt
-  - 7z a -r -tzip -mx=9 -x!bin/Test.exe -x!*/license.txt -x!*/readme.txt -x!*/git-log.txt volition-%APPVEYOR_BUILD_VERSION%.zip license.txt readme.txt git-log.txt bin/*.exe bin/*.dll bin/projects
-  - 7z a -r -tzip -mx=9 -x!bin/Test.exe -x!*/license.txt -x!*/readme.txt -x!*/git-log.txt volition-%APPVEYOR_BUILD_VERSION%-with-symbols.zip license.txt readme.txt git-log.txt bin/*.exe bin/*.dll bin/*.pdb bin/projects
+  - 7z a -r -tzip -mx=9 -x!bin/Test.exe -x!*/license.txt -x!*/readme.txt -x!*/git-log.txt volition-%APPVEYOR_BUILD_VERSION%.zip license.txt readme.txt git-log.txt bin*/*.exe bin*/*.dll bin*/projects
+  - 7z a -r -tzip -mx=9 -x!bin/Test.exe -x!*/license.txt -x!*/readme.txt -x!*/git-log.txt volition-%APPVEYOR_BUILD_VERSION%-with-symbols.zip license.txt readme.txt git-log.txt bin*/*.exe bin*/*.dll bin*/*.pdb bin*/projects
 
 artifacts:
   - path: volition-*.zip
